@@ -20,6 +20,7 @@
 .quiz__image {
   border-radius: 1rem;
   max-width: 50%;
+  max-height: 500px;
 }
 
 .quiz__answers {
