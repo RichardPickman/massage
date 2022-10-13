@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.37538311.css",
-    "main.js": "/static/js/main.b26e392e.js",
+    "main.css": "/static/css/main.71a0bf6d.css",
+    "main.js": "/static/js/main.d62c1aed.js",
     "static/media/kolec-biodrowy-tylny-gorny.png": "/static/media/kolec-biodrowy-tylny-gorny.71e373ab558bcf124e2d.71e373ab558bcf124e2d.png",
     "static/media/spojenie-lonowe.png": "/static/media/spojenie-lonowe.288ccf4de4ee99f6a873.288ccf4de4ee99f6a873.png",
     "static/media/grzebien-kosci-biodrowej.png": "/static/media/grzebien-kosci-biodrowej.60bfbbb720193f122c5f.60bfbbb720193f122c5f.png",
@@ -77,11 +77,11 @@
     "static/media/roboto-vietnamese-400-normal.woff2": "/static/media/roboto-vietnamese-400-normal.3230f9b040f3c630e0c3.woff2",
     "static/media/roboto-greek-ext-400-normal.woff2": "/static/media/roboto-greek-ext-400-normal.169619821ea93019d1bb.woff2",
     "index.html": "/index.html",
-    "main.37538311.css.map": "/static/css/main.37538311.css.map",
-    "main.b26e392e.js.map": "/static/js/main.b26e392e.js.map"
+    "main.71a0bf6d.css.map": "/static/css/main.71a0bf6d.css.map",
+    "main.d62c1aed.js.map": "/static/js/main.d62c1aed.js.map"
   },
   "entrypoints": [
-    "static/css/main.37538311.css",
-    "static/js/main.b26e392e.js"
+    "static/css/main.71a0bf6d.css",
+    "static/js/main.d62c1aed.js"
   ]
 }
