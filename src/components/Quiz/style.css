@@ -1,0 +1,18 @@
+.score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 3rem;
+}
+
+.question-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.next-button {
+  display: flex;
+  justify-content: center;
+}

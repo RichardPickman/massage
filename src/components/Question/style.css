@@ -1,0 +1,28 @@
+.quiz {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+  margin: 0 14px 15px;
+  padding: 16px;
+  text-align: center;
+  align-items: center;
+  box-shadow: 0 2px 20px 0 rgb(0 0 0 / 10%);
+  background-color: #fff;
+}
+
+.quiz__question {
+  height: 3rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.quiz__image {
+  border-radius: 1rem;
+  max-width: 50%;
+}
+
+.quiz__answers {
+  display: flex;
+  gap: 0.5rem;
+}
