@@ -7,6 +7,7 @@ import './style.css'
 
 const Quiz = () => {
   const [quizState, dispatch] = useContext(QuizContext);
+  const buttonDisabled = quizState.currentQuestionIndex === 0
 
   return (
     <>
@@ -18,12 +19,19 @@ const Quiz = () => {
           </div>
           <Question />
           <div className="next-button">
-          <Button
-          variant="contained"
-          sx={{ width: '50%' }}
-          onClick={() => dispatch({ type: 'NEXT_QUESTION' })}>
-            Next question
-          </Button>
+            <Button
+            variant="contained"
+            sx={{ width: '50%' }}
+            disabled={buttonDisabled}
+            onClick={() => dispatch({ type: 'PREV_QUESTION' })}>
+              Previous question
+            </Button>
+            <Button
+            variant="contained"
+            sx={{ width: '50%' }}
+            onClick={() => dispatch({ type: 'NEXT_QUESTION' })}>
+              Next question
+            </Button>
           </div>
       </div>
       )}
