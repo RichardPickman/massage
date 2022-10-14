@@ -10,9 +10,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 1rem;
 }
 
 .next-button {
   display: flex;
   justify-content: center;
+  gap: 1rem;
 }
