@@ -30,6 +30,25 @@ const getFiles = async () => {
       ],
       correctAnswer: '${file.split('.')[0].split('-').join(' ')}',
     },`)
+
+  For (const file of files) {
+    Const fileProperName = file.split('.')[0].split('-').join(' ')
+    Const answers = [
+    getRandom(file, files).split('.')[0],
+    getRandom(file, files).split('.')[0],
+    getRandom(file, files).split('.')[0],
+    fileProperName
+    ]
+    Const correctAnswerIndex = answers.findIndex(elem => elem === fileProperName);
+
+    Console.log(`{
+      question: "",
+      img: images.${file.split('.')[0].split('-').join('')},
+      answers,
+      correctAnswer: fileProperName
+      correctAnswerIndex
+    },`)
+  }
   }
 }
 
