@@ -1,5 +1,7 @@
 import { questions } from '../db/index';
 import { shuffleAnswers } from '../helpers';
+import { handleAnswer } from './helpers';
+
 const { createContext, useReducer } = require("react");
 
 
@@ -17,50 +19,56 @@ const reducer =  (state, action) => {
   switch (action.type) {
     case "NEXT_QUESTION": {
       const showResults = state.currentQuestionIndex === state.questions.length - 1
-      const currentQuestionIndex = 
-      showResults ? 
+      const currentQuestionIndex =
+      showResults ?
       state.currentQuestionIndex :
       state.currentQuestionIndex + 1;
+      const currentQuestion = state.answeredQuestions[currentQuestionIndex];
+      const answers = showResults ? [] : shuffleAnswers(state.questions[currentQuestionIndex]);
+      const isAnswered = currentQuestion && currentQuestion.currentAnswer === '';
 
-      const answers = showResults ? [] : shuffleAnswers(state.questions[currentQuestionIndex])
+      handleAnswer(state.answeredQuestions, state);
 
-      return {
+      console.log(showResults)
+      console.log(isAnswered ? state.answeredQuestions[currentQuestionIndex] : {
         ...state,
         currentQuestionIndex,
         showResults,
         answers,
         currentAnswer: '',
-      }
-    }
-    case "PREV_QUESTION": {
-      const showResults = state.currentQuestionIndex === state.questions.length - 1
-      const currentQuestionIndex = 
-      showResults ? 
-      state.currentQuestionIndex :
-      state.currentQuestionIndex - 1;
+      })
 
-      // const answers = showResults ? [] : shuffleAnswers(state.questions[currentQuestionIndex])
-      
-      return {
+      return isAnswered ? state.answeredQuestions[currentQuestionIndex] : {
         ...state,
         currentQuestionIndex,
         showResults,
-      }
+        answers,
+        currentAnswer: '',
+      };
+    }
+    case "PREV_QUESTION": {
+      const showResults = state.currentQuestionIndex === state.questions.length - 1
+      const currentQuestionIndex =
+      showResults ?
+      state.currentQuestionIndex :
+      state.currentQuestionIndex - 1;
+      
+      return state.answeredQuestions[currentQuestionIndex];
     }
     case "RESTART": {
-      return initialState
+      return initialState;
     }
     case 'SELECT_ANSWER': {
-      const currentAnswerCount = 
+      const currentAnswerCount =
       action.payload === state.questions[state.currentQuestionIndex].correctAnswer ?
       state.currentAnswerCount + 1 :
-      state.currentAnswerCount
+      state.currentAnswerCount;
 
-      const pushAnswer = state.answeredQuestions.push({
+      handleAnswer(state.answeredQuestions, {
         ...state,
         currentAnswer: action.payload,
         currentAnswerCount,
-      })
+      });
       
       return {
         ...state,
