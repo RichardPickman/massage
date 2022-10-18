@@ -2,12 +2,13 @@
   display: flex;
   flex-direction: column;
 
+  width: 65rem;
   gap: 1rem;
   padding: 16px;
   text-align: center;
   align-items: center;
-  box-shadow: 0 2px 20px 0 rgb(0 0 0 / 10%);
-  background-color: #fff;
+  border-radius: 1rem;
+  background-color: #222222;
 }
 
 .quiz__question {
@@ -18,11 +19,15 @@
 
 .quiz__image {
   border-radius: 1rem;
-  max-width: 50%;
-  max-height: 500px;
+  height: 400px;
 }
 
 .quiz__answers {
   display: flex;
   gap: 0.5rem;
+}
+
+.snapshots__filters {
+  display: flex;
+  gap: 1rem;
 }
