@@ -2,38 +2,35 @@ import { useContext } from "react";
 import { QuizContext } from "../../context/quiz";
 import Question from "../../components/Question";
 import Result from "../../components/Result";
-import { Button } from "@mui/material";
-import './style.css'
+import { Box, Button, Stack, Typography } from "@mui/material";
+
 
 const Quiz = () => {
   const [quizState, dispatch] = useContext(QuizContext);
-  const buttonDisabled = quizState.currentQuestionIndex === 0
+  const buttonDisabled = quizState.currentQuestionIndex === 0;
+
+  const nextQuestion = () => dispatch({ type: 'NEXT_QUESTION' });
+  const prevQuestion = () => dispatch({ type: 'PREV_QUESTION' });
+
+  if (quizState.showResults) {
+    return <Result />
+  }
 
   return (
-    <>
-      {quizState.showResults ? <Result /> : 
-      <div className="question-block">
-        <div className="score">
+      <Box display="flex" flexDirection="column" alignItems="center" gap="1rem" >
+        <Typography variant="body1">
           Question {quizState.currentQuestionIndex + 1} / {quizState.questions.length}
-        </div>
+        </Typography>
         <Question />
-        <div className="next-button">
-          <Button
-          variant="contained"
-          sx={{ width: '50%' }}
-          disabled={buttonDisabled}
-          onClick={() => dispatch({ type: 'PREV_QUESTION' })}>
+        <Stack direction="row" spacing={1}>
+          <Button variant="contained" disabled={buttonDisabled} onClick={prevQuestion}>
             Previous question
           </Button>
-          <Button
-          variant="contained"
-          sx={{ width: '50%' }}
-          onClick={() => dispatch({ type: 'NEXT_QUESTION' })}>
+          <Button variant="contained" onClick={nextQuestion}>
             Next question
           </Button>
-        </div>
-      </div>}
-    </>
+        </Stack>
+      </Box>
   )
 }
 

@@ -11,8 +11,6 @@
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
-
-  background-color: #141414;
 }
 
 .next-button {
