@@ -30,10 +30,12 @@ const App = () => {
         </ul>
       </header>
       <main>
-        <Container maxWidth="xs">
+        <Container maxWidth="md">
           <QuizConstructor />
         </Container>
-        {/* <Quiz /> */}
+        {/* <Container maxWidth="md">
+          <Quiz />
+        </Container> */}
       </main>
     </ThemeProvider>
   )
