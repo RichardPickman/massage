@@ -1,14 +1,17 @@
 import './style.css';
 
-const Answer = ({ 
-  answerText, 
-  index, 
-  onSelectAnswer,
-  currentAnswer,
-  correctAnswer
-}) => {
-  const letterMapping = ['A', 'B', 'C', 'D'];
+const Answer = ({ answerProps }) => {
+  const { 
+    answerText, 
+    index, 
+    onSelectAnswer,
+    currentAnswer,
+    correctAnswer 
+  } = answerProps;
+
   const { innerWidth } = window;
+  
+  const letterMapping = ['A', 'B', 'C', 'D'];
   const isCorrectAnswer = currentAnswer && answerText === correctAnswer;
   const isWrongAnswer = currentAnswer === answerText && currentAnswer !== correctAnswer;
   const wrongClass = isWrongAnswer ? "wrong" : "";

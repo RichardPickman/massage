@@ -1,33 +1,5 @@
-.quiz {
-  display: flex;
-  flex-direction: column;
-
-  width: 65rem;
-  gap: 1rem;
-  padding: 16px;
-  text-align: center;
-  align-items: center;
+.image {
   border-radius: 1rem;
-  background-color: #222222;
-}
 
-.quiz__question {
-  height: 3rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.quiz__image {
-  border-radius: 1rem;
   height: 400px;
-}
-
-.quiz__answers {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.snapshots__filters {
-  display: flex;
-  gap: 1rem;
 }

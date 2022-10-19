@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { QuizContext } from "../../context/quiz";
-import { Button } from '@mui/material'
+import { Button, Stack, Box, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Answer from '../Answer'
-import './style.css';
+import Answer from '../Answer';
 
 
 const Result = () => {
@@ -14,37 +13,43 @@ const Result = () => {
   const [showResults, setShowResults] = useState(false);
   const [showUnanswered, setShowUnanswered] = useState(false);
 
+  const answerProps = (snap, answer, index) => ({
+    answerText: answer,
+    index,
+    key: index, 
+    currentAnswer: snap.currentAnswer,
+    correctAnswer: snap.question.correctAnswer,
+    onSelectAnswer: () => { return; },
+  })
+
   const quiz = (snap, index) => (
-    <div className='quiz' key ={index}>
-      {snap.question.question && <div className="quiz__question">{snap.question.question}</div>}
-      <img className="quiz__image" src={snap.question.img} alt={snap.question.correctAnswer} />
-      <div className="quiz__answers">
-        {snap.answers.map((answer, index) => (
-          <Answer 
-          answerText={answer}
-          index={index}
-          key={index} 
-          currentAnswer={snap.currentAnswer}
-          correctAnswer={snap.question.correctAnswer} />
-        ))}
-      </div>
-    </div>
+    <Box display="flex" flexDirection="column" gap="1rem" justifyContent="center" alignItems="center" key={index}>
+      {snap.question.question && <Typography variant="body1">{snap.question.question}</Typography>}
+      <Box display="flex" justifyContent="center">
+        <img className="image" src={snap.question.img} alt={snap.question.correctAnswer} />
+      </Box>
+      <Stack direction="row" spacing={1}>
+        {snap.answers.map((answer, index) => (<Answer answerProps={answerProps(snap, answer, index)} />))}
+      </Stack>
+    </Box>
   )
 
   return (
-    <div className="results">
-      <div className="results__discription">
-        <div className="results__info">
-          <p>You've got {quizState.currentAnswerCount} of {" "} {quizState.questions.length} right</p>
+    <Box display="flex" flexDirection="column" gap="1rem">
+      <Box display="flex" flexDirection="column" gap="1rem" justifyContent="center" alignItems="center">
+          <Typography variant="body1">You've got {quizState.currentAnswerCount} of {" "} {quizState.questions.length} right</Typography>
           <Button variant="outlined" size="large" onClick={() => dispatch({ type: 'RESTART' })}> Restart </Button>
-        </div>
-      </div>
-      <div className="results__snapshots">
+      </Box>
+      <Box display="flex" flexDirection="column" gap="1rem">
         <Button className="fold-answers" onClick={() => setShowResults(!showResults)}>
           {showResults ? "Fold" : "Unfold"} {showResults ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </Button>
-        <div className={`snapshots ${!showResults && 'hide'}`}>
-          <div className="snapshots__filters">
+        <Box 
+          display={`${showResults ? "flex" : "none"}`}
+          flexDirection="column" 
+          gap="1rem"
+          alignItems="center">
+          <Stack direction="row" spacing={1}>
             <Button 
               className="fold-answers"
               variant={`${showWrong ? "contained" : "outlined"}`}
@@ -63,7 +68,7 @@ const Result = () => {
               }}>
               Show unanswered
             </Button>
-          </div>
+          </Stack>
           {showUnanswered && quizState.answeredQuestions
           .filter((item) => item.currentAnswer === '')
           .map((snap, index) => quiz(snap, index))}
@@ -76,9 +81,9 @@ const Result = () => {
           {!showWrong && !showUnanswered && 
           quizState.answeredQuestions
           .map((snap, index) => quiz(snap, index))}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 
