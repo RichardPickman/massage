@@ -1,29 +1,25 @@
-import { Card, Stack, TextField, Button, Box, Grid, Checkbox, FormGroup, FormControlLabel } from "@mui/material";
-import { useRef, useState } from "react";
+import { Card, TextField, Button, Box, Grid } from "@mui/material";
+import { useContext, useState } from "react";
 
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AnswerWithCheckbox from "../../components/AnswerWithCheckbox";
+import { ConstructorContext } from "../../context/quizConstructor";
 
-export const QuestionTemplate = ({ questionState }) => {
-  const [question, setQuestion] = useState(null);
+export const QuestionTemplate = ({ questionIndex }) => {
+  const [constructorState, dispatch] = useContext(ConstructorContext);
   const [image, setImage] = useState(null);
-  const [correctAnswer, setCorrectAnswer] = useState(Array(4));
-  const [wrongAnswers, setWrongAnswers] = useState(null);
+  const [question, setQuestion] = useState('');
+
+  const currentQuestion  = constructorState.questions[questionIndex];
 
   const uploadImage = (event) => {
-    let img = event.target.files[0]
+    let img = event.target.files[0];
 
     setImage(URL.createObjectURL(img));
   }
 
-  const addWrongAnswer = (index, text) => setWrongAnswers(correctAnswer[index] = text);
-
-  const saveQuestion = () => {
-    questionState.question = question;
-    questionState.img = image;
-    questionState.incorrectAnswers = [...wrongAnswers];
-    questionState.correctAnswer = correctAnswer;
-  }
+  const saveQuestion = () => dispatch({ type: "SAVE_QUESTION", payload: { questionIndex } });
 
   return (
     <Card variant="outlined">
@@ -33,26 +29,23 @@ export const QuestionTemplate = ({ questionState }) => {
           Upload
           <input hidden accept="image/*" type="file" onChange={uploadImage} />
         </Button>
-        <Box display="flex" flexDirection="column" gap="1rem" spacing={2}>
-            <TextField variant="outlined" label="Correct answer" onChange={addWrongAnswer(0)}></TextField>
-            <TextField variant="outlined" label="Incorrect answer" onChange={addWrongAnswer(1)}></TextField>
-            <TextField variant="outlined" label="Incorrect answer" onChange={addWrongAnswer(2)}></TextField>
-            <TextField variant="outlined" label="Incorrect answer" onChange={addWrongAnswer(3)}></TextField>
-        </Box>
+        <Grid container spacing={2}>
+          {currentQuestion.answers.map((answer, i) => (<Grid item key={i} xs={6}><AnswerWithCheckbox questionIndex={questionIndex} answerId={i} /></Grid>))}
+        </Grid>
         <Box display="flex" justifyContent="right" gap="1rem" marginTop="1rem">
-          <Button 
-            variant="contained" 
-            color="success" 
-            endIcon={<SaveIcon />}
-            onClick={saveQuestion}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={saveQuestion}
+            endIcon={<SaveIcon />}>
             Save
           </Button>
-          <Button 
-          variant="contained" 
-          color="error" 
-          endIcon={<DeleteForeverIcon />}
-          // onClick={}
-          >Delete</Button>
+          <Button
+            variant="contained"
+            color="error"
+            endIcon={<DeleteForeverIcon />}>
+            Delete
+          </Button>
         </Box>
       </Box>
     </Card>
