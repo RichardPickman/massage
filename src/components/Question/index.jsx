@@ -11,9 +11,10 @@ const Question = () => {
 
   const answerProps = (answer, index) => ({
     answerText: answer,
+    answers: currentQuestion.answers,
     index,
     key: index, 
-    currentAnswer: quizState.currentAnswer,
+    currentAnswer: quizState.currentAnswers,
     correctAnswer: currentQuestion.correctAnswer,
     onSelectAnswer: (answerText) => dispatch({ type: 'SELECT_ANSWER', payload: answerText })
   })
@@ -25,7 +26,7 @@ const Question = () => {
         <img className="image" src={currentQuestion.img} alt="" />
       </Box>
       <Stack direction="row" spacing={1}>
-        {quizState.answers.map((answer, index) => (<Answer answerProps={answerProps(answer, index)} />))}
+        {quizState.answers.map((answer, index) => (<Answer key={index} answerProps={answerProps(answer, index)} />))}
       </Stack>
     </Box>
   )
