@@ -1,20 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import { Stack, TextField, Button, Box } from "@mui/material";
 import { ConstructorContext } from "../../context/quizConstructor";
-import { templateWithKey } from "./helpers";
+import { QuestionTemplate } from "./template";
 
 const QuizConstructor  = () => {
   const [constructorState, dispatch] = useContext(ConstructorContext);
   
-  const [title, setTitle] = useState(null);
+  const [title, setTitle] = useState('');
   const [questions, setQuestions] = useState([]);
-  const [blockRender, setBlockRender] = useState(true);
-  const [questionNumber, setQuestionNumber] = useState(0);
 
-  const renderQuestions = () => setQuestions(templateWithKey(questionNumber));
-  const clearQuestions = () => setQuestions([]);
+  const setQuestionsCount = (count) => {
+    for (let i=0; i < count; i++) {
+      dispatch({  type: 'ADD_QUESTION' })
+    }
+  };
+
+  useEffect(() => dispatch({ type: 'SET_TITLE', payload: title }), [title, dispatch]);
   
-  useEffect(() => Number(questionNumber) ? setBlockRender(false) : setBlockRender(true), [questionNumber]);
+  const clearQuestions = () => setQuestions([]);
 
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" gap="2rem">
@@ -25,22 +28,23 @@ const QuizConstructor  = () => {
           label="Quiz title" 
           variant="outlined" 
           onChange={(event) => setTitle(event.target.value)} 
+          value={title}
           />
           <TextField 
           id="outlined-basic" 
           label="Questions amount" 
           variant="outlined" 
           type="number"
-          onChange={(event) => setQuestionNumber(Number(event.target.value))}
+          onChange={(event) => setQuestionsCount(event.target.value)}
           />
         </Stack>
       </Box>
       <Box display="flex" justifyContent="center" gap="1rem" direction="row" spacing={2}>
-        <Button variant="contained" disabled={blockRender} onClick={renderQuestions} >Render</Button>
         <Button variant="contained" onClick={clearQuestions} >Clear</Button>
       </Box>
       <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
-        {questions}
+        {constructorState.questions.length > 0  && 
+        constructorState.questions.map((question, index) => <QuestionTemplate key={index} questionIndex={index} />)}
       </Box>
     </Box>
   );
