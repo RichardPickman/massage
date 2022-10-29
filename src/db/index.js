@@ -20,8 +20,9 @@ export const questions = [
       'nadklykiec przysrodkowy',
       'glowa kosci promieniowej',
       'wyrostek dziobiasty kosci lokciowej',
+      'wyrostek dziobiasty kosci lokciowej',
     ],
-    correctAnswer: 'Brzeg gorny',
+    correctAnswers: [],
   },
 {
     id: 2,
