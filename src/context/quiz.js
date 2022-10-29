@@ -29,15 +29,6 @@ const reducer =  (state, action) => {
 
       handleAnswer(state.answeredQuestions, state);
 
-      console.log(showResults)
-      console.log(isAnswered ? state.answeredQuestions[currentQuestionIndex] : {
-        ...state,
-        currentQuestionIndex,
-        showResults,
-        answers,
-        currentAnswer: '',
-      })
-
       return isAnswered ? state.answeredQuestions[currentQuestionIndex] : {
         ...state,
         currentQuestionIndex,
