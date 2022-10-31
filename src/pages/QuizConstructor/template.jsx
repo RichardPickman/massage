@@ -5,8 +5,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AnswerWithCheckbox from "../../components/AnswerWithCheckbox";
 import { ConstructorContext } from "../../context/quizConstructor";
+import { memo } from "react";
 
-export const QuestionTemplate = ({ questionIndex }) => {
+const QuestionTemplate = ({ questionIndex }) => {
   const [constructorState, dispatch] = useContext(ConstructorContext);
   const [image, setImage] = useState(null);
   const [question, setQuestion] = useState('');
@@ -22,7 +23,7 @@ export const QuestionTemplate = ({ questionIndex }) => {
   const saveQuestion = () => dispatch({ type: "SAVE_QUESTION", payload: { questionIndex } });
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ width: '100%' }}>
       <Box display="flex" margin="1rem" flexDirection="column" justifyContent="center" gap="1rem" direction="row" spacing={2}>
         <TextField id="outlined-basic" label="Question" variant="outlined" onChange={(event) => setQuestion(event.target.value)} />
         <Button variant="contained" component="label">
@@ -51,3 +52,5 @@ export const QuestionTemplate = ({ questionIndex }) => {
     </Card>
   )
 }
+
+export default memo(QuestionTemplate);
