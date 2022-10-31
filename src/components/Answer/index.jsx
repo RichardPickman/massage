@@ -4,28 +4,26 @@ import './style.css';
 const Answer = ({ answerProps }) => {
   const { 
     answerText, 
-    index,
-    answers,
+    index, 
     onSelectAnswer,
     currentAnswer,
+    correctAnswer 
   } = answerProps;
 
   const { innerWidth } = window;
-  
-  const isEnoughWidth = innerWidth > 720;
+
   const letterMapping = ['A', 'B', 'C', 'D'];
-  const isCorrectAnswer = currentAnswer && answers.includes(currentAnswer);
-  const isWrongAnswer = currentAnswer === answerText && !isCorrectAnswer;
-  const disabled = !!currentAnswer
-
-
+  const isCorrectAnswer = currentAnswer && answerText === correctAnswer;
+  const isWrongAnswer = currentAnswer === answerText && currentAnswer !== correctAnswer;
+  const wrongClass = isWrongAnswer ? "wrong" : "";
+  const correctClass = isCorrectAnswer ? "success" : "";
+  const disabledClass = currentAnswer ? "disabled" : "";
   return (
-    <>
-      {isCorrectAnswer && <Button variant="outlined" onClick={onSelectAnswer(answerText)} color="success">{isEnoughWidth && letterMapping[index]}{answerText}</Button>}
-      {!isCorrectAnswer && <Button variant="outlined" onClick={onSelectAnswer(answerText)} color="error">{isEnoughWidth && letterMapping[index]}{answerText}</Button>}
-      {disabled && <Button variant="outlined" onClick={onSelectAnswer(answerText)} disabled>{isEnoughWidth && letterMapping[index]}{answerText}</Button>}
-      {!currentAnswer && <Button variant="outlined" onClick={onSelectAnswer(answerText)}>{isEnoughWidth && letterMapping[index]}{answerText}</Button>}
-    </>
+    <div
+    className={`answer ${wrongClass} ${correctClass} ${disabledClass}`}
+    onClick={() => onSelectAnswer(answerText)}>
+      {innerWidth > 840 && `${letterMapping[index]}.`} {answerText}
+    </div>
   )
 }
 
