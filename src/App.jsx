@@ -18,14 +18,15 @@ const App = () => {
         <Layout>
           <Routes>
             <Route index element={<Home />} />
-            <Route path="quizzes" element={<Quizzes />}>
+            <Route path="/quizzes" element={<Quizzes />} />
+            <Route path="/quiz">
               <Route path=":id" element={<Quiz />} />
             </Route>
-            <Route path="lectures" element={<Quizzes />} />
-            <Route path="constructor" element={<QuizConstructor />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<QuizConstructor />} />
-            <Route path="profile" element={<QuizConstructor />} />
+            <Route path="/lectures" element={<Quizzes />} />
+            <Route path="/constructor" element={<QuizConstructor />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<QuizConstructor />} />
+            <Route path="/profile" element={<QuizConstructor />} />
           </Routes>
         </Layout>
       </AppContextProvider>
