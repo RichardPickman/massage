@@ -1,27 +1,16 @@
-import { useContext, useRef, useState } from "react";
-import { TextField, Box, Checkbox, Input, FormControlLabel, FormControl } from "@mui/material";
-import { ConstructorContext } from "../../context/quizConstructor";
+import { useRef } from "react";
+import { TextField, Checkbox, FormControlLabel, FormControl } from "@mui/material";
 
-const AnswerWithCheckbox = ({ questionIndex, answerId }) => {
-  const [constructorState, dispatch] = useContext(ConstructorContext);
+const AnswerWithCheckbox = (props) => {
+  const { answerId,addAnswer,handleCorrectAnswer,addBlank } = props;
   
   const correct = useRef();
   const answer = useRef();
 
-  const saveAnswer = () => dispatch({ type: 'ADD_ANSWER', payload: {  questionIndex,  currentAnswer: answer.current.value,  answerId }});
-
-  const saveCorrect = () => dispatch({ type: 'ADD_CORRECT_ANSWER',  payload: { questionIndex,  currentAnswer: answer.current.value }});
-
-  const removeCorrect = () => dispatch({ type: 'REMOVE_CORRECT_ANSWER',  payload: { questionIndex,  currentAnswer: answer.current.value }});
-
-  const addTextbox = () => dispatch({ type: 'ADD_BLANK_ANSWER', payload: { questionIndex,  answerId }});
-
-  const handleCheck = () => correct.current.checked ? saveCorrect() : removeCorrect();
-
   return (
     <FormControl>
-      <Input variant="outlined" onBlur={saveAnswer} onChange={addTextbox} inputRef={answer}></Input>
-      <FormControlLabel control={<Checkbox inputRef={correct} onChange={() => handleCheck()} />} label="Correct answer" />
+      <TextField variant="filled" onBlur={() => addAnswer(answer.current.value, answerId)} onChange={() => addBlank(answerId)} inputRef={answer}></TextField>
+      <FormControlLabel control={<Checkbox inputRef={correct} onChange={() => handleCorrectAnswer(answerId)} />} label="Correct answer" />
     </FormControl>
   )
 }
