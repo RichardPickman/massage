@@ -13,26 +13,31 @@ const Result = () => {
   const [showResults, setShowResults] = useState(false);
   const [showUnanswered, setShowUnanswered] = useState(false);
 
-  const answerProps = (snap, answer, index) => ({
-    answerText: answer,
-    index,
-    key: index, 
-    currentAnswer: snap.currentAnswer,
-    correctAnswer: snap.question.correctAnswer,
-    onSelectAnswer: () => { return; },
-  })
+  const quiz = (snap, index) => {
+    const questionSnap = quizState.questions.find(item => item._id === snap.id);
 
-  const quiz = (snap, index) => (
-    <Box display="flex" flexDirection="column" gap="1rem" justifyContent="center" alignItems="center" key={index}>
-      {snap.question.question && <Typography variant="body1">{snap.question.question}</Typography>}
-      <Box display="flex" justifyContent="center">
-        <img className="image" src={snap.question.img} alt={snap.question.correctAnswer} />
+    const answerProps = (answerText, index) => ({
+      answerText,
+      index,
+      currentAnswers: snap.currentAnswers,
+      correctAnswers: questionSnap.correctAnswers,
+      showAnswers: false,
+      isFinished: true,
+      onSelectAnswer: () => { return; },
+    });
+
+    return (
+      <Box display="flex" flexDirection="column" gap="1rem" justifyContent="center" alignItems="center" key={index}>
+        {questionSnap.question && <Typography variant="body1">{questionSnap.question}</Typography>}
+        {questionSnap.img && <Box display="flex" justifyContent="center">
+          <img className="image" src={questionSnap.img} alt={questionSnap.correctAnswer} />
+        </Box>}
+        <Stack direction="row" spacing={1}>
+          {questionSnap.answers.map((answer, index) => <Answer key={index} answerProps={answerProps(answer, index)} />)}
+        </Stack>
       </Box>
-      <Stack direction="row" spacing={1}>
-        {snap.answers.map((answer, index) => (<Answer answerProps={answerProps(snap, answer, index)} />))}
-      </Stack>
-    </Box>
-  )
+    )
+  };
 
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
@@ -69,17 +74,20 @@ const Result = () => {
               Show unanswered
             </Button>
           </Stack>
-          {showUnanswered && quizState.answeredQuestions
-          .filter((item) => item.currentAnswer === '')
+          {showUnanswered && quizState.saveHistory
+          .filter((item) => item.currentAnswers.length === 0)
           .map((snap, index) => quiz(snap, index))}
 
-          {showWrong && quizState.answeredQuestions
-          .filter((item) => 
-          (item.currentAnswer !== item.question.correctAnswer && item.currentAnswer !== ''))
+          {showWrong && quizState.saveHistory
+          .filter((item) => {
+            const question = quizState.questions.find(quest => quest._id === item.id);
+
+            return item.currentAnswers.some((ans) => !question.correctAnswers.includes(ans));
+          })
           .map((snap, index) => quiz(snap, index))}
 
           {!showWrong && !showUnanswered && 
-          quizState.answeredQuestions
+          quizState.saveHistory
           .map((snap, index) => quiz(snap, index))}
         </Box>
       </Box>
