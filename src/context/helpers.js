@@ -1,34 +1,22 @@
 
+export const saveToHistory = (state, currentAnswers, index) => {
+  const prevQuestion = state.questions[index];
+  const saveHistoryCopy = [...state.saveHistory];
+  const isExist = !!saveHistoryCopy[index];
 
-export const checkExistance = (arr, id) => arr.find(elem => elem.id === id) ? true : false;
+  if (isExist) {
+    saveHistoryCopy[index] = {
+      id: prevQuestion._id,
+      currentAnswers,
+    }
 
-export const findAndReplace = (arr, data) => {
-  const findIndex = arr.findIndex(elem => elem.id === data.id);
-  
-  arr[findIndex] = data;
-
-  return;
-}
-
-export const handleAnswer = (arr, state) => {
-  const id = state.questions[state.currentQuestionIndex].id;
-  const check = checkExistance(arr, id);
-  
-  if (!check) {
-    arr.push({
-      ...state,
-      id: state.questions[state.currentQuestionIndex].id,
-      question: state.questions[id],
-    });
-
-    return;
+    return saveHistoryCopy
   }
 
-  const elem = arr.find(elem => elem.id === id);
+  const result = [...saveHistoryCopy, {
+    id: prevQuestion._id,
+    currentAnswers,
+  }];
 
-  if (elem.currentAnswer === '' && state.currentAnswer) {
-    findAndReplace(arr, state);
-
-    return;
-  }
+  return result;
 }
