@@ -21,8 +21,6 @@ export const get = async (id) => {
 export const getAll = async () => {
   const { data } = await $host.post('api/quiz/all');
 
-  console.log(data)
-
   return data;
 }
 
