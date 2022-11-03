@@ -16,14 +16,25 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "ADD_QUESTION": {
-      const currentIndex = state.questions.length;
-      const temp = questionInitialState(currentIndex);
-      const questions = [...state.questions, temp];
+    case "ADD_QUESTIONS": {
+      const questionArr = [...state.questions];
+      const length = questionArr.length;
+
+      if (action.payload.amount < length) {
+        return {
+          ...state,
+          questions: questionArr.slice(0, action.payload.amount)
+        }
+      }
+
+      for (let i = length; i < action.payload.amount; i++) {
+        const temp = questionInitialState(questionArr.length);
+        questionArr.push(temp);
+      }
  
       return {
         ...state,
-        questions,
+        questions: questionArr,
       }
     }
     case "REMOVE_QUESTION": {
@@ -50,7 +61,7 @@ const reducer = (state, action) => {
     }
     case "SAVE_QUESTION": {
       const questions = state.questions.map(quest => {
-        if (quest.id === action.payload.questionIndex) {
+        if (quest.id === action.payload.questionId) {
           const questCopy = quest;
 
           questCopy.isSaved = true;
@@ -72,9 +83,27 @@ const reducer = (state, action) => {
         title: action.payload,
       };
     }
+    case "ADD_QUESTION_TEXT": {
+      const questions = state.questions.map(quest => {
+        if (quest.id === action.payload.questionId) {
+          const questCopy = quest;
+
+          questCopy.question = action.payload.question;
+
+          return questCopy;
+        }
+
+        return quest;
+      })
+
+      return {
+        ...state,
+        questions
+      }
+    }
     case "ADD_ANSWER": {
       const questions = state.questions.map(quest => {
-        if (quest.id === action.payload.questionIndex) {
+        if (quest.id === action.payload.questionId) {
           const questCopy = quest;
 
           questCopy.answers[action.payload.answerId] = action.payload.currentAnswer;
@@ -92,7 +121,7 @@ const reducer = (state, action) => {
     }
     case "ADD_BLANK_ANSWER": {
       const questions = state.questions.map(quest => {
-        if (quest.id === action.payload.questionIndex) {
+        if (quest.id === action.payload.questionId) {
           const questCopy = quest;
           const isAnswerLast = questCopy.answers.length - 1 === action.payload.answerId;
 
@@ -113,7 +142,7 @@ const reducer = (state, action) => {
     }
     case "ADD_CORRECT_ANSWER": {
       const questions = state.questions.map(quest => {
-        if (quest.id === action.payload.questionIndex) {
+        if (quest.id === action.payload.questionId) {
           const questCopy = quest;
           const answerIndex = questCopy.answers.findIndex((ans) => ans === action.payload.currentAnswer);
           
@@ -132,7 +161,7 @@ const reducer = (state, action) => {
     }
     case "REMOVE_CORRECT_ANSWER": {
       const questions = state.questions.map(quest => {
-        if (quest.id === action.payload.questionIndex) {
+        if (quest.id === action.payload.questionId) {
           const questCopy = quest;
           const answerIndex = questCopy.answers.findIndex((ans) => ans === action.payload.currentAnswer);
           
