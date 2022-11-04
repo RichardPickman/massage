@@ -12,6 +12,8 @@ const Question = ({ showAnswers }) => {
   const answerProps = (answer, index) => ({
     answerText: answer,
     isFinished: quizState.showResults,
+    predefinedText: '',
+    predefinedCheckbox: false,
     showAnswers,
     index,
     answers: currentQuestion.answers,
