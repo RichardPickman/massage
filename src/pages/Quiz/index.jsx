@@ -6,6 +6,8 @@ import { Box, Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { useParams } from "react-router-dom";
 import { get } from "../../http/quizApi";
 import ShowAnswers from "../../components/ShowAnswer";
+import { memo } from "react";
+import { useCallback } from "react";
 
 
 const Quiz = () => {
@@ -27,8 +29,8 @@ const Quiz = () => {
 
   useEffect(() => {fetchQuiz()}, []);
 
-  const nextQuestion = () => dispatch({ type: 'NEXT_QUESTION' });
-  const prevQuestion = () => dispatch({ type: 'PREV_QUESTION' });
+  const nextQuestion = useCallback(() => dispatch({ type: 'NEXT_QUESTION' }), [dispatch]);
+  const prevQuestion = useCallback(() => dispatch({ type: 'PREV_QUESTION' }), [dispatch]);
 
   if (quizState.showResults) {
     return <Result />
