@@ -108,7 +108,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
               <Typography variant="body1">{questionData.question}</Typography>
               <Stack direction="row" spacing={1}>
                 {questionData.answers.map((answer, i) => (
-                  <Answer 
+                  <Answer key={i}
                     answerProps={{ 
                       answerText: answer, 
                       index: i, 
