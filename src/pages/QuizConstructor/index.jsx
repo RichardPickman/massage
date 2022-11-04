@@ -22,7 +22,7 @@ const QuizConstructor  = () => {
   const [title, setTitle] = useState('');
 
   const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
-  const saveQuiz = useCallback((questions, title) => create(questions, title), []);
+  const saveQuiz = () => create(questions, title);
 
   const updateQuestion = (data) => {
     const arr = questions.map((item) => {
