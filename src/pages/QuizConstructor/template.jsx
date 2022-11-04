@@ -7,6 +7,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 
 import AnswerWithCheckbox from "../../components/AnswerWithCheckbox";
 import Answer from "../../components/Answer";
+import { useEffect } from "react";
 
 const prepareQuestion = (question, action, callback) => {
   switch(action) {
@@ -53,7 +54,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
     img: "",
     question: title, 
     answers: answers, 
-    correctAnswers: correctAnswers 
+    correctAnswers: correctAnswers,
   }, action, (data) => updateQuestion(data));
 
   const addAnswer = (answer, answerId) => {
