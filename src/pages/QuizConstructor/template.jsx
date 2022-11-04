@@ -1,90 +1,151 @@
-import { Card, TextField, Button, Box, Grid } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Card, TextField, Button, Box, Grid, Typography, Stack } from "@mui/material";
+import { memo, useState } from "react";
 
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 
 import AnswerWithCheckbox from "../../components/AnswerWithCheckbox";
-import { memo } from "react";
+import Answer from "../../components/Answer";
 
-const QuestionTemplate = ({ questionId, questions, updateQuestion }) => {
-  const [questionState, setQuestionState] = useState(({
-    id: questionId,
-    question: "",
+const prepareQuestion = (question, action, callback) => {
+  switch(action) {
+    case "SAVE": {
+      const result = { ...question };
+      const lastElementIndex = result.answers.length - 1;
+
+      if (!result.answers[lastElementIndex]) {
+        result.answers.pop();
+      }
+
+      if (result.correctAnswers.includes(lastElementIndex)) {
+        result.correctAnswers = result.correctAnswers.filter(item => item !== lastElementIndex);
+      }
+
+      result.isSaved = true;
+
+      callback(result);
+
+      return;
+    };
+    case "EDIT": {
+      const result = { ...question };
+
+      result.answers.push('');
+
+      result.isSaved = false;
+
+      callback(result);
+
+      return;
+    }
+    default: return;
+  }
+}
+
+const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
+  const [title, setTitle] = useState(questionData.question ||  '');
+  const [answers, setAnswers] = useState(questionData.answers || ['']);
+  const [correctAnswers, setCorrectAnswers] = useState(questionData.correctAnswers || []);
+  
+  const handleQuestionState = (action) => prepareQuestion({
+    id: questionData.id,
     img: "",
-    answers: [''],
-    correctAnswers: [],
-    isSaved: false,
-  }))
-
-  const setTitle = (text) => setQuestionState({ ...questionState, question: text });
+    question: title, 
+    answers: answers, 
+    correctAnswers: correctAnswers 
+  }, action, (data) => updateQuestion(data));
 
   const addAnswer = (answer, answerId) => {
-    const answers = [...questionState.answers];
+    const answersCopy = answers.map((text, index) => {
+      if (index === answerId) {
+        return answer
+      }
 
-    answers[answerId] = answer;
+      return text;
+    });
 
-    setQuestionState({
-      ...questionState, 
-      answers,
-    })
-  }
-
-  const handleCorrectAnswer = (index) => {
-    const isExist = questionState.correctAnswers.includes(index);
-    const correctAnswers = isExist ? 
-    questionState.correctAnswers.filter(item => item !== index) : 
-    [...questionState.correctAnswers, index];
-
-    return setQuestionState({
-      ...questionState,
-      correctAnswers,
-    })
+    setAnswers(answersCopy);
   };
 
-  const addBlank = (index) => index === questionState.answers.length - 1 && 
-  setQuestionState({
-    ...questionState, 
-    answers: [...questionState.answers, '']
-  });
+  const handleCorrectAnswer = (index) => {
+    const isExist = correctAnswers.includes(index);
+    const correctAnswersCopy = isExist ? correctAnswers.filter(item => item !== index) : [...correctAnswers, index];
 
-  useEffect(() => updateQuestion(questionId, questionState), [questionState])
+    setCorrectAnswers(correctAnswersCopy);
+  };
+
+  const addBlank = (index) => index === answers.length - 1 && setAnswers([...answers, '']);
+
+  const removeCurrentQuestion = () => removeQuestion(questionData.id);
 
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
-      <Box display="flex" margin="1rem" flexDirection="column" justifyContent="center" gap="1rem" direction="row" spacing={2}>
-        <TextField id="outlined-basic" label="Question" variant="outlined" onChange={(event) => setTitle(event.target.value)} />
-        {/* <Button variant="contained" component="label">
-          Upload
-          <input hidden accept="image/*" type="file" onChange={uploadImage} />
-        </Button> */}
-        <Grid container spacing={2}>
-          {questionState.answers.map((answer, i) => (
-            <Grid item key={i} xs={6}>
-              <AnswerWithCheckbox 
-                questionId={questionId} 
-                answerId={i}
-                addAnswer={addAnswer} 
-                handleCorrectAnswer={handleCorrectAnswer} 
-                addBlank={addBlank}  
-              />
-            </Grid>
-          ))}
-        </Grid>
-        <Box display="flex" justifyContent="right" gap="1rem" marginTop="1rem">
-          <Button
-            variant="contained"
-            color="success"
-            // onClick={saveQuestion}
-            endIcon={<SaveOutlinedIcon />}>
-            Save
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            endIcon={<DeleteOutlineOutlinedIcon />}>
-            Delete
-          </Button>
+      <Box display="flex" flexDirection="column" gap={1} margin={1}>
+          {!questionData.isSaved &&
+            <Box display="flex" margin={1} flexDirection="column" justifyContent="center" gap="1rem" direction="row" spacing={2}>
+              <TextField id="outlined-basic" label="Question" variant="outlined" onChange={(event) => setTitle(event.target.value)}/>
+              <Grid container spacing={2}>
+                {!questionData.isSaved && answers.map((answer, i) => (
+                  <Grid item key={i} xs={6}>
+                    <AnswerWithCheckbox 
+                      key={i}
+                      questionId={questionData.id} 
+                      answerId={i}
+                      addAnswer={addAnswer} 
+                      handleCorrectAnswer={handleCorrectAnswer} 
+                      addBlank={addBlank}
+                      predefinedText={answer}
+                      predefinedCheckbox={correctAnswers.includes(i)} 
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          }
+          {questionData.isSaved && (
+            <Box  display="flex" flexDirection="column" alignItems="center" gap="1rem" margin={2}>
+              <Typography variant="body1">{questionData.question}</Typography>
+              <Stack direction="row" spacing={1}>
+                {questionData.answers.map((answer, i) => (
+                  <Answer 
+                    answerProps={{ 
+                      answerText: answer, 
+                      index: i, 
+                      onSelectAnswer: () => {},
+                      currentAnswers: [],
+                      correctAnswers: correctAnswers,
+                      showAnswers: true,
+                      isFinished: false, 
+                      predefinedText: answer,
+                      predefinedCheckbox: correctAnswers.includes(i),
+                    }}
+                  />
+                ))}
+              </Stack>
+            </Box>
+            )
+          }
+          <Box display="flex" justifyContent="right" gap="1rem" marginTop="1rem">
+            {!questionData.isSaved && 
+              <>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => handleQuestionState("SAVE")}
+                  endIcon={<SaveOutlinedIcon />}>
+                  Save
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={removeCurrentQuestion}
+                  endIcon={<DeleteOutlineOutlinedIcon />}>
+                  Delete
+                </Button>
+              </>
+            }
+            {questionData.isSaved && <Button variant="contained" onClick={() => handleQuestionState("EDIT")} endIcon={<ModeEditOutlineOutlinedIcon />}>Edit</Button>}
         </Box>
       </Box>
     </Card>
