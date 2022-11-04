@@ -33,7 +33,7 @@ const AnswerWithCheckbox = (props) => {
 
   return (
     <FormControl fullWidth>
-      <TextField value={predefinedText} variant="filled" onChange={onChange}></TextField>
+      <TextField value={predefinedText ? predefinedText : ''} variant="filled" onChange={onChange}></TextField>
       <FormControlLabel control={<Checkbox checked={predefinedCheckbox} onChange={handleCorrect} />} label="Correct answer" />
     </FormControl>
   )
