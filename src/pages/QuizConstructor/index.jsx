@@ -14,7 +14,7 @@ const questionTemp = {
   img: "",
   answers: [''],
   correctAnswers: [],
-  isSaved: false,
+  isPreview: false,
 }
 
 const QuizConstructor  = () => {
@@ -85,7 +85,7 @@ const QuizConstructor  = () => {
               removeQuestion={removeQuestion} 
               updateQuestion={updateQuestion} 
               questionId={item.id}
-              isPreview={item.isSaved}
+              isPreview={item.isPreview}
             />)
         })}
       </Box>

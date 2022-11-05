@@ -23,7 +23,7 @@ const prepareQuestion = (question, action, callback) => {
         result.correctAnswers = result.correctAnswers.filter(item => item !== lastElementIndex);
       }
 
-      result.isSaved = true;
+      result.isPreview = true;
 
       callback(result);
 
@@ -34,7 +34,7 @@ const prepareQuestion = (question, action, callback) => {
 
       result.answers.push('');
 
-      result.isSaved = false;
+      result.isPreview = false;
 
       callback(result);
 
@@ -80,14 +80,21 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
 
   const removeCurrentQuestion = () => removeQuestion(questionData.id);
 
+  useEffect(() => updateQuestion({
+    id: questionData.id,
+    question: title, 
+    answers: answers, 
+    correctAnswers: correctAnswers,
+  }), [title, answers, correctAnswers]);
+
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
       <Box display="flex" flexDirection="column" gap={1} margin={1}>
-          {!questionData.isSaved &&
+          {!questionData.isPreview &&
             <Box display="flex" margin={1} flexDirection="column" justifyContent="center" gap="1rem" direction="row" spacing={2}>
               <TextField id="outlined-basic" label="Question" variant="outlined" onChange={(event) => setTitle(event.target.value)}/>
               <Grid container spacing={2}>
-                {!questionData.isSaved && answers.map((answer, i) => (
+                {!questionData.isPreview && answers.map((answer, i) => (
                   <Grid item key={i} xs={6}>
                     <AnswerWithCheckbox 
                       key={i}
@@ -104,7 +111,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
               </Grid>
             </Box>
           }
-          {questionData.isSaved && (
+          {questionData.isPreview && (
             <Box  display="flex" flexDirection="column" alignItems="center" gap="1rem" margin={2}>
               <Typography variant="body1">{questionData.question}</Typography>
               <Stack direction="row" spacing={1}>
@@ -128,14 +135,14 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
             )
           }
           <Box display="flex" justifyContent="right" gap="1rem" marginTop="1rem">
-            {!questionData.isSaved && 
+            {!questionData.isPreview && 
               <>
                 <Button
                   variant="contained"
                   color="success"
                   onClick={() => handleQuestionState("SAVE")}
                   endIcon={<SaveOutlinedIcon />}>
-                  Save
+                  Preview
                 </Button>
                 <Button
                   variant="contained"
@@ -146,7 +153,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                 </Button>
               </>
             }
-            {questionData.isSaved && <Button variant="contained" onClick={() => handleQuestionState("EDIT")} endIcon={<ModeEditOutlineOutlinedIcon />}>Edit</Button>}
+            {questionData.isPreview && <Button variant="contained" onClick={() => handleQuestionState("EDIT")} endIcon={<ModeEditOutlineOutlinedIcon />}>Edit</Button>}
         </Box>
       </Box>
     </Card>
