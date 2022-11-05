@@ -94,7 +94,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
             <Box display="flex" margin={1} flexDirection="column" justifyContent="center" gap="1rem" direction="row" spacing={2}>
               <TextField id="outlined-basic" label="Question" variant="outlined" onChange={(event) => setTitle(event.target.value)}/>
               <Grid container spacing={2}>
-                {!questionData.isPreview && answers.map((answer, i) => (
+                {answers.map((answer, i) => (
                   <Grid item key={i} xs={6}>
                     <AnswerWithCheckbox 
                       key={i}
