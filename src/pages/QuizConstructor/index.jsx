@@ -7,6 +7,7 @@ import { Stack, TextField, Button, Box, CircularProgress } from "@mui/material";
 import { create } from "../../http/quizApi";
 import { memo } from "react";
 import { useCallback } from "react";
+import { useMemo } from "react";
 
 const questionTemp = {
   question: "",
@@ -24,23 +25,17 @@ const QuizConstructor  = () => {
   const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
   const saveQuiz = () => create(questions, title);
 
-  const updateQuestion = (data) => {
-    const arr = questions.map((item) => {
-      if (item.id === data.id) {
-        return { ...data };
-      }
+  const updateQuestion = useCallback((data) => {
+    setQuestions((prevValue) => {
+      return prevValue.map((item) => item.id === data.id ? { ...data } : item);
+    })
+  }, []);
 
-      return item;
-    });
-    
-    setQuestions(arr);
-  };
-
-  const removeQuestion = (id) => {
-    const arr = questions.filter((item) => item.id !== id);
-
-    setQuestions(arr);
-  };
+  const removeQuestion = useCallback((id) => {
+    setQuestions((prevValue) => {
+      return prevValue.filter((item) => item.id !== id);
+    })
+  }, []);
 
   const setQuestionsCount = (amount) => {
     setQuestionsLoading(true);
@@ -90,7 +85,7 @@ const QuizConstructor  = () => {
               removeQuestion={removeQuestion} 
               updateQuestion={updateQuestion} 
               questionId={item.id}
-              isSaved={item.isSaved}
+              isPreview={item.isSaved}
             />)
         })}
       </Box>
