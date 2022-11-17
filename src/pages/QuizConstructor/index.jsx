@@ -1,110 +1,143 @@
-import QuestionTemplate from "./template";
+import QuestionTemplate from './template';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import { useState } from "react";
-import { Stack, TextField, Button, Box, CircularProgress } from "@mui/material";
-import { create } from "../../http/quizApi";
-import { memo } from "react";
-import { useCallback } from "react";
-import { useMemo } from "react";
+import { Stack, TextField, Button, Box } from '@mui/material';
+import { createQuiz } from '../../http/quizApi';
+import { questionTemp, getQuestionFormData } from './helpers';
+import React, { useCallback, useState } from 'react';
+import Alert from '../../components/Alert';
+import { createQuestion } from '../../http/questionApi';
+import { useContext } from 'react';
+import { LoadingContext } from '../../context/loading';
 
-const questionTemp = {
-  question: "",
-  img: "",
-  answers: [''],
-  correctAnswers: [],
-  isPreview: false,
-}
+const QuizConstructor = () => {
+    const loading = useContext(LoadingContext);
+    const [questions, setQuestions] = useState([]);
+    const [alert, setAlert] = useState({ status: 'onhold' });
+    const [title, setTitle] = useState('');
+    const [id, setId] = useState('');
 
-const QuizConstructor  = () => {
-  const [questionsLoading, setQuestionsLoading] = useState(0);
-  const [questions, setQuestions] = useState([]);
-  const [title, setTitle] = useState('');
+    const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
 
-  const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
-  const saveQuiz = () => create(questions, title);
+    const saveQuiz = async () => {
+        loading.toggleLoading(true);
 
-  const updateQuestion = useCallback((data) => {
-    setQuestions((prevValue) => {
-      return prevValue.map((item) => item.id === data.id ? { ...data } : item);
-    })
-  }, []);
+        const response = await createQuiz({ questions, title });
 
-  const removeQuestion = useCallback((id) => {
-    setQuestions((prevValue) => {
-      return prevValue.filter((item) => item.id !== id);
-    })
-  }, []);
+        if (response.status === 200) {
+            setId(response.data.payload._id);
+            setAlert({ status: 'successful' });
+            loading.toggleLoading(false);
+        } else {
+            setAlert({ status: 'error' });
+            loading.toggleLoading(false);
+        }
+    };
 
-  const setQuestionsCount = (amount) => {
-    setQuestionsLoading(true);
+    const updateQuestion = useCallback((data) => {
+        setQuestions((prev) =>
+            prev.map((item) => (item.id === data.id ? { ...data } : item))
+        );
+    }, []);
 
-    const questions = [];
+    const removeQuestion = useCallback((id) => {
+        setQuestions((prev) => prev.filter((item) => item.id !== id));
+    }, []);
 
-    for (let i = 0; i < amount; i++) {
-      questions.push({ id: i, ...questionTemp });
-    }
+    const setQuestionsCount = async (amount) => {
+        loading.toggleLoading(true);
 
-    setQuestions(questions);
+        const questionsArray = [];
 
-    setQuestionsLoading(false);
-  };
+        for (let i = 0; i < amount; i++) {
+            const quest = await createQuestion(questionTemp);
 
-  if (questionsLoading) {
-    return <CircularProgress />
-  }
+            questionsArray.push(quest.data.payload);
+        }
 
-  return (
-    <Box display="flex" flexDirection="column" justifyContent="center" gap="2rem">
-      <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
-        <Stack direction="column" spacing={2}>
-          <TextField 
-            id="outlined-basic" 
-            label="Quiz title" 
-            variant="outlined" 
-            onChange={(event) => setTitle(event.target.value)} 
-            value={title}
-          />
-          <TextField 
-            id="outlined-basic" 
-            label="Questions amount" 
-            variant="outlined" 
-            type="number"
-            inputProps={{ min: 1, max: 100 }}
-            onChange={(event) => setQuestionsCount(event.target.value)}
-          />
-        </Stack>
-      </Box>
-      <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
-        {questions.map((item) => {
-          return (
-            <QuestionTemplate 
-              questionData={item}
-              key={item.id}
-              removeQuestion={removeQuestion} 
-              updateQuestion={updateQuestion} 
-              questionId={item.id}
-              isPreview={item.isPreview}
-            />)
-        })}
-      </Box>
-      <Button
-        variant="contained"
-        color="success"
-        onClick={saveQuiz}
-        endIcon={<SaveIcon />}>
-        Save quiz
-      </Button>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={deleteQuiz}
-        endIcon={<DeleteForeverIcon />}>
-        Delete quiz
-      </Button>
-    </Box>
-  )
-}
+        setQuestions(questionsArray);
 
-export default memo(QuizConstructor);
+        loading.toggleLoading(false);
+    };
+
+    return (
+        <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            gap="2rem"
+        >
+            {alert.status !== 'onhold' && (
+                <Alert
+                    status={alert.status}
+                    onClose={() => setAlert({ status: 'onhold' })}
+                    path={`/quiz/${id}`}
+                />
+            )}
+            <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                gap="1rem"
+            >
+                <Stack direction="column" spacing={2}>
+                    <TextField
+                        id="outlined-basic"
+                        label="Quiz title"
+                        variant="outlined"
+                        onChange={(event) => setTitle(event.target.value)}
+                        value={title}
+                    />
+                    <TextField
+                        id="outlined-basic"
+                        label="Questions amount"
+                        variant="outlined"
+                        type="number"
+                        inputProps={{ min: 1, max: 100 }}
+                        onChange={(event) =>
+                            setQuestionsCount(event.target.value)
+                        }
+                    />
+                </Stack>
+            </Box>
+            <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                gap="1rem"
+            >
+                {questions.map((item) => {
+                    return (
+                        <QuestionTemplate
+                            questionData={item}
+                            key={item.id}
+                            removeQuestion={removeQuestion}
+                            updateQuestion={updateQuestion}
+                            questionId={item.id}
+                            isPreview={item.isPreview}
+                        />
+                    );
+                })}
+            </Box>
+            <Button
+                variant="contained"
+                color="success"
+                onClick={saveQuiz}
+                endIcon={<SaveIcon />}
+            >
+                Save quiz
+            </Button>
+            <Button
+                variant="contained"
+                color="error"
+                onClick={deleteQuiz}
+                endIcon={<DeleteForeverIcon />}
+            >
+                Delete quiz
+            </Button>
+        </Box>
+    );
+};
+
+export default QuizConstructor;
