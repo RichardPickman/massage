@@ -1,42 +1,66 @@
-import { useRef } from "react";
-import { TextField, Checkbox, FormControlLabel, FormControl } from "@mui/material";
-import { useCallback, useState } from "react";
-import { useEffect } from "react";
+import {
+    TextField,
+    Checkbox,
+    FormControlLabel,
+    FormControl,
+} from '@mui/material';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const AnswerWithCheckbox = (props) => {
-  const { 
-    answerId,
-    addAnswer,
-    handleCorrectAnswer,
-    addBlank,
-    predefinedText,
-    predefinedCheckbox 
-  } = props;
-  const [text, setText] = useState(predefinedText)
-  const [checked, setChecked] = useState(predefinedCheckbox);
-  
-  // const onBlur = () => useCallback(() => addAnswer(text, answerId), [text]);
-  // const onChange = () => useCallback(() => addBlank(answerId), [checked]);
-  // const handleCorrect = () => useCallback(() => handleCorrectAnswer(answerId), [checked]);
+    const {
+        answerId,
+        addAnswer,
+        handleCorrectAnswer,
+        removeBlank,
+        predefinedText,
+        predefinedCheckbox,
+    } = props;
+    const [text, setText] = useState(predefinedText);
+    const [checked, setChecked] = useState(predefinedCheckbox);
 
-  useEffect(() => addAnswer(text, answerId), [text])
+    const onChange = (text) => {
+        if (text.target.value === '') {
+            removeBlank();
+        }
 
-  const onChange = (text) => {
-    setText(text.target.value);
-    addBlank(answerId);
-  }
+        setText(text.target.value);
+        addAnswer(text.target.value, answerId);
+    };
 
-  const handleCorrect = () => {
-    setChecked(checked);
-    handleCorrectAnswer(answerId);
-  }
+    const handleCorrect = () => {
+        setChecked(!checked);
+        handleCorrectAnswer(answerId);
+    };
 
-  return (
-    <FormControl fullWidth>
-      <TextField value={predefinedText ? predefinedText : ''} variant="filled" onChange={onChange}></TextField>
-      <FormControlLabel control={<Checkbox checked={predefinedCheckbox} onChange={handleCorrect} />} label="Correct answer" />
-    </FormControl>
-  )
-}
+    return (
+        <FormControl fullWidth>
+            <TextField
+                value={text}
+                variant="filled"
+                onChange={onChange}
+            ></TextField>
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={predefinedCheckbox}
+                        onChange={handleCorrect}
+                    />
+                }
+                label="Correct answer"
+            />
+        </FormControl>
+    );
+};
 
 export default AnswerWithCheckbox;
+
+AnswerWithCheckbox.propTypes = {
+    answerId: PropTypes.number,
+    addAnswer: PropTypes.func,
+    handleCorrectAnswer: PropTypes.func,
+    removeBlank: PropTypes.func,
+    predefinedText: PropTypes.string,
+    predefinedCheckbox: PropTypes.bool,
+};
