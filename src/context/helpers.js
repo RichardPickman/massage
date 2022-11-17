@@ -1,22 +1,24 @@
-
 export const saveToHistory = (state, currentAnswers, index) => {
-  const prevQuestion = state.questions[index];
-  const saveHistoryCopy = [...state.saveHistory];
-  const isExist = !!saveHistoryCopy[index];
+    const prevQuestion = state.questions[index];
+    const saveHistoryCopy = [...state.saveHistory];
+    const isExist = !!saveHistoryCopy[index];
 
-  if (isExist) {
-    saveHistoryCopy[index] = {
-      id: prevQuestion._id,
-      currentAnswers,
+    if (isExist) {
+        saveHistoryCopy[index] = {
+            id: prevQuestion._id,
+            currentAnswers,
+        };
+
+        return saveHistoryCopy;
     }
 
-    return saveHistoryCopy
-  }
+    const result = [
+        ...saveHistoryCopy,
+        {
+            id: prevQuestion._id,
+            currentAnswers,
+        },
+    ];
 
-  const result = [...saveHistoryCopy, {
-    id: prevQuestion._id,
-    currentAnswers,
-  }];
-
-  return result;
-}
+    return result;
+};
