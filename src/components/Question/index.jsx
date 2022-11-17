@@ -1,38 +1,66 @@
-import { Box, Card, Stack, Typography } from "@mui/material";
-import { useContext } from "react";
-import { QuizContext } from "../../context/quiz";
-import Answer from "../Answer";
-import "./style.css";
+import {
+    Box,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    Grid,
+    Stack,
+    Typography,
+} from '@mui/material';
+import Answer from '../Answer';
+import React from 'react';
+import PropTypes from 'prop-types';
 
+const Question = ({ currentState, currentQuestion }) => {
+    const answerProps = (answer, index) => ({
+        answerText: answer,
+        predefinedText: '',
+        predefinedCheckbox: false,
+        index,
+        ...currentState,
+    });
 
-const Question = ({ showAnswers }) => {
-  const [quizState, dispatch] = useContext(QuizContext);
-  const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
+    console.log(currentQuestion);
 
-  const answerProps = (answer, index) => ({
-    answerText: answer,
-    isFinished: quizState.showResults,
-    predefinedText: '',
-    predefinedCheckbox: false,
-    showAnswers,
-    index,
-    answers: currentQuestion.answers,
-    currentAnswers: quizState.currentAnswers,
-    correctAnswers: currentQuestion.correctAnswers,
-    onSelectAnswer: (answerIndex) => dispatch({ type: 'SELECT_ANSWER', payload: { answerIndex } })
-  });
-
-  return (
-    <Card>
-      <Box  display="flex" flexDirection="column" alignItems="center" gap="1rem" margin={2}>
-        {currentQuestion.question && <Typography variant="body1">{currentQuestion.question}</Typography>}
-        {currentQuestion.img &&  <Box display="flex" justifyContent="center"><img className="image" src={currentQuestion.img} alt="" /></Box>}
-        <Stack direction="row" spacing={1}>
-          {currentQuestion.answers.map((answer, index) => (<Answer key={index} answerProps={answerProps(answer, index)} />))}
-        </Stack>
-      </Box>
-    </Card>
-  )
-}
+    return (
+        <>
+            {currentQuestion.img && (
+                <CardMedia
+                    component="img"
+                    alt={currentQuestion.question}
+                    height="140"
+                    image={currentQuestion.img}
+                />
+            )}
+            {currentQuestion.question && (
+                <CardContent>
+                    <Typography variant="h4" align="center">
+                        {currentQuestion.question}
+                    </Typography>
+                </CardContent>
+            )}
+            <CardActions>
+                <Grid container spacing={2}>
+                    {currentQuestion.answers
+                        .filter((item) => item !== '')
+                        .map((answer, index) => (
+                            <Grid item key={index} xs={6}>
+                                <Answer
+                                    answerProps={answerProps(answer, index)}
+                                />
+                            </Grid>
+                        ))}
+                </Grid>
+            </CardActions>
+        </>
+    );
+};
 
 export default Question;
+
+Question.propTypes = {
+    currentState: PropTypes.object,
+    currentQuestion: PropTypes.object,
+};
