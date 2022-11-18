@@ -10,7 +10,7 @@ export const fetchAnswers = async (answer, answerId, answers, questionId) => {
 
     const fetch = await fetchUpdateQuestion(questionId, getForm);
 
-    return fetch.data.payload.answers;
+    return fetch.data.payload;
 };
 
 export const fetchCorrectAnswers = async (
@@ -27,19 +27,17 @@ export const fetchCorrectAnswers = async (
         correctAnswers: correctAnswersCopy,
     });
 
-    console.log(fetch);
-
-    return fetch.data.payload.correctAnswers;
+    return fetch.data.payload;
 };
 
-export const fetchImage = async (event, questionId) => {
+export const fetchImage = async (files, questionId) => {
     const getForm = await getQuestionFormData({
-        img: event.target.files[0],
+        img: files[0],
     });
 
     const fetch = await fetchUpdateQuestion(questionId, getForm);
 
-    return fetch.data.payload.img;
+    return fetch.data.payload;
 };
 
 export const fetchQuestion = async (event, questionId) => {
@@ -47,5 +45,5 @@ export const fetchQuestion = async (event, questionId) => {
         question: event.target.value,
     });
 
-    return fetch.data.payload.question;
+    return fetch.data.payload;
 };
