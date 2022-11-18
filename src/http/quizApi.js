@@ -1,9 +1,7 @@
 import { $authHost, $host } from './index';
 
 export const createQuiz = async (data) => {
-    const response = await $host.post('api/quiz/create', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await $host.post('api/quiz/create', data);
 
     return response;
 };
