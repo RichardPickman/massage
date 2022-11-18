@@ -4,10 +4,10 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import { Stack, TextField, Button, Box } from '@mui/material';
 import { createQuiz } from '../../http/quizApi';
-import { questionTemp, getQuestionFormData } from './helpers';
+import { getQuestionFormData, questionTemp } from './helpers';
 import React, { useCallback, useState } from 'react';
 import Alert from '../../components/Alert';
-import { createQuestion } from '../../http/questionApi';
+import { createQuestion, fetchUpdateQuestion } from '../../http/questionApi';
 import { useContext } from 'react';
 import { LoadingContext } from '../../context/loading';
 
@@ -35,9 +35,15 @@ const QuizConstructor = () => {
         }
     };
 
-    const updateQuestion = useCallback((data) => {
+    const updateQuestion = useCallback(async (id, data) => {
+        const form = await getQuestionFormData(data);
+
+        const fetch = await fetchUpdateQuestion(id, form);
+
         setQuestions((prev) =>
-            prev.map((item) => (item.id === data.id ? { ...data } : item))
+            prev.map((item) =>
+                item.id === data.id ? fetch.data.payload : item
+            )
         );
     }, []);
 
@@ -45,7 +51,7 @@ const QuizConstructor = () => {
         setQuestions((prev) => prev.filter((item) => item.id !== id));
     }, []);
 
-    const setQuestionsCount = async (amount) => {
+    const setQuestionsCount = useCallback(async (amount) => {
         loading.toggleLoading(true);
 
         const questionsArray = [];
@@ -59,7 +65,7 @@ const QuizConstructor = () => {
         setQuestions(questionsArray);
 
         loading.toggleLoading(false);
-    };
+    }, []);
 
     return (
         <Box
@@ -111,7 +117,7 @@ const QuizConstructor = () => {
                     return (
                         <QuestionTemplate
                             questionData={item}
-                            key={item.id}
+                            key={item._id}
                             removeQuestion={removeQuestion}
                             updateQuestion={updateQuestion}
                             questionId={item.id}
