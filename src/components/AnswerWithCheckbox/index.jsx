@@ -10,7 +10,7 @@ import React from 'react';
 
 const AnswerWithCheckbox = (props) => {
     const {
-        answerId,
+        answerIndex,
         addAnswer,
         handleCorrectAnswer,
         removeBlank,
@@ -20,18 +20,18 @@ const AnswerWithCheckbox = (props) => {
     const [text, setText] = useState(predefinedText);
     const [checked, setChecked] = useState(predefinedCheckbox);
 
-    const onChange = (text) => {
-        if (text.target.value === '') {
+    const onChange = (event) => {
+        if (event.target.value === '') {
             removeBlank();
         }
 
-        setText(text.target.value);
-        addAnswer(text.target.value, answerId);
+        setText(event.target.value);
+        addAnswer(event.target.value, answerIndex);
     };
 
     const handleCorrect = () => {
         setChecked(!checked);
-        handleCorrectAnswer(answerId);
+        handleCorrectAnswer(answerIndex);
     };
 
     return (
@@ -57,7 +57,7 @@ const AnswerWithCheckbox = (props) => {
 export default AnswerWithCheckbox;
 
 AnswerWithCheckbox.propTypes = {
-    answerId: PropTypes.number,
+    answerIndex: PropTypes.number,
     addAnswer: PropTypes.func,
     handleCorrectAnswer: PropTypes.func,
     removeBlank: PropTypes.func,
