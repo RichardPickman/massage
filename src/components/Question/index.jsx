@@ -1,12 +1,8 @@
 import {
-    Box,
-    Button,
-    Card,
     CardActions,
     CardContent,
     CardMedia,
     Grid,
-    Stack,
     Typography,
 } from '@mui/material';
 import Answer from '../Answer';
@@ -21,8 +17,6 @@ const Question = ({ currentState, currentQuestion }) => {
         index,
         ...currentState,
     });
-
-    console.log(currentQuestion);
 
     return (
         <>
