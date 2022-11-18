@@ -54,7 +54,7 @@ const FileUpload = ({ image, removeImage, handleImage }) => {
 export default memo(FileUpload);
 
 FileUpload.propTypes = {
-    image: PropTypes.object,
+    image: PropTypes.string,
     removeImage: PropTypes.func,
     handleImage: PropTypes.func,
 };
