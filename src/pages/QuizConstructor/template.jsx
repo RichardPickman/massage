@@ -9,9 +9,9 @@ import QuestionConstructor from './QuestionConstructor';
 import PropTypes from 'prop-types';
 
 const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
-    const { id, correctAnswers, isPreview } = questionData;
+    const { id, isPreview } = questionData;
 
-    const handleQuestionState = useCallback(
+    const togglePreview = useCallback(
         (data, action) => {
             updateQuestion({
                 ...data,
@@ -21,14 +21,17 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
         [updateQuestion]
     );
 
-    const removeCurrentQuestion = () => removeQuestion(id);
+    const removeCurrentQuestion = useCallback(
+        () => removeQuestion(id),
+        [id, removeQuestion]
+    );
 
     return (
         <Card variant="outlined" sx={{ width: '100%' }}>
             <Box display="flex" flexDirection="column" gap={1} margin={1}>
                 {!isPreview && (
                     <QuestionConstructor
-                        questionId={questionData._id}
+                        questionId={questionData.id}
                         updateQuestion={updateQuestion}
                         questionData={questionData}
                     />
@@ -39,7 +42,6 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                         currentState={{
                             currentAnswers: [],
                             showAnswers: true,
-                            correctAnswers: correctAnswers,
                         }}
                     />
                 )}
@@ -55,7 +57,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                                 variant="contained"
                                 color="success"
                                 onClick={() =>
-                                    handleQuestionState(questionData, 'SAVE')
+                                    togglePreview(questionData, 'SAVE')
                                 }
                             >
                                 Preview
@@ -72,9 +74,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                     ) : (
                         <Button
                             variant="contained"
-                            onClick={() =>
-                                handleQuestionState(questionData, 'EDIT')
-                            }
+                            onClick={() => togglePreview(questionData, 'EDIT')}
                             endIcon={<ModeEditOutlineOutlinedIcon />}
                         >
                             Edit
