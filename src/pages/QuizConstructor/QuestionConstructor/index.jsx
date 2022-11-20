@@ -1,58 +1,86 @@
-import { TextField, Box, Grid } from '@mui/material';
 import AnswerWithCheckbox from '../../../components/AnswerWithCheckbox';
-import React, { memo, useState } from 'react';
 import FileUpload from '../../../components/FileUpload';
+import { TextField, Box, Grid } from '@mui/material';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { getObjectWithId } from '../helpers';
 
-const QuestionConstructor = ({
-    questionId,
-    updateQuestion,
-    removeQuestion,
-}) => {
-    const [question, setQuestion] = useState('');
-    const [answers, setAnswers] = useState(['']);
-    const [image, setImage] = useState(null);
-    const [correctAnswers, setCorrectAnswers] = useState([]);
+const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
+    const [question, setQuestion] = useState(questionData.question);
+    const [answers, setAnswers] = useState(questionData.answers);
+    const [image, setImage] = useState(questionData.image);
+    const [correctAnswers, setCorrectAnswers] = useState(
+        questionData.correctAnswers
+    );
 
-    const addAnswer = (answer, answerIndex) => {
-        const answersCopy = answers.map((item, index) =>
-            index === answerIndex ? answer : item
-        );
+    const addAnswer = useCallback(
+        (answer) => {
+            const answersCopy = answers.map((item) =>
+                item.id === answer.id ? answer : item
+            );
 
-        setAnswers(answersCopy);
-        addBlank(answerIndex);
+            setAnswers(answersCopy);
+            addBlank(answer.id);
 
-        updateQuestion(questionId, { answers: answersCopy });
-    };
+            updateQuestion(questionId, { answers: answersCopy });
+        },
+        [answers, setAnswers]
+    );
 
-    const handleCorrectAnswer = (index) => {
-        const isExist = correctAnswers.includes(index);
-        const correctAnswersCopy = isExist
-            ? correctAnswers.filter((item) => item !== index)
-            : [...correctAnswers, index];
+    const handleCorrectAnswer = useCallback(
+        (id) => {
+            const correctAnswersCopy = correctAnswers.includes(id)
+                ? correctAnswers.filter((item) => item !== id)
+                : [...correctAnswers, id];
 
-        setCorrectAnswers(correctAnswersCopy);
+            setCorrectAnswers(correctAnswersCopy);
+            updateQuestion(questionId, { correctAnswers: correctAnswersCopy });
+        },
+        [correctAnswers, setCorrectAnswers]
+    );
 
-        updateQuestion(questionId, { correctAnswers: correctAnswersCopy });
-    };
+    const addBlank = (id) =>
+        answers.findIndex((item) => item.id === id) === answers.length - 1 &&
+        setAnswers([...answers, getObjectWithId({ text: '' })]);
 
-    const addBlank = (index) =>
-        index === answers.length - 1 && setAnswers([...answers, '']);
+    const removeEmpty = useCallback(
+        (answerId) => {
+            const filterAnswers = answers.filter(
+                (item) => item.id !== answerId
+            );
+            const filterCorrectAnswers = correctAnswers.filter(
+                (item) => item !== answerId
+            );
 
-    const removeBlank = () => setAnswers(answers.slice(0, answers.length - 1));
+            setAnswers(filterAnswers);
+            setCorrectAnswers(filterCorrectAnswers);
 
-    const handleImage = async (event) => {
-        setImage(event.target.files[0]);
+            updateQuestion(questionId, {
+                answers: filterAnswers,
+                correctAnswers: filterCorrectAnswers,
+            });
+        },
+        [answers, correctAnswers]
+    );
 
-        updateQuestion(questionId, { img: event.target.files[0] });
-    };
+    const handleImage = useCallback(
+        (event) => {
+            setImage(event.target.files[0]);
 
-    const removeImage = () => setImage(null);
+            updateQuestion(questionId, { img: event.target.files[0] });
+        },
+        [questionId, setImage]
+    );
 
-    const handleQuestion = (event) => {
-        setQuestion(event.target.value);
-        updateQuestion(questionId, { question: question });
-    };
+    const removeImage = useCallback(() => setImage(null), [setImage]);
+
+    const handleQuestion = useCallback(
+        (event) => {
+            setQuestion(event.target.value);
+            updateQuestion(questionId, { question: event.target.value });
+        },
+        [setQuestion]
+    );
 
     return (
         <Box
@@ -81,15 +109,17 @@ const QuestionConstructor = ({
             />
             <Grid container spacing={2}>
                 {answers.map((answer, i) => (
-                    <Grid item key={i} xs={6}>
+                    <Grid item key={answer.id} xs={6}>
                         <AnswerWithCheckbox
                             questionId={questionId}
-                            answerIndex={i}
-                            removeBlank={removeBlank}
+                            id={answer.id}
+                            removeEmpty={removeEmpty}
                             addAnswer={addAnswer}
                             handleCorrectAnswer={handleCorrectAnswer}
-                            predefinedText={answer}
-                            predefinedCheckbox={correctAnswers.includes(i)}
+                            predefinedText={answer.text}
+                            predefinedCheckbox={correctAnswers.includes(
+                                answer.id
+                            )}
                         />
                     </Grid>
                 ))}
@@ -98,9 +128,10 @@ const QuestionConstructor = ({
     );
 };
 
-export default memo(QuestionConstructor);
+export default QuestionConstructor;
 
 QuestionConstructor.propTypes = {
+    questionData: PropTypes.object,
     questionId: PropTypes.string,
     updateQuestion: PropTypes.func,
     removeQuestion: PropTypes.func,
