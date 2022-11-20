@@ -1,12 +1,16 @@
+import { v4 } from 'uuid';
+
+export const getObjectWithId = (data) => ({ id: v4(), ...data });
+
 export const questionTemp = {
     question: '',
     img: null,
-    answers: [''],
+    answers: [getObjectWithId({ text: '' })],
     correctAnswers: [],
     isPreview: false,
 };
 
-export const getQuestionFormData = async (data) => {
+export const getQuestionFormData = (data) => {
     const question = new FormData();
 
     for (let key of Object.keys(data)) {
@@ -19,7 +23,6 @@ export const getQuestionFormData = async (data) => {
                 question.append('answers', data.answers[i]);
             }
         } else {
-            console.log(key, data[key]);
             question.append(key, data[key]);
         }
     }
