@@ -1,71 +1,90 @@
 import QuestionTemplate from './template';
+import Alert from '../../components/Alert';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
+import { getObjectWithId, getQuestionFormData, questionTemp } from './helpers';
 import { Stack, TextField, Button, Box } from '@mui/material';
-import { createQuiz } from '../../http/quizApi';
-import { getQuestionFormData, questionTemp } from './helpers';
 import React, { useCallback, useState } from 'react';
-import Alert from '../../components/Alert';
-import { createQuestion, fetchUpdateQuestion } from '../../http/questionApi';
-import { useContext } from 'react';
+import { createQuestion } from '../../http/questionApi';
 import { LoadingContext } from '../../context/loading';
+import { createQuiz } from '../../http/quizApi';
+import { useContext } from 'react';
 
 const QuizConstructor = () => {
-    const loading = useContext(LoadingContext);
     const [questions, setQuestions] = useState([]);
-    const [alert, setAlert] = useState({ status: 'onhold' });
+    const [alert, setAlert] = useState({ status: 'onhold', message: '' });
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
+
+    const loading = useContext(LoadingContext);
 
     const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
 
     const saveQuiz = async () => {
         loading.toggleLoading(true);
 
-        const response = await createQuiz({ questions, title });
+        const questionsIds = [];
 
-        if (response.status === 200) {
-            setId(response.data.payload._id);
-            setAlert({ status: 'successful' });
-            loading.toggleLoading(false);
-        } else {
-            setAlert({ status: 'error' });
-            loading.toggleLoading(false);
+        for (let question of questions) {
+            const { id, ...fields } = question;
+            const getForm = getQuestionFormData(fields);
+            const savedQuestion = await createQuestion(getForm);
+
+            questionsIds.push(savedQuestion.data.payload._id);
         }
+
+        const response = createQuiz({ questions: questionsIds, title });
+
+        response.then((result) => {
+            if (result.status === 200) {
+                setId(result.data.payload._id);
+                setAlert({
+                    status: 'successful',
+                    message: result.data.payload.message,
+                });
+                loading.toggleLoading(false);
+            } else {
+                setAlert({
+                    status: 'error',
+                    message: result.data.payload.message,
+                });
+                loading.toggleLoading(false);
+            }
+        });
     };
 
-    const updateQuestion = useCallback(async (id, data) => {
-        const form = await getQuestionFormData(data);
+    const updateQuestion = useCallback(
+        (id, data) =>
+            setQuestions((prev) =>
+                prev.map((item) =>
+                    item.id === id ? { ...item, ...data } : item
+                )
+            ),
+        [setQuestions]
+    );
 
-        const fetch = await fetchUpdateQuestion(id, form);
+    const removeQuestion = useCallback(
+        (id) => setQuestions((prev) => prev.filter((item) => item.id !== id)),
+        [setQuestions]
+    );
 
-        setQuestions((prev) =>
-            prev.map((item) =>
-                item.id === data.id ? fetch.data.payload : item
-            )
-        );
-    }, []);
+    const setQuestionsCount = useCallback(
+        async (amount) => {
+            loading.toggleLoading(true);
 
-    const removeQuestion = useCallback((id) => {
-        setQuestions((prev) => prev.filter((item) => item.id !== id));
-    }, []);
+            const questionsArray = [];
 
-    const setQuestionsCount = useCallback(async (amount) => {
-        loading.toggleLoading(true);
+            for (let i = 0; i < amount; i++) {
+                questionsArray.push(getObjectWithId({ ...questionTemp }));
+            }
 
-        const questionsArray = [];
+            setQuestions(questionsArray);
 
-        for (let i = 0; i < amount; i++) {
-            const quest = await createQuestion(questionTemp);
-
-            questionsArray.push(quest.data.payload);
-        }
-
-        setQuestions(questionsArray);
-
-        loading.toggleLoading(false);
-    }, []);
+            loading.toggleLoading(false);
+        },
+        [setQuestions]
+    );
 
     return (
         <Box
@@ -76,6 +95,7 @@ const QuizConstructor = () => {
         >
             {alert.status !== 'onhold' && (
                 <Alert
+                    text={alert.message}
                     status={alert.status}
                     onClose={() => setAlert({ status: 'onhold' })}
                     path={`/quiz/${id}`}
@@ -116,12 +136,12 @@ const QuizConstructor = () => {
                 {questions.map((item) => {
                     return (
                         <QuestionTemplate
-                            questionData={item}
-                            key={item._id}
                             removeQuestion={removeQuestion}
                             updateQuestion={updateQuestion}
-                            questionId={item.id}
                             isPreview={item.isPreview}
+                            questionId={item.id}
+                            questionData={item}
+                            key={item.id}
                         />
                     );
                 })}
