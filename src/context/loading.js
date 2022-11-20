@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { createContext } from 'react';
-import PropTypes from 'prop-types';
 import { Backdrop, CircularProgress } from '@mui/material';
+import PropTypes from 'prop-types';
 
 export const LoadingContext = createContext({
     isLoading: false,
@@ -11,7 +11,7 @@ export const LoadingProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const loadingMode = useMemo(
         () => ({
-            toggleLoading: (state) => setIsLoading(() => state),
+            toggleLoading: (state) => setIsLoading(state),
             isLoading,
         }),
         [isLoading]
