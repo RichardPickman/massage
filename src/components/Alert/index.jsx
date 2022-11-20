@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function Alert({ status, onClose, path }) {
+export default function Alert({ status, onClose, path, text }) {
     return status === 'successful' ? (
         <Alert
             severity="success"
@@ -15,11 +15,11 @@ export default function Alert({ status, onClose, path }) {
                 </Button>
             }
         >
-            Quiz successfully added. You may add another quiz
+            {text}
         </Alert>
     ) : (
         <Alert severity="error" onClose={onClose}>
-            Something went wrong
+            {text}
         </Alert>
     );
 }
@@ -28,4 +28,5 @@ Alert.propTypes = {
     status: PropTypes.string,
     onClose: PropTypes.func,
     path: PropTypes.string,
+    text: PropTypes.string,
 };
