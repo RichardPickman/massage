@@ -7,7 +7,7 @@ export const createQuiz = async (data) => {
 };
 
 export const updateQuiz = async (id, questions, title) => {
-    const response = await $host.post('api/quiz/update/:id', {
+    const response = await $host.put('api/quiz/update/:id', {
         id,
         questions,
         title,
@@ -17,19 +17,19 @@ export const updateQuiz = async (id, questions, title) => {
 };
 
 export const getQuiz = async (id) => {
-    const response = await $host.post('api/quiz/:id', { id });
+    const response = await $host.get('api/quiz/:id', { id });
 
     return response;
 };
 
 export const getAllQuizzes = async () => {
-    const response = await $host.post('api/quiz/all');
+    const response = await $host.get('api/quiz/all');
 
     return response;
 };
 
 export const removeQuiz = async () => {
-    const response = await $authHost.get('api/quiz/remove/');
+    const response = await $authHost.post('api/quiz/remove/');
 
     return response;
 };
