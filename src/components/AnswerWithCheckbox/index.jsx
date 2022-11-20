@@ -10,37 +10,35 @@ import React from 'react';
 
 const AnswerWithCheckbox = (props) => {
     const {
-        answerIndex,
+        id,
         addAnswer,
         handleCorrectAnswer,
-        removeBlank,
+        removeEmpty,
         predefinedText,
         predefinedCheckbox,
     } = props;
+
     const [text, setText] = useState(predefinedText);
     const [checked, setChecked] = useState(predefinedCheckbox);
 
     const onChange = (event) => {
-        if (event.target.value === '') {
-            removeBlank();
+        if (!event.target.value) {
+            removeEmpty(id);
+            setText(event.target.value);
+        } else {
+            addAnswer({ id: id, text: event.target.value });
+            setText(event.target.value);
         }
-
-        setText(event.target.value);
-        addAnswer(event.target.value, answerIndex);
     };
 
     const handleCorrect = () => {
         setChecked(!checked);
-        handleCorrectAnswer(answerIndex);
+        handleCorrectAnswer(id);
     };
 
     return (
         <FormControl fullWidth>
-            <TextField
-                value={text}
-                variant="filled"
-                onChange={onChange}
-            ></TextField>
+            <TextField value={text} variant="filled" onChange={onChange} />
             <FormControlLabel
                 control={
                     <Checkbox
@@ -57,10 +55,10 @@ const AnswerWithCheckbox = (props) => {
 export default AnswerWithCheckbox;
 
 AnswerWithCheckbox.propTypes = {
-    answerIndex: PropTypes.number,
+    id: PropTypes.string,
     addAnswer: PropTypes.func,
     handleCorrectAnswer: PropTypes.func,
-    removeBlank: PropTypes.func,
+    removeEmpty: PropTypes.func,
     predefinedText: PropTypes.string,
     predefinedCheckbox: PropTypes.bool,
 };
