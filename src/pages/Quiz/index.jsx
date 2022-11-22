@@ -7,14 +7,14 @@ import {
     Button,
     Card,
     CircularProgress,
-    Stack,
     Typography,
     CardHeader,
     CardActions,
     CardContent,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getQuiz } from '../../http/quizApi';
+
+import QuizService from '../../services/Quiz';
 import ShowAnswers from '../../components/ShowAnswer';
 import { useCallback } from 'react';
 
@@ -28,8 +28,12 @@ const Quiz = () => {
     useEffect(() => {
         const fetchQuiz = async () => {
             try {
-                const { data } = await getQuiz(id);
-                dispatch({ type: 'SET_QUIZ', payload: data.payload });
+                const { payload } = await QuizService.getQuiz(id);
+
+                dispatch({
+                    type: 'SET_QUIZ',
+                    payload: payload,
+                });
             } catch (e) {
                 console.log(e.message);
             }
@@ -72,22 +76,20 @@ const Quiz = () => {
                             quizState.currentQuestionIndex + 1
                         } / 
                         ${quizState.questions.length}`}
-                    >
-                        <Typography variant="body1">{}</Typography>
-                        <Typography variant="body1"></Typography>
-                    </CardHeader>
+                    />
                     <CardContent>
                         <Question
                             currentState={{
                                 ...quizState,
                                 showAnswers: showAnswers,
-                                onSelectAnswer: (answerIndex) =>
-                                    dispatch({
-                                        type: 'SELECT_ANSWER',
-                                        payload: { answerIndex },
-                                    }),
                             }}
                             currentQuestion={currentQuestion}
+                            onSelect={(id) =>
+                                dispatch({
+                                    type: 'SELECT_ANSWER',
+                                    payload: { id },
+                                })
+                            }
                         />
                     </CardContent>
                     <CardActions
