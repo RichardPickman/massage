@@ -1,7 +1,7 @@
 import { Box, Button, Link, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { getAllQuizzes } from '../../http/quizApi';
+import QuizService from '../../services/Quiz';
 
 const Quizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
@@ -9,8 +9,9 @@ const Quizzes = () => {
     useEffect(() => {
         async function fetchQuizzes() {
             try {
-                const { data } = await getAllQuizzes();
-                setQuizzes([...data.payload]);
+                const { payload } = await QuizService.getAllQuizzes();
+
+                setQuizzes([...payload]);
             } catch (e) {
                 alert(e.message);
             }
@@ -29,6 +30,11 @@ const Quizzes = () => {
             margin={2}
         >
             <Typography variant="h3">Quizzes</Typography>
+            {quizzes.length === 0 && (
+                <Typography variant="body1">
+                    There is no quizzes yet...
+                </Typography>
+            )}
             <Box
                 display="flex"
                 flexDirection="column"
