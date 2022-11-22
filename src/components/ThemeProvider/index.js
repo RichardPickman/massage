@@ -1,14 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import PropTypes from 'prop-types';
+import useLocalStorage from '../../hooks/localStorage';
 
 export const ThemeContext = React.createContext({
     toggleColorMode: () => {},
     mode: 'light',
 });
 
+const dark = createTheme({ palette: { mode: 'dark' } });
+const light = createTheme({ palette: { mode: 'light' } });
+
 const ThemeProviderHook = ({ children }) => {
-    const [darkEnabled, setDarkEnabled] = useState(false);
+    const [theme, setTheme] = useLocalStorage('theme', false);
+    const [darkEnabled, setDarkEnabled] = useState(theme);
     const colorMode = useMemo(
         () => ({
             toggleColorMode: () =>
@@ -18,14 +23,11 @@ const ThemeProviderHook = ({ children }) => {
         [darkEnabled]
     );
 
-    const dark = createTheme({ palette: { mode: 'dark' } });
-    const light = createTheme({ palette: { mode: 'light' } });
-
-    const mode = darkEnabled ? dark : light;
+    useLayoutEffect(() => setTheme(darkEnabled), [darkEnabled]);
 
     return (
         <ThemeContext.Provider value={colorMode}>
-            <ThemeProvider theme={mode}>
+            <ThemeProvider theme={darkEnabled ? dark : light}>
                 <CssBaseline />
                 {children}
             </ThemeProvider>
