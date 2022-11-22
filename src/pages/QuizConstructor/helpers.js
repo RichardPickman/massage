@@ -20,7 +20,7 @@ export const getQuestionFormData = (data) => {
             }
         } else if (key === 'answers') {
             for (let i = 0; i < data.answers.length; i++) {
-                question.append('answers', data.answers[i]);
+                question.append('answers', JSON.stringify(data.answers[i]));
             }
         } else {
             question.append(key, data[key]);
