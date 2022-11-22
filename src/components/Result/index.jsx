@@ -3,7 +3,7 @@ import { QuizContext } from '../../context/quiz';
 import { Button, Stack, Box, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Answer from '../Answer';
+import Question from '../Question';
 
 const Result = () => {
     const [quizState, dispatch] = useContext(QuizContext);
@@ -12,55 +12,24 @@ const Result = () => {
     const [showResults, setShowResults] = useState(false);
     const [showUnanswered, setShowUnanswered] = useState(false);
 
-    const quiz = (snap, index) => {
-        const questionSnap = quizState.questions.find(
+    const quiz = (snap) => {
+        const currentQuestion = quizState.questions.find(
             (item) => item._id === snap.id
         );
 
-        const answerProps = (answerText, index) => ({
-            answerText,
-            index,
+        const questionData = {
+            correctAnswers: currentQuestion.correctAnswers,
             currentAnswers: snap.currentAnswers,
-            correctAnswers: questionSnap.correctAnswers,
-            showAnswers: false,
             isFinished: true,
-            onSelectAnswer: () => {
-                return;
-            },
-        });
+            showAnswers: false,
+        };
 
         return (
-            <Box
-                display="flex"
-                flexDirection="column"
-                gap="1rem"
-                justifyContent="center"
-                alignItems="center"
-                key={index}
-            >
-                {questionSnap.question && (
-                    <Typography variant="body1">
-                        {questionSnap.question}
-                    </Typography>
-                )}
-                {questionSnap.img && (
-                    <Box display="flex" justifyContent="center">
-                        <img
-                            className="image"
-                            src={questionSnap.img}
-                            alt={questionSnap.correctAnswer}
-                        />
-                    </Box>
-                )}
-                <Box display="flex" gap={1} flexWrap="wrap">
-                    {questionSnap.answers.map((answer, index) => (
-                        <Answer
-                            key={index}
-                            answerProps={answerProps(answer, index)}
-                        />
-                    ))}
-                </Box>
-            </Box>
+            <Question
+                currentState={questionData}
+                currentQuestion={currentQuestion}
+                onSelect={() => {}}
+            />
         );
     };
 
