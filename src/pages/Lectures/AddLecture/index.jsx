@@ -16,12 +16,12 @@ import React, { useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { createLecture } from '../../../http/lectures';
 import { getForm, handleImages } from './helpers';
 import {} from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LoadingContext } from '../../../context/loading';
+import LectureService from '../../../services/Lecture';
 
 function AddLecture() {
     const dumbDB = {
@@ -53,14 +53,15 @@ function AddLecture() {
 
         const lecture = getForm(topic, teacher, date, lesson, images);
 
-        const response = await createLecture(lecture);
+        try {
+            const response = await LectureService.createLecture(lecture);
 
-        if (response.status === 200) {
             setAlert({ status: 'successful' });
-            setId(response.data.payload._id);
+            setId(response.payload._id);
             loading.toggleLoading(false);
-        } else {
+        } catch (e) {
             setAlert({ status: 'error' });
+        } finally {
             loading.toggleLoading(false);
         }
     };

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { getAllLectures } from '../../http/lectures';
 import { useLayoutEffect } from 'react';
 import { getTableRows, columns } from './helpers';
+import LectureService from '../../services/Lecture';
 
 const Lectures = () => {
     const [lectures, setLectures] = useState([]);
@@ -12,8 +12,8 @@ const Lectures = () => {
     useLayoutEffect(() => {
         const fetchLectures = async () => {
             try {
-                const { data } = await getAllLectures();
-                const preparedData = getTableRows(data.payload);
+                const { payload } = await LectureService.getAllLectures();
+                const preparedData = getTableRows(payload);
 
                 setLectures(preparedData);
             } catch (e) {

@@ -4,8 +4,8 @@ import { LayoutContext } from '../../../context/layout';
 import ImageSlider from './ImageSlider';
 import { Box } from '@mui/system';
 import { useParams } from 'react-router-dom';
-import { getLecture } from '../../../http/lectures';
 import { ImagesContext } from '../../../context/images';
+import LectureService from '../../../services/Lecture';
 
 const Lecture = () => {
     const [headerState, dispatchHeader] = useContext(LayoutContext);
@@ -16,13 +16,13 @@ const Lecture = () => {
     useLayoutEffect(() => {
         const fetchQuiz = async () => {
             try {
-                const { data } = await getLecture(id);
+                const { payload } = await LectureService.getLecture(id); // getLecture(id);
 
-                setLecture(data.payload);
+                setLecture(payload);
 
                 dispatchLecture({
                     type: 'set_images',
-                    payload: data.payload.images,
+                    payload: payload.images,
                 });
             } catch (e) {
                 console.log(e.message);
