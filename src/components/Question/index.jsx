@@ -5,26 +5,19 @@ import {
     Grid,
     Typography,
 } from '@mui/material';
-import Answer from '../Answer';
 import React from 'react';
 import PropTypes from 'prop-types';
+import ButtonHandler from '../ButtonHandler';
 
-const Question = ({ currentState, currentQuestion }) => {
-    const answerProps = (answer, index) => ({
-        answerText: answer,
-        predefinedText: '',
-        predefinedCheckbox: false,
-        index,
-        ...currentState,
-    });
-
+const Question = ({ currentState, currentQuestion, onSelect }) => {
     return (
         <>
             {currentQuestion.img && (
                 <CardMedia
                     component="img"
+                    loading="lazy"
+                    height="400px"
                     alt={currentQuestion.question}
-                    height="140"
                     image={currentQuestion.img}
                 />
             )}
@@ -37,15 +30,20 @@ const Question = ({ currentState, currentQuestion }) => {
             )}
             <CardActions>
                 <Grid container spacing={2}>
-                    {currentQuestion.answers
-                        .filter((item) => item !== '')
-                        .map((answer, index) => (
-                            <Grid item key={index} xs={6}>
-                                <Answer
-                                    answerProps={answerProps(answer, index)}
-                                />
-                            </Grid>
-                        ))}
+                    {currentQuestion.answers.map((answer) => (
+                        <Grid item key={answer.id} xs={6}>
+                            <ButtonHandler
+                                state={{
+                                    correctAnswers: currentState.correctAnswers,
+                                    currentAnswers: currentState.currentAnswers,
+                                    isFinished: currentState.isFinished,
+                                    showAnswers: currentState.showAnswers,
+                                    onSelect: onSelect,
+                                    answer: answer,
+                                }}
+                            />
+                        </Grid>
+                    ))}
                 </Grid>
             </CardActions>
         </>
@@ -57,4 +55,5 @@ export default Question;
 Question.propTypes = {
     currentState: PropTypes.object,
     currentQuestion: PropTypes.object,
+    onSelect: PropTypes.func,
 };
