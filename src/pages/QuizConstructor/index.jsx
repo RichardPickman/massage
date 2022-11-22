@@ -6,10 +6,10 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { getObjectWithId, getQuestionFormData, questionTemp } from './helpers';
 import { Stack, TextField, Button, Box } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { createQuestion } from '../../http/questionApi';
 import { LoadingContext } from '../../context/loading';
-import { createQuiz } from '../../http/quizApi';
 import { useContext } from 'react';
+import QuestionService from '../../services/Question';
+import QuizService from '../../services/Quiz';
 
 const QuizConstructor = () => {
     const [questions, setQuestions] = useState([]);
@@ -27,31 +27,41 @@ const QuizConstructor = () => {
         const questionsIds = [];
 
         for (let question of questions) {
+            const filteredAnswers = question.answers.filter(
+                (answer) => answer.text
+            );
             const { id, ...fields } = question;
-            const getForm = getQuestionFormData(fields);
-            const savedQuestion = await createQuestion(getForm);
+            const verifiedQuestion = {
+                ...fields,
+                answers: filteredAnswers,
+            };
 
-            questionsIds.push(savedQuestion.data.payload._id);
+            const form = getQuestionFormData(verifiedQuestion);
+            const savedQuestion = await QuestionService.createQuestion(form);
+
+            questionsIds.push(savedQuestion.payload._id);
         }
 
-        const response = createQuiz({ questions: questionsIds, title });
+        try {
+            const response = await QuizService.createQuiz({
+                questions: questionsIds,
+                title: title,
+            });
 
-        response.then((result) => {
-            if (result.status === 200) {
-                setId(result.data.payload._id);
-                setAlert({
-                    status: 'successful',
-                    message: result.data.payload.message,
-                });
-                loading.toggleLoading(false);
-            } else {
-                setAlert({
-                    status: 'error',
-                    message: result.data.payload.message,
-                });
-                loading.toggleLoading(false);
-            }
-        });
+            setId(response.payload._id);
+
+            setAlert({
+                status: 'successful',
+                message: response.message,
+            });
+        } catch (e) {
+            setAlert({
+                status: 'error',
+                message: e.message,
+            });
+        } finally {
+            loading.toggleLoading(false);
+        }
     };
 
     const updateQuestion = useCallback(
@@ -98,7 +108,7 @@ const QuizConstructor = () => {
                     text={alert.message}
                     status={alert.status}
                     onClose={() => setAlert({ status: 'onhold' })}
-                    path={`/quiz/${id}`}
+                    path={`/quizzes/${id}`}
                 />
             )}
             <Box
