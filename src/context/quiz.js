@@ -32,15 +32,19 @@ const reducer = (state, action) => {
         case 'NEXT_QUESTION': {
             const showResults =
                 state.currentQuestionIndex === state.questions.length - 1;
+
             const currentQuestionIndex = showResults
                 ? state.currentQuestionIndex
                 : state.currentQuestionIndex + 1;
+
             const { correctAnswers, answers } =
                 state.questions[currentQuestionIndex];
 
             const isAnswered = !!state.saveHistory[currentQuestionIndex];
+
             const answeredQuestion =
                 isAnswered && state.saveHistory[currentQuestionIndex];
+
             const currentAnswers = isAnswered
                 ? answeredQuestion.currentAnswers
                 : [];
@@ -51,14 +55,15 @@ const reducer = (state, action) => {
                 currentQuestionIndex
             );
 
-            let overallPoint = 1;
+            let overallPoint = 0;
+            const oneAnswerPoint = 1 / state.correctAnswers.length;
 
             state.currentAnswers.forEach((ans) => {
                 const question = state.questions[currentQuestionIndex - 1];
-                if (!question.correctAnswers.includes(ans)) {
-                    overallPoint -=
-                        question.correctAnswers.length /
-                        state.currentAnswers.length;
+                if (question.correctAnswers.includes(ans)) {
+                    overallPoint += oneAnswerPoint;
+                } else {
+                    overallPoint -= oneAnswerPoint;
                 }
             });
 
@@ -106,11 +111,11 @@ const reducer = (state, action) => {
             };
         }
         case 'SELECT_ANSWER': {
-            const { answerIndex } = action.payload;
-            const isAnswered = state.currentAnswers.includes(answerIndex);
+            const { id } = action.payload;
+            const isAnswered = state.currentAnswers.includes(id);
             const currentAnswers = isAnswered
-                ? state.currentAnswers.filter((item) => item !== answerIndex)
-                : [...state.currentAnswers, answerIndex];
+                ? state.currentAnswers.filter((item) => item !== id)
+                : [...state.currentAnswers, id];
 
             const saveHistory = saveToHistory(
                 state,
