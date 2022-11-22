@@ -6,10 +6,10 @@ const initialState = {
     isShown: true,
     layoutShown: true,
     links: [
-        {
-            name: 'Home',
-            path: '/',
-        },
+        // {
+        //     name: 'Home',
+        //     path: '/',
+        // },
         {
             name: 'Lectures',
             path: '/lectures',
