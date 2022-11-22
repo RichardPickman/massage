@@ -25,11 +25,14 @@ const Header = () => {
                             margin={2}
                         >
                             {headerState.links.map((link, index) => (
-                                <li key={index} className="header__link">
-                                    <Link to={link.path} component={RouterLink}>
-                                        {link.name}
-                                    </Link>
-                                </li>
+                                <Link
+                                    underline="none"
+                                    to={link.path}
+                                    key={index}
+                                    component={RouterLink}
+                                >
+                                    {link.name}
+                                </Link>
                             ))}
                             <li className="header__link">
                                 <Theme />
