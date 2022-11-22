@@ -1,11 +1,11 @@
-import { Button, Link } from '@mui/material';
+import { Button, Link, Alert as AlertStyle, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function Alert({ status, onClose, path, text }) {
     return status === 'successful' ? (
-        <Alert
+        <AlertStyle
             severity="success"
             action={
                 <Button size="small">
@@ -16,11 +16,11 @@ export default function Alert({ status, onClose, path, text }) {
             }
         >
             {text}
-        </Alert>
+        </AlertStyle>
     ) : (
-        <Alert severity="error" onClose={onClose}>
-            {text}
-        </Alert>
+        <AlertStyle severity="error" onClose={onClose}>
+            <Typography variant="body1">{text}</Typography>
+        </AlertStyle>
     );
 }
 
