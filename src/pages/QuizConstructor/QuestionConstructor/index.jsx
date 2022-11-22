@@ -19,8 +19,13 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
                 item.id === answer.id ? answer : item
             );
 
+            if (answersCopy[answersCopy.length - 1].text) {
+                const blankAnswer = getObjectWithId({ text: '' });
+
+                answersCopy.push(blankAnswer);
+            }
+
             setAnswers(answersCopy);
-            addBlank(answer.id);
 
             updateQuestion(questionId, { answers: answersCopy });
         },
@@ -38,10 +43,6 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
         },
         [correctAnswers, setCorrectAnswers]
     );
-
-    const addBlank = (id) =>
-        answers.findIndex((item) => item.id === id) === answers.length - 1 &&
-        setAnswers([...answers, getObjectWithId({ text: '' })]);
 
     const removeEmpty = useCallback(
         (answerId) => {
