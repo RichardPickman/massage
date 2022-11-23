@@ -1,15 +1,16 @@
-import QuestionTemplate from './template';
-import Alert from '../../components/Alert';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import React, { useState } from 'react';
 
-import { getObjectWithId, getQuestionFormData, questionTemp } from './helpers';
-import { Stack, TextField, Button, Box } from '@mui/material';
-import React, { useCallback, useState } from 'react';
-import { LoadingContext } from '../../context/loading';
-import { useContext } from 'react';
+import Alert from '../../components/Alert';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import SaveIcon from '@mui/icons-material/Save';
+import QuestionTemplate from './template';
 import QuestionService from '../../services/Question';
 import QuizService from '../../services/Quiz';
+
+import { getObjectWithId, prepareQuestion, questionTemp } from './helpers';
+import { Stack, TextField, Button, Box } from '@mui/material';
+import { LoadingContext } from '../../context/loading';
+import { useContext } from 'react';
 
 const QuizConstructor = () => {
     const [questions, setQuestions] = useState([]);
@@ -19,32 +20,22 @@ const QuizConstructor = () => {
 
     const loading = useContext(LoadingContext);
 
-    const deleteQuiz = useCallback(() => setQuestions([]), [setQuestions]);
-
     const saveQuiz = async () => {
         loading.toggleLoading(true);
 
-        const questionsIds = [];
+        const savedQuestions = questions.map((question) => {
+            const preparedQuestion = prepareQuestion(question);
 
-        for (let question of questions) {
-            const filteredAnswers = question.answers.filter(
-                (answer) => answer.text
-            );
-            const { id, ...fields } = question;
-            const verifiedQuestion = {
-                ...fields,
-                answers: filteredAnswers,
-            };
+            return QuestionService.createQuestion(preparedQuestion);
+        });
 
-            const form = getQuestionFormData(verifiedQuestion);
-            const savedQuestion = await QuestionService.createQuestion(form);
-
-            questionsIds.push(savedQuestion.payload._id);
-        }
+        const ids = await Promise.all(savedQuestions).then((result) =>
+            result.map((question) => (question ? question.payload._id : null))
+        );
 
         try {
             const response = await QuizService.createQuiz({
-                questions: questionsIds,
+                questions: ids,
                 title: title,
             });
 
@@ -64,37 +55,27 @@ const QuizConstructor = () => {
         }
     };
 
-    const updateQuestion = useCallback(
-        (id, data) =>
-            setQuestions((prev) =>
-                prev.map((item) =>
-                    item.id === id ? { ...item, ...data } : item
-                )
-            ),
-        [setQuestions]
-    );
+    const updateQuestion = (id, data) =>
+        setQuestions((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, ...data } : item))
+        );
 
-    const removeQuestion = useCallback(
-        (id) => setQuestions((prev) => prev.filter((item) => item.id !== id)),
-        [setQuestions]
-    );
+    const removeQuestion = (id) =>
+        setQuestions((prev) => prev.filter((item) => item.id !== id));
 
-    const setQuestionsCount = useCallback(
-        async (amount) => {
-            loading.toggleLoading(true);
+    const setQuestionsCount = async (amount) => {
+        loading.toggleLoading(true);
 
-            const questionsArray = [];
+        const questionsArray = [];
 
-            for (let i = 0; i < amount; i++) {
-                questionsArray.push(getObjectWithId({ ...questionTemp }));
-            }
+        for (let i = 0; i < amount; i++) {
+            questionsArray.push(getObjectWithId({ ...questionTemp }));
+        }
 
-            setQuestions(questionsArray);
+        setQuestions(questionsArray);
 
-            loading.toggleLoading(false);
-        },
-        [setQuestions]
-    );
+        loading.toggleLoading(false);
+    };
 
     return (
         <Box
@@ -167,7 +148,7 @@ const QuizConstructor = () => {
             <Button
                 variant="contained"
                 color="error"
-                onClick={deleteQuiz}
+                onClick={() => setQuestions([])}
                 endIcon={<DeleteForeverIcon />}
             >
                 Delete quiz
