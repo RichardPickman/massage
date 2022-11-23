@@ -29,3 +29,18 @@ export const getQuestionFormData = (data) => {
 
     return question;
 };
+
+export const prepareQuestion = (question) => {
+    const notBlankAnswers = question.answers.filter((answer) => answer.text);
+
+    const { id, isPreview, ...fields } = question;
+
+    const properQuestion = {
+        ...fields,
+        answers: notBlankAnswers,
+    };
+
+    const form = getQuestionFormData(properQuestion);
+
+    return form;
+};
