@@ -1,9 +1,9 @@
 import AnswerWithCheckbox from '../../../components/AnswerWithCheckbox';
 import FileUpload from '../../../components/FileUpload';
 import { TextField, Box, Grid } from '@mui/material';
-import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
 import { getObjectWithId } from '../helpers';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
     const [question, setQuestion] = useState(questionData.question);
@@ -13,75 +13,56 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
         questionData.correctAnswers
     );
 
-    const addAnswer = useCallback(
-        (answer) => {
-            const answersCopy = answers.map((item) =>
-                item.id === answer.id ? answer : item
-            );
+    const addAnswer = (answer) => {
+        const answersCopy = answers.map((item) =>
+            item.id === answer.id ? answer : item
+        );
 
-            if (answersCopy[answersCopy.length - 1].text) {
-                const blankAnswer = getObjectWithId({ text: '' });
+        if (answersCopy[answersCopy.length - 1].text) {
+            const blankAnswer = getObjectWithId({ text: '' });
 
-                answersCopy.push(blankAnswer);
-            }
+            answersCopy.push(blankAnswer);
+        }
 
-            setAnswers(answersCopy);
+        setAnswers(answersCopy);
 
-            updateQuestion(questionId, { answers: answersCopy });
-        },
-        [answers, setAnswers]
-    );
+        updateQuestion(questionId, { answers: answersCopy });
+    };
 
-    const handleCorrectAnswer = useCallback(
-        (id) => {
-            const correctAnswersCopy = correctAnswers.includes(id)
-                ? correctAnswers.filter((item) => item !== id)
-                : [...correctAnswers, id];
+    const handleCorrectAnswer = (id) => {
+        const correctAnswersCopy = correctAnswers.includes(id)
+            ? correctAnswers.filter((item) => item !== id)
+            : [...correctAnswers, id];
 
-            setCorrectAnswers(correctAnswersCopy);
-            updateQuestion(questionId, { correctAnswers: correctAnswersCopy });
-        },
-        [correctAnswers, setCorrectAnswers]
-    );
+        setCorrectAnswers(correctAnswersCopy);
+        updateQuestion(questionId, { correctAnswers: correctAnswersCopy });
+    };
 
-    const removeEmpty = useCallback(
-        (answerId) => {
-            const filterAnswers = answers.filter(
-                (item) => item.id !== answerId
-            );
-            const filterCorrectAnswers = correctAnswers.filter(
-                (item) => item !== answerId
-            );
+    const removeEmpty = (answerId) => {
+        const filterAnswers = answers.filter((item) => item.id !== answerId);
+        const filterCorrectAnswers = correctAnswers.filter(
+            (item) => item !== answerId
+        );
 
-            setAnswers(filterAnswers);
-            setCorrectAnswers(filterCorrectAnswers);
+        setAnswers(filterAnswers);
+        setCorrectAnswers(filterCorrectAnswers);
 
-            updateQuestion(questionId, {
-                answers: filterAnswers,
-                correctAnswers: filterCorrectAnswers,
-            });
-        },
-        [answers, correctAnswers]
-    );
+        updateQuestion(questionId, {
+            answers: filterAnswers,
+            correctAnswers: filterCorrectAnswers,
+        });
+    };
 
-    const handleImage = useCallback(
-        (event) => {
-            setImage(event.target.files[0]);
+    const handleImage = (event) => {
+        setImage(event.target.files[0]);
 
-            updateQuestion(questionId, { img: event.target.files[0] });
-        },
-        [questionId, setImage]
-    );
+        updateQuestion(questionId, { img: event.target.files[0] });
+    };
 
-    const removeImage = useCallback(() => setImage(null), [setImage]);
-
-    const handleQuestion = useCallback(
-        (event) => {
-            setQuestion(event.target.value);
-            updateQuestion(questionId, { question: event.target.value });
-        },
-        [setQuestion]
-    );
+    const handleQuestion = (event) => {
+        setQuestion(event.target.value);
+        updateQuestion(questionId, { question: event.target.value });
+    };
 
     return (
         <Box
@@ -106,7 +87,7 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
             <FileUpload
                 image={image ? window.URL.createObjectURL(image) : null}
                 handleImage={handleImage}
-                removeImage={removeImage}
+                removeImage={() => setImage(null)}
             />
             <Grid container spacing={2}>
                 {answers.map((answer, i) => (

@@ -7,7 +7,6 @@ import {
     Button,
     Card,
     CircularProgress,
-    Typography,
     CardHeader,
     CardActions,
     CardContent,
@@ -16,7 +15,6 @@ import { useParams } from 'react-router-dom';
 
 import QuizService from '../../services/Quiz';
 import ShowAnswers from '../../components/ShowAnswer';
-import { useCallback } from 'react';
 
 const Quiz = () => {
     const { id } = useParams();
@@ -41,17 +39,6 @@ const Quiz = () => {
 
         fetchQuiz();
     }, []);
-
-    const nextQuestion = useCallback(
-        () => dispatch({ type: 'NEXT_QUESTION' }),
-        [dispatch]
-    );
-    const prevQuestion = useCallback(
-        () => dispatch({ type: 'PREV_QUESTION' }),
-        [dispatch]
-    );
-
-    const toggleQuestion = useCallback((state) => setShowAnswers(state), []);
 
     if (quizState.showResults) {
         return <Result />;
@@ -102,15 +89,18 @@ const Quiz = () => {
                         <Button
                             variant="contained"
                             disabled={buttonDisabled}
-                            onClick={prevQuestion}
+                            onClick={() => dispatch({ type: 'PREV_QUESTION' })}
                         >
                             Previous question
                         </Button>
                         <ShowAnswers
                             showAnswersState={showAnswers}
-                            onChange={toggleQuestion}
+                            onChange={() => setShowAnswers(!showAnswers)}
                         />
-                        <Button variant="contained" onClick={nextQuestion}>
+                        <Button
+                            variant="contained"
+                            onClick={() => dispatch({ type: 'NEXT_QUESTION' })}
+                        >
                             Next question
                         </Button>
                     </CardActions>

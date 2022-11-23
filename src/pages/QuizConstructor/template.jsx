@@ -1,6 +1,5 @@
 import { Card, Button, Box } from '@mui/material';
-import { memo } from 'react';
-import React, { useCallback } from 'react';
+import React, { memo } from 'react';
 
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
@@ -9,40 +8,32 @@ import QuestionConstructor from './QuestionConstructor';
 import PropTypes from 'prop-types';
 
 const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
-    const { id, isPreview } = questionData;
-
-    const togglePreview = useCallback(
-        (data, action) => {
-            updateQuestion({
-                ...data,
-                isPreview: action === 'SAVE' ? true : false,
-            });
-        },
-        [updateQuestion]
-    );
-
-    const removeCurrentQuestion = useCallback(
-        () => removeQuestion(id),
-        [id, removeQuestion]
-    );
+    const togglePreview = (data, action) => {
+        updateQuestion(questionData.id, {
+            ...data,
+            isPreview: action === 'SAVE' ? true : false,
+        });
+    };
 
     return (
         <Card variant="outlined" sx={{ width: '100%' }}>
             <Box display="flex" flexDirection="column" gap={1} margin={1}>
-                {!isPreview && (
+                {!questionData.isPreview ? (
                     <QuestionConstructor
                         questionId={questionData.id}
                         updateQuestion={updateQuestion}
                         questionData={questionData}
                     />
-                )}
-                {isPreview && (
+                ) : (
                     <Question
                         currentQuestion={questionData}
                         currentState={{
+                            correctAnswers: questionData.correctAnswers,
                             currentAnswers: [],
+                            isFinished: false,
                             showAnswers: true,
                         }}
+                        onSelect={() => {}}
                     />
                 )}
                 <Box
@@ -51,7 +42,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                     gap="1rem"
                     marginTop="1rem"
                 >
-                    {!isPreview ? (
+                    {!questionData.isPreview ? (
                         <>
                             <Button
                                 variant="contained"
@@ -65,7 +56,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                             <Button
                                 variant="contained"
                                 color="error"
-                                onClick={removeCurrentQuestion}
+                                onClick={() => removeQuestion(questionData.id)}
                                 endIcon={<DeleteOutlineOutlinedIcon />}
                             >
                                 Delete

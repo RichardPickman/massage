@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
@@ -13,15 +13,6 @@ const MainImage = () => {
     const [imagesState, dispatch] = useContext(ImagesContext);
     const [showMenu, setShowMenu] = useState(true);
 
-    const nextImage = useCallback(
-        () => dispatch({ type: 'next_slide' }),
-        [dispatch]
-    );
-    const prevImage = useCallback(
-        () => dispatch({ type: 'prev_slide' }),
-        [dispatch]
-    );
-
     useEffect(
         () => dispatch({ type: 'handle_menus', payload: showMenu }),
         [showMenu]
@@ -33,7 +24,7 @@ const MainImage = () => {
         <Box display="flex" width="100%" flexDirection="column">
             <IconButton
                 disabled={imagesState.currentIndex === 0}
-                onClick={prevImage}
+                onClick={() => dispatch({ type: 'prev_slide' })}
                 sx={{
                     position: 'absolute',
                     top: '50%',
@@ -48,7 +39,7 @@ const MainImage = () => {
                 disabled={
                     imagesState.currentIndex === imagesState.slides.length - 1
                 }
-                onClick={nextImage}
+                onClick={() => dispatch({ type: 'next_slide' })}
                 sx={{
                     position: 'absolute',
                     top: '50%',
