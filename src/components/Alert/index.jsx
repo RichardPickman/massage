@@ -15,7 +15,7 @@ export default function Alert({ status, onClose, path, text }) {
                 </Button>
             }
         >
-            {text}
+            <Typography variant="body1">{text}</Typography>
         </AlertStyle>
     ) : (
         <AlertStyle severity="error" onClose={onClose}>
