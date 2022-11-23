@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { QuizContext } from '../../context/quiz';
 import Question from '../../components/Question';
 import Result from '../../components/Result';
@@ -11,34 +11,27 @@ import {
     CardActions,
     CardContent,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 
 import QuizService from '../../services/Quiz';
 import ShowAnswers from '../../components/ShowAnswer';
+import { useLayoutEffect } from 'react';
 
 const Quiz = () => {
-    const { id } = useParams();
+    const loaderData = useLoaderData();
     const [quizState, dispatch] = useContext(QuizContext);
     const [showAnswers, setShowAnswers] = useState(false);
     const buttonDisabled = quizState.currentQuestionIndex === 0;
     const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
 
-    useEffect(() => {
-        const fetchQuiz = async () => {
-            try {
-                const { payload } = await QuizService.getQuiz(id);
-
-                dispatch({
-                    type: 'SET_QUIZ',
-                    payload: payload,
-                });
-            } catch (e) {
-                console.log(e.message);
-            }
-        };
-
-        fetchQuiz();
-    }, []);
+    useLayoutEffect(
+        () =>
+            dispatch({
+                type: 'SET_QUIZ',
+                payload: loaderData,
+            }),
+        []
+    );
 
     if (quizState.showResults) {
         return <Result />;
@@ -108,6 +101,13 @@ const Quiz = () => {
             )}
         </Box>
     );
+};
+
+export const loader = async ({ params }) => {
+    const quizId = params.id;
+    const { payload } = await QuizService.getQuiz(quizId);
+
+    return payload;
 };
 
 export default Quiz;

@@ -17,16 +17,15 @@ const Result = () => {
             (item) => item._id === snap.id
         );
 
-        const questionData = {
-            correctAnswers: currentQuestion.correctAnswers,
-            currentAnswers: snap.currentAnswers,
-            isFinished: true,
-            showAnswers: false,
-        };
-
         return (
             <Question
-                currentState={questionData}
+                key={snap.id}
+                currentState={{
+                    ...quizState,
+                    correctAnswers: currentQuestion.correctAnswers,
+                    currentAnswers: snap.currentAnswers,
+                    showAnswers: false,
+                }}
                 currentQuestion={currentQuestion}
                 onSelect={() => {}}
             />

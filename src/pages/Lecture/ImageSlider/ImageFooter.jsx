@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import { useContext } from 'react';
-import { ImagesContext } from '../../../../context/images';
-import { ThemeContext } from '../../../../components/ThemeProvider';
+import { ImagesContext } from '../../../context/images';
+import { ThemeContext } from '../../../components/ThemeProvider';
 
 const ImageFooter = () => {
     const [imagesState, dispatch] = useContext(ImagesContext);

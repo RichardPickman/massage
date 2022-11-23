@@ -5,7 +5,7 @@ import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeft
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
 
 import { Box, IconButton } from '@mui/material';
-import { ImagesContext } from '../../../../context/images';
+import { ImagesContext } from '../../../context/images';
 import { useState } from 'react';
 import { useEffect } from 'react';
 

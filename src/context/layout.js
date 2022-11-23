@@ -16,11 +16,11 @@ const initialState = {
         },
         {
             name: 'Quizzes',
-            path: '/quizzes',
+            path: '/quiz',
         },
         {
             name: 'Constructor',
-            path: '/quizzes/constructor',
+            path: '/quiz/constructor',
         },
     ],
 };

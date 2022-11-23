@@ -1,24 +1,10 @@
 import { Box, Button, Link, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLoaderData } from 'react-router-dom';
+import React from 'react';
 import QuizService from '../../services/Quiz';
 
 const Quizzes = () => {
-    const [quizzes, setQuizzes] = useState([]);
-
-    useEffect(() => {
-        async function fetchQuizzes() {
-            try {
-                const { payload } = await QuizService.getAllQuizzes();
-
-                setQuizzes([...payload]);
-            } catch (e) {
-                alert(e.message);
-            }
-        }
-
-        fetchQuizzes();
-    }, []);
+    const loaderData = useLoaderData();
 
     return (
         <Box
@@ -30,9 +16,9 @@ const Quizzes = () => {
             margin={2}
         >
             <Typography variant="h3">Quizzes</Typography>
-            {quizzes.length === 0 && (
+            {loaderData.length === 0 && (
                 <Typography variant="body1">
-                    There is no quizzes yet...
+                    There is no any quiz yet...
                 </Typography>
             )}
             <Box
@@ -41,11 +27,11 @@ const Quizzes = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                {quizzes.map((quiz, index) => (
+                {loaderData.map((quiz, index) => (
                     <Link
                         underline="none"
                         key={index}
-                        to={`/quizzes/${quiz._id}`}
+                        to={`/quiz/${quiz._id}`}
                         component={RouterLink}
                     >
                         <Button>{quiz.title}</Button>
@@ -54,6 +40,12 @@ const Quizzes = () => {
             </Box>
         </Box>
     );
+};
+
+export const loader = async () => {
+    const { payload } = await QuizService.getAllQuizzes();
+
+    return payload;
 };
 
 export default Quizzes;

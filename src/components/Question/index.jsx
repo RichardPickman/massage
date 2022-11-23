@@ -12,25 +12,21 @@ import ButtonHandler from '../ButtonHandler';
 const Question = ({ currentState, currentQuestion, onSelect }) => {
     return (
         <>
-            {typeof currentQuestion.img === 'string' ? (
-                <CardMedia
-                    component="img"
-                    loading="lazy"
-                    height="400px"
-                    alt={currentQuestion.question}
-                    image={currentQuestion.img}
-                />
-            ) : (
+            {currentQuestion.img && (
                 <CardMedia
                     component="img"
                     loading="lazy"
                     sx={{
-                        height: '400px',
-                        background: '#000000',
                         objectFit: 'contain',
+                        background: '#000000',
+                        heigth: '400px',
                     }}
                     alt={currentQuestion.question}
-                    image={window.URL.createObjectURL(currentQuestion.img)}
+                    image={
+                        typeof currentQuestion.img === 'object'
+                            ? window.URL.createObjectURL(currentQuestion.img)
+                            : currentQuestion.img
+                    }
                 />
             )}
             {currentQuestion.question && (
@@ -52,7 +48,8 @@ const Question = ({ currentState, currentQuestion, onSelect }) => {
                                                 currentState.correctAnswers,
                                             currentAnswers:
                                                 currentState.currentAnswers,
-                                            isFinished: currentState.isFinished,
+                                            isFinished:
+                                                currentState.showResults,
                                             showAnswers:
                                                 currentState.showAnswers,
                                             onSelect: onSelect,

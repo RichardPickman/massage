@@ -89,7 +89,7 @@ const QuizConstructor = () => {
                     text={alert.message}
                     status={alert.status}
                     onClose={() => setAlert({ status: 'onhold' })}
-                    path={`/quizzes/${id}`}
+                    path={`/quiz/${id}`}
                 />
             )}
             <Box

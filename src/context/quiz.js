@@ -13,6 +13,7 @@ const initialState = {
     correctAnswers: [],
     currentAnswers: [],
     saveHistory: [],
+    currentQuestion: null,
 };
 
 const reducer = (state, action) => {
@@ -21,9 +22,11 @@ const reducer = (state, action) => {
             const questions = action.payload.questions;
             const title = action.payload.title;
             const correctAnswers = action.payload.questions[0].correctAnswers;
+            const currentQuestion = questions[0];
 
             return {
                 ...initialState,
+                currentQuestion,
                 questions,
                 title,
                 correctAnswers,
@@ -59,7 +62,7 @@ const reducer = (state, action) => {
             const oneAnswerPoint = 1 / state.correctAnswers.length;
 
             state.currentAnswers.forEach((ans) => {
-                const question = state.questions[currentQuestionIndex - 1];
+                const question = state.currentQuestion;
                 if (question.correctAnswers.includes(ans)) {
                     overallPoint += oneAnswerPoint;
                 } else {
@@ -82,6 +85,7 @@ const reducer = (state, action) => {
         }
         case 'PREV_QUESTION': {
             const currentQuestionIndex = state.currentQuestionIndex - 1;
+            const currentQuestion = state.questions[currentQuestionIndex];
             const { correctAnswers, answers } =
                 state.questions[currentQuestionIndex];
 
@@ -97,6 +101,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 currentQuestionIndex,
+                currentQuestion,
                 showResults: false,
                 correctAnswers,
                 currentAnswers,
@@ -107,6 +112,7 @@ const reducer = (state, action) => {
         case 'RESTART': {
             return {
                 ...initialState,
+                currentQuestion: state.questions[0],
                 questions: state.questions,
             };
         }
