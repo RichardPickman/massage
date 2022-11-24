@@ -29,17 +29,6 @@ class LectureService {
         });
     }
 
-    // static async updateLecture(id, body) {
-    //     return load({
-    //         url: `api/lectures/update/${id}`,
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(body),
-    //     });
-    // }
-
     static async removeLecture(id) {
         return load({
             url: `api/lectures/remove/${id}`,
