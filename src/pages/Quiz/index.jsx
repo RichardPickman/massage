@@ -22,7 +22,6 @@ const Quiz = () => {
     const [quizState, dispatch] = useContext(QuizContext);
     const [showAnswers, setShowAnswers] = useState(false);
     const buttonDisabled = quizState.currentQuestionIndex === 0;
-    const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
 
     useLayoutEffect(
         () =>
@@ -63,7 +62,7 @@ const Quiz = () => {
                                 ...quizState,
                                 showAnswers: showAnswers,
                             }}
-                            currentQuestion={currentQuestion}
+                            currentQuestion={quizState.currentQuestion}
                             onSelect={(id) =>
                                 dispatch({
                                     type: 'SELECT_ANSWER',
