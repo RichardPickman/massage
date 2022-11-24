@@ -40,8 +40,9 @@ const reducer = (state, action) => {
                 ? state.currentQuestionIndex
                 : state.currentQuestionIndex + 1;
 
-            const { correctAnswers, answers } =
-                state.questions[currentQuestionIndex];
+            const currentQuestion = state.questions[currentQuestionIndex];
+
+            const { correctAnswers } = currentQuestion;
 
             const isAnswered = !!state.history[currentQuestionIndex];
 
@@ -61,10 +62,10 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 currentQuestionIndex,
+                currentQuestion,
                 isFinished,
                 correctAnswers,
                 currentAnswers,
-                answers,
                 history,
                 currentAnswerCount: isFinished ? countGrade(state) : 0,
             };
@@ -72,8 +73,7 @@ const reducer = (state, action) => {
         case 'PREV_QUESTION': {
             const currentQuestionIndex = state.currentQuestionIndex - 1;
             const currentQuestion = state.questions[currentQuestionIndex];
-            const { correctAnswers, answers } =
-                state.questions[currentQuestionIndex];
+            const { correctAnswers } = currentQuestion;
 
             const history = saveToHistory(
                 state,
@@ -91,7 +91,6 @@ const reducer = (state, action) => {
                 isFinished: false,
                 correctAnswers,
                 currentAnswers,
-                answers,
                 history,
             };
         }
