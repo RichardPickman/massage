@@ -1,27 +1,19 @@
 import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button, Link } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLoaderData } from 'react-router-dom';
 import { useLayoutEffect } from 'react';
 import { getTableRows, columns } from './helpers';
 import LectureService from '../../services/Lecture';
 
 const Lectures = () => {
+    const loaderData = useLoaderData();
     const [lectures, setLectures] = useState([]);
 
     useLayoutEffect(() => {
-        const fetchLectures = async () => {
-            try {
-                const { payload } = await LectureService.getAllLectures();
-                const preparedData = getTableRows(payload);
+        const rows = getTableRows(loaderData);
 
-                setLectures(preparedData);
-            } catch (e) {
-                console.log(e.message);
-            }
-        };
-
-        fetchLectures();
+        setLectures(rows);
     }, []);
 
     return (
@@ -36,6 +28,12 @@ const Lectures = () => {
             </Box>
         </Box>
     );
+};
+
+export const loader = async () => {
+    const { payload } = await LectureService.getAllLectures();
+
+    return payload;
 };
 
 export default Lectures;

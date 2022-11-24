@@ -2,13 +2,7 @@ export const baseURL = process.env.REACT_APP_API_URL;
 
 export const makeURL = (request) => {
     const resultURL = new URL(`${baseURL}/${request.url}`);
-    if (request.searchParams) {
-        const entries = Object.entries(request.searchParams);
-        entries.forEach((entry) => {
-            const [key, value] = entry;
-            resultURL.searchParams.append(key, value);
-        });
-    }
+
     return resultURL.toString();
 };
 

@@ -8,10 +8,10 @@ import ZoomOutOutlinedIcon from '@mui/icons-material/ZoomOutOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { memo } from 'react';
 import { useContext } from 'react';
-import { ImagesContext } from '../../../../context/images';
+import { ImagesContext } from '../../../context/images';
 import { Link as RouterLink } from 'react-router-dom';
-import { LayoutContext } from '../../../../context/layout';
-import { ThemeContext } from '../../../../components/ThemeProvider';
+import { LayoutContext } from '../../../context/layout';
+import { ThemeContext } from '../../../components/ThemeProvider';
 
 const ImageHeader = () => {
     const [imagesState, dispatch] = useContext(ImagesContext);

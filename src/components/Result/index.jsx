@@ -17,16 +17,15 @@ const Result = () => {
             (item) => item._id === snap.id
         );
 
-        const questionData = {
-            correctAnswers: currentQuestion.correctAnswers,
-            currentAnswers: snap.currentAnswers,
-            isFinished: true,
-            showAnswers: false,
-        };
-
         return (
             <Question
-                currentState={questionData}
+                key={snap.id}
+                currentState={{
+                    ...quizState,
+                    correctAnswers: currentQuestion.correctAnswers,
+                    currentAnswers: snap.currentAnswers,
+                    showAnswers: false,
+                }}
                 currentQuestion={currentQuestion}
                 onSelect={() => {}}
             />
@@ -98,12 +97,12 @@ const Result = () => {
                         </Button>
                     </Stack>
                     {showUnanswered &&
-                        quizState.saveHistory
+                        quizState.history
                             .filter((item) => item.currentAnswers.length === 0)
                             .map((snap, index) => quiz(snap, index))}
 
                     {showWrong &&
-                        quizState.saveHistory
+                        quizState.history
                             .filter((item) => {
                                 const question = quizState.questions.find(
                                     (quest) => quest._id === item.id
@@ -118,7 +117,7 @@ const Result = () => {
 
                     {!showWrong &&
                         !showUnanswered &&
-                        quizState.saveHistory.map((snap, index) =>
+                        quizState.history.map((snap, index) =>
                             quiz(snap, index)
                         )}
                 </Box>

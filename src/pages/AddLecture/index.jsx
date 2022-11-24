@@ -8,43 +8,34 @@ import {
     Button,
     IconButton,
     Stack,
-    Alert,
-    Link,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import React, { useState, useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import Alert from '../../components/Alert';
 
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { getForm, handleImages } from './helpers';
 import {} from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LoadingContext } from '../../../context/loading';
-import LectureService from '../../../services/Lecture';
+import { LoadingContext } from '../../context/loading';
+import LectureService from '../../services/Lecture';
 
 function AddLecture() {
     const dumbDB = {
         teachers: ['Monika Kosji', 'Kamil'],
         lessons: ['Massage theory', 'BHP'],
     };
-    const [teacher, setTechers] = useState('');
+    const [teacher, setTeachers] = useState('');
     const [lesson, setLesson] = useState('');
     const [images, setImages] = useState([]);
     const [topic, setTopic] = useState('');
     const [date, setDate] = useState(null);
 
-    const [alert, setAlert] = useState({ status: 'onhold' });
+    const [alert, setAlert] = useState({ status: 'onhold', message: '' });
     const [id, setId] = useState(null);
 
     const loading = useContext(LoadingContext);
-
-    const handleTeacherChange = (event) => setTechers(event.target.value);
-    const handleLessonChange = (event) => setLesson(event.target.value);
-    const handleTopicChange = (event) => setTopic(event.target.value);
-
-    const handleImage = (event) =>
-        setImages(handleImages(event.target.files, images));
 
     const submitForm = async (e) => {
         e.preventDefault();
@@ -56,9 +47,11 @@ function AddLecture() {
         try {
             const response = await LectureService.createLecture(lecture);
 
-            setAlert({ status: 'successful' });
+            setAlert({
+                status: 'successful',
+                message: 'Lecture added successfully',
+            });
             setId(response.payload._id);
-            loading.toggleLoading(false);
         } catch (e) {
             setAlert({ status: 'error' });
         } finally {
@@ -66,38 +59,16 @@ function AddLecture() {
         }
     };
 
-    const removeImage = (index) =>
-        setImages((prev) => prev.filter((img, i) => i !== index));
-
-    const AlertComponent = () =>
-        alert.status === 'successful' ? (
-            <Alert
-                severity="success"
-                action={
-                    <Button size="small">
-                        <Link
-                            underline="none"
-                            to={`/lectures/${id}`}
-                            component={RouterLink}
-                        >
-                            Lecture
-                        </Link>
-                    </Button>
-                }
-            >
-                Lecture successfully added. You may add another lecture
-            </Alert>
-        ) : (
-            <Alert
-                severity="error"
-                onClose={() => setAlert({ status: 'onhold' })}
-            >
-                Something went wrong
-            </Alert>
-        );
-
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
+            {alert.status !== 'onhold' && (
+                <Alert
+                    text={alert.message}
+                    status={alert.status}
+                    onClose={() => setAlert({ status: 'onhold' })}
+                    path={`/lectures/${id}`}
+                />
+            )}
             <Box
                 component="form"
                 action="/lectures"
@@ -108,12 +79,11 @@ function AddLecture() {
                 flexDirection="column"
                 gap={2}
             >
-                {alert.status !== 'onhold' && <AlertComponent />}
                 <TextField
                     label="Topic"
                     error={topic.length === 0}
                     value={topic}
-                    onChange={handleTopicChange}
+                    onChange={(event) => setTopic(event.target.value)}
                     helperText={
                         topic.length === 0 ? 'Topic cannot be empty' : ''
                     }
@@ -124,7 +94,7 @@ function AddLecture() {
                         labelId="teacher-label"
                         value={teacher}
                         label="Teacher"
-                        onChange={handleTeacherChange}
+                        onChange={(event) => setTeachers(event.target.value)}
                     >
                         {dumbDB.teachers.map((name) => (
                             <MenuItem value={name} key={name}>
@@ -139,7 +109,7 @@ function AddLecture() {
                         labelId="lesson-label"
                         value={lesson}
                         label="Lesson"
-                        onChange={handleLessonChange}
+                        onChange={(event) => setLesson(event.target.value)}
                     >
                         {dumbDB.lessons.map((lessonName) => (
                             <MenuItem value={lessonName} key={lessonName}>
@@ -162,14 +132,20 @@ function AddLecture() {
                         accept="image/*"
                         hidden
                         multiple
-                        onChange={handleImage}
+                        onChange={(event) =>
+                            setImages(handleImages(event.target.files, images))
+                        }
                     />
                 </Button>
                 <Box display="flex" flexWrap="wrap" gap={1} margin={1}>
                     {images.map((img, index) => (
                         <Box position="relative" key={index}>
                             <IconButton
-                                onClick={() => removeImage(index)}
+                                onClick={() =>
+                                    setImages((prev) =>
+                                        prev.filter((img, i) => i !== index)
+                                    )
+                                }
                                 sx={{
                                     position: 'absolute',
                                     top: 0,
