@@ -33,7 +33,7 @@ const Quiz = () => {
         []
     );
 
-    if (quizState.showResults) {
+    if (quizState.isFinished) {
         return <Result />;
     }
 

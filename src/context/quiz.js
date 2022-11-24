@@ -7,7 +7,7 @@ const initialState = {
     questions: [],
     title: '',
     currentQuestionIndex: 0,
-    showResults: false,
+    isFinished: false,
     currentAnswerCount: 0,
     answers: [],
     correctAnswers: [],
@@ -33,10 +33,10 @@ const reducer = (state, action) => {
             };
         }
         case 'NEXT_QUESTION': {
-            const showResults =
+            const isFinished =
                 state.currentQuestionIndex === state.questions.length - 1;
 
-            const currentQuestionIndex = showResults
+            const currentQuestionIndex = isFinished
                 ? state.currentQuestionIndex
                 : state.currentQuestionIndex + 1;
 
@@ -61,12 +61,12 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 currentQuestionIndex,
-                showResults,
+                isFinished,
                 correctAnswers,
                 currentAnswers,
                 answers,
                 history,
-                currentAnswerCount: showResults ? countGrade(state) : 0,
+                currentAnswerCount: isFinished ? countGrade(state) : 0,
             };
         }
         case 'PREV_QUESTION': {
@@ -88,7 +88,7 @@ const reducer = (state, action) => {
                 ...state,
                 currentQuestionIndex,
                 currentQuestion,
-                showResults: false,
+                isFinished: false,
                 correctAnswers,
                 currentAnswers,
                 answers,
