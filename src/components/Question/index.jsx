@@ -44,14 +44,7 @@ const Question = ({ currentState, currentQuestion, onSelect }) => {
                                 <Grid item key={answer.id} xs={6}>
                                     <ButtonHandler
                                         state={{
-                                            correctAnswers:
-                                                currentState.correctAnswers,
-                                            currentAnswers:
-                                                currentState.currentAnswers,
-                                            isFinished:
-                                                currentState.showResults,
-                                            showAnswers:
-                                                currentState.showAnswers,
+                                            ...currentState,
                                             onSelect: onSelect,
                                             answer: answer,
                                         }}
