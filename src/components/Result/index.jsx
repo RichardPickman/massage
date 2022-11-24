@@ -97,12 +97,12 @@ const Result = () => {
                         </Button>
                     </Stack>
                     {showUnanswered &&
-                        quizState.saveHistory
+                        quizState.history
                             .filter((item) => item.currentAnswers.length === 0)
                             .map((snap, index) => quiz(snap, index))}
 
                     {showWrong &&
-                        quizState.saveHistory
+                        quizState.history
                             .filter((item) => {
                                 const question = quizState.questions.find(
                                     (quest) => quest._id === item.id
@@ -117,7 +117,7 @@ const Result = () => {
 
                     {!showWrong &&
                         !showUnanswered &&
-                        quizState.saveHistory.map((snap, index) =>
+                        quizState.history.map((snap, index) =>
                             quiz(snap, index)
                         )}
                 </Box>

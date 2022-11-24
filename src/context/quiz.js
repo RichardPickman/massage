@@ -1,5 +1,5 @@
 import React from 'react';
-import { saveToHistory } from './helpers';
+import { countGrade, saveToHistory } from './helpers';
 import { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
@@ -12,7 +12,7 @@ const initialState = {
     answers: [],
     correctAnswers: [],
     currentAnswers: [],
-    saveHistory: [],
+    history: [],
     currentQuestion: null,
 };
 
@@ -43,34 +43,20 @@ const reducer = (state, action) => {
             const { correctAnswers, answers } =
                 state.questions[currentQuestionIndex];
 
-            const isAnswered = !!state.saveHistory[currentQuestionIndex];
+            const isAnswered = !!state.history[currentQuestionIndex];
 
             const answeredQuestion =
-                isAnswered && state.saveHistory[currentQuestionIndex];
+                isAnswered && state.history[currentQuestionIndex];
 
             const currentAnswers = isAnswered
                 ? answeredQuestion.currentAnswers
                 : [];
 
-            const saveHistory = saveToHistory(
+            const history = saveToHistory(
                 state,
                 currentAnswers,
                 currentQuestionIndex
             );
-
-            let overallPoint = 0;
-            const oneAnswerPoint = 1 / state.correctAnswers.length;
-
-            state.currentAnswers.forEach((ans) => {
-                const question = state.currentQuestion;
-                if (question.correctAnswers.includes(ans)) {
-                    overallPoint += oneAnswerPoint;
-                } else {
-                    overallPoint -= oneAnswerPoint;
-                }
-            });
-
-            const currentAnswerCount = state.currentAnswerCount + overallPoint;
 
             return {
                 ...state,
@@ -79,8 +65,8 @@ const reducer = (state, action) => {
                 correctAnswers,
                 currentAnswers,
                 answers,
-                saveHistory,
-                currentAnswerCount,
+                history,
+                currentAnswerCount: showResults ? countGrade(state) : 0,
             };
         }
         case 'PREV_QUESTION': {
@@ -89,14 +75,14 @@ const reducer = (state, action) => {
             const { correctAnswers, answers } =
                 state.questions[currentQuestionIndex];
 
-            const saveHistory = saveToHistory(
+            const history = saveToHistory(
                 state,
                 state.currentAnswers,
                 currentQuestionIndex + 1
             );
 
             const currentAnswers =
-                state.saveHistory[currentQuestionIndex].currentAnswers;
+                state.history[currentQuestionIndex].currentAnswers;
 
             return {
                 ...state,
@@ -106,7 +92,7 @@ const reducer = (state, action) => {
                 correctAnswers,
                 currentAnswers,
                 answers,
-                saveHistory,
+                history,
             };
         }
         case 'RESTART': {
@@ -114,6 +100,7 @@ const reducer = (state, action) => {
                 ...initialState,
                 currentQuestion: state.questions[0],
                 questions: state.questions,
+                title: state.question,
             };
         }
         case 'SELECT_ANSWER': {
@@ -123,7 +110,7 @@ const reducer = (state, action) => {
                 ? state.currentAnswers.filter((item) => item !== id)
                 : [...state.currentAnswers, id];
 
-            const saveHistory = saveToHistory(
+            const history = saveToHistory(
                 state,
                 currentAnswers,
                 state.currentQuestionIndex
@@ -132,7 +119,7 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 currentAnswers,
-                saveHistory,
+                history,
             };
         }
         default:
