@@ -1,11 +1,13 @@
 import React from 'react';
 import Home from './pages/Home';
-import Layout from './components/Layout';
 import ThemeProviderHook from './components/ThemeProvider';
+import Layout from './layouts';
+
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AppContextProvider } from './components/AppContextProvider';
 import { quizRouter } from './routes/Quiz';
 import { lectureRouter } from './routes/Lectures';
+
 import './styles.css';
 
 const router = createBrowserRouter([
@@ -17,10 +19,10 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Home />,
             },
-            quizRouter,
-            lectureRouter,
         ],
     },
+    lectureRouter,
+    quizRouter,
 ]);
 
 const App = () => {
