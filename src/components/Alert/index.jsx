@@ -14,6 +14,7 @@ export default function Alert({ status, onClose, path, text }) {
                     </Link>
                 </Button>
             }
+            onClose={onClose}
         >
             <Typography variant="body1">{text}</Typography>
         </AlertStyle>
