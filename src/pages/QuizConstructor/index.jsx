@@ -9,8 +9,6 @@ import QuizService from '../../services/Quiz';
 
 import { getObjectWithId, prepareQuestion, questionTemp } from './helpers';
 import { Stack, TextField, Button, Box } from '@mui/material';
-import { LoadingContext } from '../../context/loading';
-import { useContext } from 'react';
 
 const QuizConstructor = () => {
     const [questions, setQuestions] = useState([]);
@@ -18,11 +16,7 @@ const QuizConstructor = () => {
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
 
-    const loading = useContext(LoadingContext);
-
     const saveQuiz = async () => {
-        loading.toggleLoading(true);
-
         const savedQuestions = questions.map((question) => {
             const preparedQuestion = prepareQuestion(question);
 
@@ -50,8 +44,6 @@ const QuizConstructor = () => {
                 status: 'error',
                 message: e.message,
             });
-        } finally {
-            loading.toggleLoading(false);
         }
     };
 
@@ -64,8 +56,6 @@ const QuizConstructor = () => {
         setQuestions((prev) => prev.filter((item) => item.id !== id));
 
     const setQuestionsCount = async (amount) => {
-        loading.toggleLoading(true);
-
         const questionsArray = [];
 
         for (let i = 0; i < amount; i++) {
@@ -73,8 +63,6 @@ const QuizConstructor = () => {
         }
 
         setQuestions(questionsArray);
-
-        loading.toggleLoading(false);
     };
 
     return (

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
     const [question, setQuestion] = useState(questionData.question);
     const [answers, setAnswers] = useState(questionData.answers);
-    const [image, setImage] = useState(questionData.image);
+    const [image, setImage] = useState(questionData.img);
     const [correctAnswers, setCorrectAnswers] = useState(
         questionData.correctAnswers
     );
