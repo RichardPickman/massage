@@ -10,19 +10,14 @@ import { memo } from 'react';
 import { useContext } from 'react';
 import { ImagesContext } from '../../../context/images';
 import { Link as RouterLink } from 'react-router-dom';
-import { LayoutContext } from '../../../context/layout';
 import { ThemeContext } from '../../../components/ThemeProvider';
 
 const ImageHeader = () => {
     const [imagesState, dispatch] = useContext(ImagesContext);
-    const [layoutState, dispatchLayoutState] = useContext(LayoutContext);
 
     const theme = useContext(ThemeContext);
 
-    const handleClose = () => {
-        dispatchLayoutState({ type: 'SHOW' });
-        dispatch({ type: 'finish' });
-    };
+    const handleClose = () => dispatch({ type: 'finish' });
 
     return (
         imagesState.showMenus && (

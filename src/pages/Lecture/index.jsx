@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLayoutEffect, useContext } from 'react';
-import { LayoutContext } from '../../context/layout';
 import ImageSlider from './ImageSlider';
 import { Box } from '@mui/system';
 import { useLoaderData } from 'react-router-dom';
@@ -9,17 +8,16 @@ import LectureService from '../../services/Lecture';
 
 const Lecture = () => {
     const loaderData = useLoaderData();
-    const [headerState, dispatchHeader] = useContext(LayoutContext);
     const [lectureState, dispatchLecture] = useContext(ImagesContext);
 
-    useLayoutEffect(() => {
-        dispatchLecture({
-            type: 'set_images',
-            payload: loaderData.images,
-        });
-
-        dispatchHeader({ type: 'HIDE' });
-    }, []);
+    useLayoutEffect(
+        () =>
+            dispatchLecture({
+                type: 'set_images',
+                payload: loaderData.images,
+            }),
+        []
+    );
 
     const { innerHeight } = window;
 
