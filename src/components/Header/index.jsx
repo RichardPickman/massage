@@ -2,46 +2,36 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Box, Link } from '@mui/material';
 import Theme from '../Theme';
 import React from 'react';
-import { useContext } from 'react';
-import { LayoutContext } from '../../context/layout';
+import { paths } from './paths';
 
 const Header = () => {
-    const [headerState] = useContext(LayoutContext);
-
     return (
-        headerState.isShown && (
-            <header className="header">
-                <Box
-                    display="flex"
-                    justifyContent="space-around"
-                    alignItems="center"
-                >
-                    <ul className="header__list">
-                        <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            gap={4}
-                            margin={2}
+        <Box component="header">
+            <Box
+                component="ul"
+                display="flex"
+                alignSelf="center"
+                justifySelf="center"
+                justifyContent="center"
+                alignItems="center"
+                gap={4}
+            >
+                {paths.map((link, index) => (
+                    <Box component="li" key={index}>
+                        <Link
+                            underline="none"
+                            to={link.path}
+                            component={RouterLink}
                         >
-                            {headerState.links.map((link, index) => (
-                                <Link
-                                    underline="none"
-                                    to={link.path}
-                                    key={index}
-                                    component={RouterLink}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <li className="header__link">
-                                <Theme />
-                            </li>
-                        </Box>
-                    </ul>
+                            {link.name}
+                        </Link>
+                    </Box>
+                ))}
+                <Box component="li">
+                    <Theme />
                 </Box>
-            </header>
-        )
+            </Box>
+        </Box>
     );
 };
 
