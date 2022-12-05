@@ -10,21 +10,19 @@ const handleResponse = (response) => {
     if (!response.ok) {
         switch (response.status) {
             case Number(41): {
-                throw new Error(41);
+                throw { status: 41, message: response.message };
             }
             case Number(417): {
-                throw new Error(417);
+                throw { status: 417, message: response.message };
             }
             case Number(403): {
-                throw new Error(403);
+                throw { status: 403, message: response.message };
             }
             case Number(404): {
-                throw new Error(404);
+                throw { status: 404, message: response.message };
             }
             default: {
-                throw new Error(
-                    `Ooops! ${response.status} ${response.statusText}`
-                );
+                throw { status: 500, message: response.message };
             }
         }
     }
@@ -41,8 +39,5 @@ export const load = (request) => {
     })
         .then((response) => handleResponse(response))
         .then((res) => res.json())
-        .then((data) => data)
-        .catch((error) => {
-            console.log(error.message);
-        });
+        .then((data) => data);
 };
