@@ -16,7 +16,7 @@ export const getForm = (topic, teacher, date, lesson, images) => {
     return lecture;
 };
 
-export const handleImages = (files, images) => {
+export const putFilesToArray = (files, images) => {
     const imgs = [...images];
 
     for (let image of files) {
