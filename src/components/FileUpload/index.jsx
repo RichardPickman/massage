@@ -1,10 +1,17 @@
-import { Button, Typography, Box, IconButton, Stack } from '@mui/material';
+import {
+    Button,
+    Typography,
+    Box,
+    IconButton,
+    Stack,
+    Dialog,
+} from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const FileUpload = ({ image, removeImage, handleImage }) => {
+const FileUpload = ({ image, removeImage, handleImage, text }) => {
     const [clicked, setClicked] = useState(false);
 
     const onClick = () => setClicked(!clicked);
@@ -17,13 +24,10 @@ const FileUpload = ({ image, removeImage, handleImage }) => {
     ) : (
         <Box
             display="flex"
-            width="60%"
-            justifyContent="space-around"
+            justifyContent="space-between"
             alignSelf="center"
             alignItems="center"
-            gap={1}
-            margin={1}
-            padding={0.5}
+            gap={2}
         >
             <ImageOutlinedIcon />
             <Box
@@ -32,21 +36,15 @@ const FileUpload = ({ image, removeImage, handleImage }) => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Box
-                    component="img"
-                    onClick={onClick}
-                    sx={{
-                        width: clicked ? 300 : 100,
-                        height: clicked ? 225 : 75,
-                        objectFit: 'contain',
-                    }}
-                    src={image}
-                />
+                <Button onClick={onClick}>{text}</Button>
                 <Typography variant="body">{image.name}</Typography>
             </Box>
             <IconButton onClick={removeImage} color="error">
                 <DeleteOutlineOutlinedIcon />
             </IconButton>
+            <Dialog onClick={() => setClicked(false)} open={clicked}>
+                <Box component="img" onClick={onClick} src={image} />
+            </Dialog>
         </Box>
     );
 };
@@ -57,4 +55,5 @@ FileUpload.propTypes = {
     image: PropTypes.string,
     removeImage: PropTypes.func,
     handleImage: PropTypes.func,
+    text: PropTypes.string,
 };
