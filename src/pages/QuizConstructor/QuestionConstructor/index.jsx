@@ -86,6 +86,7 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
             />
             <FileUpload
                 image={image ? window.URL.createObjectURL(image) : null}
+                text={image ? image.name : 'File unnamed'}
                 handleImage={handleImage}
                 removeImage={() => setImage(null)}
             />
