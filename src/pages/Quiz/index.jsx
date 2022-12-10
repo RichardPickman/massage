@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { QuizContext } from '../../context/quiz';
+import React, { useState } from 'react';
 import Question from '../../components/Question';
 import Result from '../../components/Result';
 import {
@@ -16,23 +15,28 @@ import { useLoaderData } from 'react-router-dom';
 import QuizService from '../../services/Quiz';
 import ShowAnswers from '../../components/ShowAnswer';
 import { useLayoutEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    setQuiz,
+    prevQuestion,
+    nextQuestion,
+    selectQuestion,
+} from '../../store/reducers/quiz';
 
 const Quiz = () => {
     const loaderData = useLoaderData();
-    const [quizState, dispatch] = useContext(QuizContext);
+
+    const quiz = useSelector((state) => state.quiz);
+    const dispatch = useDispatch();
+
     const [showAnswers, setShowAnswers] = useState(false);
-    const buttonDisabled = quizState.currentQuestionIndex === 0;
+    const buttonDisabled = quiz.currentQuestionIndex === 0;
 
-    useLayoutEffect(
-        () =>
-            dispatch({
-                type: 'SET_QUIZ',
-                payload: loaderData,
-            }),
-        []
-    );
+    useLayoutEffect(() => {
+        dispatch(setQuiz(loaderData));
+    }, []);
 
-    if (quizState.isFinished) {
+    if (quiz.isFinished) {
         return <Result />;
     }
 
@@ -45,29 +49,24 @@ const Quiz = () => {
             justifyContent="center"
             gap="1rem"
         >
-            {quizState.questions.length === 0 ? (
+            {quiz.questions.length === 0 ? (
                 <CircularProgress />
             ) : (
                 <Card>
                     <CardHeader
-                        title={quizState.title}
-                        subheader={`Question ${
-                            quizState.currentQuestionIndex + 1
-                        } / 
-                        ${quizState.questions.length}`}
+                        title={quiz.title}
+                        subheader={`Question ${quiz.currentQuestionIndex + 1} / 
+                        ${quiz.questions.length}`}
                     />
                     <CardContent>
                         <Question
                             currentState={{
-                                ...quizState,
+                                ...quiz,
                                 showAnswers: showAnswers,
                             }}
-                            currentQuestion={quizState.currentQuestion}
+                            currentQuestion={quiz.currentQuestion}
                             onSelect={(id) =>
-                                dispatch({
-                                    type: 'SELECT_ANSWER',
-                                    payload: { id },
-                                })
+                                dispatch(selectQuestion({ id: id }))
                             }
                         />
                     </CardContent>
@@ -81,7 +80,7 @@ const Quiz = () => {
                         <Button
                             variant="contained"
                             disabled={buttonDisabled}
-                            onClick={() => dispatch({ type: 'PREV_QUESTION' })}
+                            onClick={() => dispatch(prevQuestion())}
                         >
                             Previous question
                         </Button>
@@ -91,7 +90,7 @@ const Quiz = () => {
                         />
                         <Button
                             variant="contained"
-                            onClick={() => dispatch({ type: 'NEXT_QUESTION' })}
+                            onClick={() => dispatch(nextQuestion())}
                         >
                             Next question
                         </Button>

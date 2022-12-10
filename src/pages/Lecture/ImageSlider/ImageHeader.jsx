@@ -8,19 +8,21 @@ import ZoomOutOutlinedIcon from '@mui/icons-material/ZoomOutOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import { memo } from 'react';
 import { useContext } from 'react';
-import { ImagesContext } from '../../../context/images';
 import { Link as RouterLink } from 'react-router-dom';
 import { ThemeContext } from '../../../components/ThemeProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { finish } from '../../../store/reducers/images';
 
 const ImageHeader = () => {
-    const [imagesState, dispatch] = useContext(ImagesContext);
+    const images = useSelector((state) => state.images);
+    const dispatch = useDispatch();
 
     const theme = useContext(ThemeContext);
 
-    const handleClose = () => dispatch({ type: 'finish' });
+    const handleClose = () => dispatch(finish());
 
     return (
-        imagesState.showMenus && (
+        images.showMenus && (
             <Box
                 display="flex"
                 width="100%"
@@ -42,11 +44,11 @@ const ImageHeader = () => {
                 >
                     <Box display="flex" gap={1}>
                         <Typography variant="body1">
-                            {imagesState.currentIndex + 1}
+                            {images.currentIndex + 1}
                         </Typography>
                         <Typography variant="body1">/</Typography>
                         <Typography variant="body1">
-                            {imagesState.slides.length}
+                            {images.slides.length}
                         </Typography>
                     </Box>
                     <Stack direction="row" spacing={1}>
@@ -54,7 +56,7 @@ const ImageHeader = () => {
                             <OpenInNewOutlinedIcon />
                         </IconButton>
                         <IconButton>
-                            {imagesState.showMenus ? (
+                            {images.showMenus ? (
                                 <ZoomOutOutlinedIcon />
                             ) : (
                                 <ZoomInOutlinedIcon />
