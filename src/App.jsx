@@ -4,7 +4,6 @@ import ThemeProviderHook from './components/ThemeProvider';
 import Layout from './layouts';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { AppContextProvider } from './components/AppContextProvider';
 import { quizRouter } from './routes/Quiz';
 import { lectureRouter } from './routes/Lectures';
 
@@ -12,6 +11,8 @@ import './styles.css';
 import Error from './pages/Error';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Provider } from 'react-redux';
+import store from './store';
 
 const router = createBrowserRouter([
     {
@@ -31,13 +32,13 @@ const router = createBrowserRouter([
 
 const App = () => {
     return (
-        <AppContextProvider>
-            <ThemeProviderHook>
-                <DndProvider backend={HTML5Backend}>
+        <ThemeProviderHook>
+            <DndProvider backend={HTML5Backend}>
+                <Provider store={store}>
                     <RouterProvider router={router} />
-                </DndProvider>
-            </ThemeProviderHook>
-        </AppContextProvider>
+                </Provider>
+            </DndProvider>
+        </ThemeProviderHook>
     );
 };
 
