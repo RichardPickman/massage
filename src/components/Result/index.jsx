@@ -15,16 +15,20 @@ const Result = () => {
     const [showUnanswered, setShowUnanswered] = useState(false);
 
     const question = (snap) => {
+        const currentQuestion = quiz.questions.find(
+            (quest) => quest._id === snap.id
+        );
+
         return (
             <Question
                 key={snap.id}
                 currentState={{
                     ...quiz,
-                    correctAnswers: quiz.currentQuestion.correctAnswers,
+                    correctAnswers: currentQuestion.correctAnswers,
                     currentAnswers: snap.currentAnswers,
                     showAnswers: false,
                 }}
-                currentQuestion={quiz.currentQuestion}
+                currentQuestion={currentQuestion}
                 onSelect={() => {}}
             />
         );

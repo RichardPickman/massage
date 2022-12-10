@@ -49,10 +49,11 @@ export const quizSlice = createSlice({
                 currentQuestionIndex
             );
 
-            state.isFinished = isFinished;
-            state.currentQuestionIndex = currentQuestionIndex;
+            state.correctAnswers = currentQuestion.correctAnswers;
             state.currentQuestion = currentQuestion;
             state.currentAnswers = currentAnswers;
+            state.currentQuestionIndex = currentQuestionIndex;
+            state.isFinished = isFinished;
             state.history = history;
             state.currentAnswerCount = isFinished ? countGrade(state) : 0;
         },
