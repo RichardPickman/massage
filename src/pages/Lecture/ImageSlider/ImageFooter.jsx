@@ -2,19 +2,20 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import { useContext } from 'react';
-import { ImagesContext } from '../../../context/images';
 import { ThemeContext } from '../../../components/ThemeProvider';
+import { useDispatch, useSelector } from 'react-redux';
+import { jumpToSlide } from '../../../store/reducers/images';
 
 const ImageFooter = () => {
-    const [imagesState, dispatch] = useContext(ImagesContext);
+    const images = useSelector((state) => state.images);
+    const dispatch = useDispatch();
 
-    const setSlide = (index) =>
-        dispatch({ type: 'jump_to_slide', payload: index });
+    const setSlide = (index) => dispatch(jumpToSlide(index));
 
     const theme = useContext(ThemeContext);
 
     return (
-        imagesState.showMenus && (
+        images.showMenus && (
             <Box
                 display="flex"
                 padding={1}
@@ -37,7 +38,7 @@ const ImageFooter = () => {
                         scrollBehavior: 'smooth',
                     }}
                 >
-                    {imagesState.slides.map((img, index) => (
+                    {images.slides.map((img, index) => (
                         <Box
                             key={index}
                             component="img"
@@ -49,9 +50,7 @@ const ImageFooter = () => {
                                 borderRadius: 2,
                                 aspectRatio: 16 / 9,
                                 opacity:
-                                    imagesState.currentIndex === index
-                                        ? 1
-                                        : 0.5,
+                                    images.currentIndex === index ? 1 : 0.5,
                             }}
                             src={img}
                         />

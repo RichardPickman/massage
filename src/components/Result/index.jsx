@@ -1,27 +1,29 @@
-import React, { useContext, useState } from 'react';
-import { QuizContext } from '../../context/quiz';
+import React, { useState } from 'react';
 import { Button, Stack, Box, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Question from '../Question';
+import { useDispatch, useSelector } from 'react-redux';
+import { restart } from '../../store/reducers/quiz';
 
 const Result = () => {
-    const [quizState, dispatch] = useContext(QuizContext);
+    const quiz = useSelector((state) => state.quiz);
+    const dispatch = useDispatch();
 
     const [showWrong, setShowWrong] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [showUnanswered, setShowUnanswered] = useState(false);
 
-    const quiz = (snap) => {
-        const currentQuestion = quizState.questions.find(
-            (item) => item._id === snap.id
+    const question = (snap) => {
+        const currentQuestion = quiz.questions.find(
+            (quest) => quest._id === snap.id
         );
 
         return (
             <Question
                 key={snap.id}
                 currentState={{
-                    ...quizState,
+                    ...quiz,
                     correctAnswers: currentQuestion.correctAnswers,
                     currentAnswers: snap.currentAnswers,
                     showAnswers: false,
@@ -42,13 +44,13 @@ const Result = () => {
                 alignItems="center"
             >
                 <Typography variant="body1">
-                    You&apos;ve got {quizState.currentAnswerCount} of{' '}
-                    {quizState.questions.length} right
+                    You&apos;ve got {quiz.currentAnswerCount} of{' '}
+                    {quiz.questions.length} right
                 </Typography>
                 <Button
                     variant="outlined"
                     size="large"
-                    onClick={() => dispatch({ type: 'RESTART' })}
+                    onClick={() => dispatch(restart({ ...quiz }))}
                 >
                     {' '}
                     Restart{' '}
@@ -97,14 +99,14 @@ const Result = () => {
                         </Button>
                     </Stack>
                     {showUnanswered &&
-                        quizState.history
+                        quiz.history
                             .filter((item) => item.currentAnswers.length === 0)
-                            .map((snap, index) => quiz(snap, index))}
+                            .map((snap, index) => question(snap, index))}
 
                     {showWrong &&
-                        quizState.history
+                        quiz.history
                             .filter((item) => {
-                                const question = quizState.questions.find(
+                                const question = quiz.questions.find(
                                     (quest) => quest._id === item.id
                                 );
 
@@ -113,12 +115,12 @@ const Result = () => {
                                         !question.correctAnswers.includes(ans)
                                 );
                             })
-                            .map((snap, index) => quiz(snap, index))}
+                            .map((snap, index) => question(snap, index))}
 
                     {!showWrong &&
                         !showUnanswered &&
-                        quizState.history.map((snap, index) =>
-                            quiz(snap, index)
+                        quiz.history.map((snap, index) =>
+                            question(snap, index)
                         )}
                 </Box>
             </Box>

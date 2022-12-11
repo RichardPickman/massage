@@ -1,30 +1,30 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import KeyboardArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardArrowLeftOutlined';
 import KeyboardArrowRightOutlinedIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
 
 import { Box, IconButton } from '@mui/material';
-import { ImagesContext } from '../../../context/images';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    prevSlide,
+    handleMenus,
+    nextSlide,
+} from '../../../store/reducers/images';
 
 const MainImage = () => {
-    const [imagesState, dispatch] = useContext(ImagesContext);
-    const [showMenu, setShowMenu] = useState(true);
+    const images = useSelector((state) => state.images);
+    const dispatch = useDispatch();
 
-    useEffect(
-        () => dispatch({ type: 'handle_menus', payload: showMenu }),
-        [showMenu]
-    );
-
-    const handleMenu = () => setShowMenu(!showMenu);
+    const handleMenu = () => dispatch(handleMenus(!images.showMenus));
 
     return (
         <Box display="flex" width="100%" flexDirection="column">
             <IconButton
-                disabled={imagesState.currentIndex === 0}
-                onClick={() => dispatch({ type: 'prev_slide' })}
+                disabled={images.currentIndex === 0}
+                onClick={() => dispatch(prevSlide())}
                 sx={{
                     position: 'absolute',
                     top: '50%',
@@ -36,10 +36,8 @@ const MainImage = () => {
                 <KeyboardArrowLeftOutlinedIcon sx={{ width: 50, height: 50 }} />
             </IconButton>
             <IconButton
-                disabled={
-                    imagesState.currentIndex === imagesState.slides.length - 1
-                }
-                onClick={() => dispatch({ type: 'next_slide' })}
+                disabled={images.currentIndex === images.slides.length - 1}
+                onClick={() => dispatch(nextSlide())}
                 sx={{
                     position: 'absolute',
                     top: '50%',
@@ -65,7 +63,7 @@ const MainImage = () => {
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                 }}
-                src={imagesState.currentImage}
+                src={images.currentImage}
             />
         </Box>
     );

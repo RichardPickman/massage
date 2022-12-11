@@ -1,23 +1,19 @@
 import React from 'react';
-import { useLayoutEffect, useContext } from 'react';
+import { useLayoutEffect } from 'react';
 import ImageSlider from './ImageSlider';
 import { Box } from '@mui/system';
 import { useLoaderData } from 'react-router-dom';
-import { ImagesContext } from '../../context/images';
 import LectureService from '../../services/Lecture';
+import { useDispatch } from 'react-redux';
+import { setImages } from '../../store/reducers/images';
 
 const Lecture = () => {
     const loaderData = useLoaderData();
-    const [lectureState, dispatchLecture] = useContext(ImagesContext);
+    const dispatch = useDispatch();
 
-    useLayoutEffect(
-        () =>
-            dispatchLecture({
-                type: 'set_images',
-                payload: loaderData.images,
-            }),
-        []
-    );
+    useLayoutEffect(() => {
+        dispatch(setImages(loaderData.images));
+    }, []);
 
     const { innerHeight } = window;
 
