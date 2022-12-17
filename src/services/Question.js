@@ -5,7 +5,7 @@ class QuestionService {
         return load({
             url: 'api/question/create',
             method: 'POST',
-            body: body,
+            body: JSON.stringify(body),
         });
     }
 
