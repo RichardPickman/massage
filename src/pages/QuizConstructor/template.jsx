@@ -3,11 +3,14 @@ import React, { memo } from 'react';
 
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Question from '../../components/Question';
 import QuestionConstructor from './QuestionConstructor';
 import PropTypes from 'prop-types';
 
 const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
+    const [listRef] = useAutoAnimate();
+
     const togglePreview = (data, action) => {
         updateQuestion(questionData.id, {
             ...data,
@@ -17,7 +20,13 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
 
     return (
         <Card variant="outlined" sx={{ width: '100%' }}>
-            <Box display="flex" flexDirection="column" gap={1} margin={1}>
+            <Box
+                display="flex"
+                flexDirection="column"
+                gap={1}
+                margin={1}
+                ref={listRef}
+            >
                 {!questionData.isPreview ? (
                     <QuestionConstructor
                         questionId={questionData.id}
@@ -45,7 +54,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                     {!questionData.isPreview ? (
                         <>
                             <Button
-                                variant="contained"
+                                variant="outlined"
                                 color="success"
                                 onClick={() =>
                                     togglePreview(questionData, 'SAVE')
@@ -54,7 +63,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                                 Preview
                             </Button>
                             <Button
-                                variant="contained"
+                                variant="outlined"
                                 color="error"
                                 onClick={() => removeQuestion(questionData.id)}
                                 endIcon={<DeleteOutlineOutlinedIcon />}
@@ -64,7 +73,7 @@ const QuestionTemplate = ({ questionData, updateQuestion, removeQuestion }) => {
                         </>
                     ) : (
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             onClick={() => togglePreview(questionData, 'EDIT')}
                             endIcon={<ModeEditOutlineOutlinedIcon />}
                         >

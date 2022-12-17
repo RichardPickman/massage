@@ -135,7 +135,7 @@ function AddLecture() {
                         onChange={(newValue) => setDate(newValue)}
                         renderInput={(params) => <TextField {...params} />}
                     />
-                    <Button variant="contained" component="label">
+                    <Button variant="outlined" component="label">
                         Upload File
                         <input
                             type="file"
@@ -174,14 +174,14 @@ function AddLecture() {
                     </Grid>
                     <Stack direction="row" spacing={2}>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             color="success"
                             type="submit"
                             fullWidth
                         >
                             Save
                         </Button>
-                        <Button variant="contained" color="error" fullWidth>
+                        <Button variant="outlined" color="error" fullWidth>
                             Delete
                         </Button>
                     </Stack>
