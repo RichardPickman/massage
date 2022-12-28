@@ -16,3 +16,14 @@ export const paths = [
         path: '/quiz/constructor',
     },
 ];
+
+export const auth = [
+    {
+        name: 'Sign in',
+        path: '/login',
+    },
+    {
+        name: 'Sign up',
+        path: '/register',
+    },
+];
