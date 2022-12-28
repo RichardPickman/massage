@@ -1,11 +1,4 @@
-import {
-    Button,
-    Typography,
-    Box,
-    IconButton,
-    Stack,
-    Dialog,
-} from '@mui/material';
+import { Button, Typography, Box, IconButton, Dialog } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import React, { memo, useState } from 'react';

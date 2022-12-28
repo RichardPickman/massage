@@ -5,7 +5,6 @@ import { Link as RouterLink, useLoaderData } from 'react-router-dom';
 import { useLayoutEffect } from 'react';
 import { getTableRows, columns } from './helpers';
 import LectureService from '../../services/Lecture';
-import Header from '../../components/Header';
 
 const Lectures = () => {
     const loaderData = useLoaderData();
@@ -18,25 +17,14 @@ const Lectures = () => {
     }, []);
 
     return (
-        <Box>
-            <Header />
-            <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                margin={2}
-            >
-                <Link to="create" component={RouterLink} underline="none">
-                    <Button
-                        variant="outlined"
-                        sx={{ margin: 1, width: '100%' }}
-                    >
-                        ADD LECTURE
-                    </Button>
-                </Link>
-                <Box height="75vh" width="100%" margin={1}>
-                    <DataGrid rows={[...lectures]} columns={columns} />
-                </Box>
+        <Box display="flex" flexDirection="column" justifyContent="center">
+            <Link to="create" component={RouterLink} underline="none">
+                <Button variant="outlined" sx={{ margin: 1, width: '100%' }}>
+                    ADD LECTURE
+                </Button>
+            </Link>
+            <Box height="75vh" width="100%" margin={1}>
+                <DataGrid rows={[...lectures]} columns={columns} />
             </Box>
         </Box>
     );

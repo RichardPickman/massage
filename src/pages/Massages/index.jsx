@@ -13,7 +13,6 @@ function Massages() {
             justifyContent="center"
             alignItems="center"
             gap={1}
-            margin={2}
         >
             <Button variant="outlined">
                 <Link underline="none" to={'create'} component={RouterLink}>
