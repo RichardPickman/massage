@@ -20,10 +20,10 @@ export const paths = [
 export const auth = [
     {
         name: 'Sign in',
-        path: '/login',
+        path: '/auth/login',
     },
     {
         name: 'Sign up',
-        path: '/register',
+        path: '/auth/register',
     },
 ];
