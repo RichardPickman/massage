@@ -3,35 +3,30 @@ import { Box } from '@mui/system';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import Accordion from '../../components/Accordion';
-import Header from '../../components/Header';
 import MassageService from '../../services/Massage';
 
 export default function Massage() {
     const loaderData = useLoaderData();
 
     return (
-        <>
-            <Header />
-            <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                margin={2}
-                gap={2}
-            >
-                <Typography variant={'h3'}>{loaderData.title}</Typography>
-                <Box width="50%">
-                    {loaderData.technics.map((item) => (
-                        <Accordion
-                            key={item._id}
-                            technic={item}
-                            isConstructor={false}
-                        />
-                    ))}
-                </Box>
+        <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap={2}
+        >
+            <Typography variant={'h3'}>{loaderData.title}</Typography>
+            <Box width="50%">
+                {loaderData.technics.map((item) => (
+                    <Accordion
+                        key={item._id}
+                        technic={item}
+                        isConstructor={false}
+                    />
+                ))}
             </Box>
-        </>
+        </Box>
     );
 }
 
