@@ -17,7 +17,7 @@ const FileUpload = ({ image, removeImage, handleImage, text }) => {
     const onClick = () => setClicked(!clicked);
 
     return !image ? (
-        <Button variant="contained" component="label">
+        <Button variant="outlined" component="label">
             Upload File
             <input type="file" hidden onChange={handleImage} />
         </Button>

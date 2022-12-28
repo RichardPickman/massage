@@ -78,7 +78,7 @@ const Quiz = () => {
                         }}
                     >
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             disabled={buttonDisabled}
                             onClick={() => dispatch(prevQuestion())}
                         >
@@ -89,7 +89,7 @@ const Quiz = () => {
                             onChange={() => setShowAnswers(!showAnswers)}
                         />
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             onClick={() => dispatch(nextQuestion())}
                         >
                             Next question

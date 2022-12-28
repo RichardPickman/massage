@@ -1,7 +1,7 @@
 export const baseURL = process.env.REACT_APP_API_URL;
 
 export const makeURL = (request) => {
-    const resultURL = new URL(`${baseURL}/${request.url}`);
+    const resultURL = new URL(`${baseURL}${request.url}`);
 
     return resultURL.toString();
 };
