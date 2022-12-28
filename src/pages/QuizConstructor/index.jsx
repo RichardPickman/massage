@@ -9,12 +9,15 @@ import QuizService from '../../services/Quiz';
 
 import { getObjectWithId, prepareQuestion, questionTemp } from './helpers';
 import { Stack, TextField, Button, Box } from '@mui/material';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const QuizConstructor = () => {
     const [questions, setQuestions] = useState([]);
     const [alert, setAlert] = useState({ status: 'onhold', message: '' });
     const [title, setTitle] = useState('');
     const [id, setId] = useState('');
+
+    const [listRef] = useAutoAnimate();
 
     const saveQuiz = async () => {
         const savedQuestions = questions.map((question) => {
@@ -111,22 +114,21 @@ const QuizConstructor = () => {
                 flexDirection="column"
                 justifyContent="center"
                 gap="1rem"
+                ref={listRef}
             >
-                {questions.map((item) => {
-                    return (
-                        <QuestionTemplate
-                            removeQuestion={removeQuestion}
-                            updateQuestion={updateQuestion}
-                            isPreview={item.isPreview}
-                            questionId={item.id}
-                            questionData={item}
-                            key={item.id}
-                        />
-                    );
-                })}
+                {questions.map((item) => (
+                    <QuestionTemplate
+                        removeQuestion={removeQuestion}
+                        updateQuestion={updateQuestion}
+                        isPreview={item.isPreview}
+                        questionId={item.id}
+                        questionData={item}
+                        key={item.id}
+                    />
+                ))}
             </Box>
             <Button
-                variant="contained"
+                variant="outlined"
                 color="success"
                 onClick={saveQuiz}
                 endIcon={<SaveIcon />}
@@ -134,7 +136,7 @@ const QuizConstructor = () => {
                 Save quiz
             </Button>
             <Button
-                variant="contained"
+                variant="outlined"
                 color="error"
                 onClick={() => setQuestions([])}
                 endIcon={<DeleteForeverIcon />}

@@ -28,7 +28,7 @@ const Lectures = () => {
             >
                 <Link to="create" component={RouterLink} underline="none">
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         sx={{ margin: 1, width: '100%' }}
                     >
                         ADD LECTURE

@@ -1,17 +1,20 @@
 import { load } from './loader';
 
-class QuestionService {
-    static async createQuestion(body) {
+class MassageService {
+    static async createMassage(body) {
         return load({
-            url: 'api/question/create',
+            url: 'api/massage/create',
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(body),
         });
     }
 
-    static async getQuestion(id) {
+    static async getMassage(id) {
         return load({
-            url: `api/question/${id}`,
+            url: `api/massage/${id}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,20 +22,19 @@ class QuestionService {
         });
     }
 
-    static async updateQuestion(id, body) {
+    static async getAllMassages() {
         return load({
-            url: `api/question/update/${id}`,
-            method: 'PUT',
+            url: 'api/massage/all',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body),
         });
     }
 
-    static async removeQuestion(id) {
+    static async removeMassage(id) {
         return load({
-            url: `api/question/remove/${id}`,
+            url: `api/massage/remove/${id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -41,4 +43,4 @@ class QuestionService {
     }
 }
 
-export default QuestionService;
+export default MassageService;

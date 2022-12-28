@@ -6,6 +6,7 @@ import Layout from './layouts';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { quizRouter } from './routes/Quiz';
 import { lectureRouter } from './routes/Lectures';
+import { massageRouter } from './routes/Massage';
 
 import './styles.css';
 import Error from './pages/Error';
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
     },
     ...lectureRouter,
     quizRouter,
+    massageRouter,
 ]);
 
 const App = () => {

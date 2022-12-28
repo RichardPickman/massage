@@ -4,6 +4,7 @@ import { TextField, Box, Grid } from '@mui/material';
 import { getObjectWithId } from '../helpers';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
     const [question, setQuestion] = useState(questionData.question);
@@ -12,6 +13,8 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
     const [correctAnswers, setCorrectAnswers] = useState(
         questionData.correctAnswers
     );
+
+    const [listRef] = useAutoAnimate();
 
     const addAnswer = (answer) => {
         const answersCopy = answers.map((item) =>
@@ -90,7 +93,7 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
                 handleImage={handleImage}
                 removeImage={() => setImage(null)}
             />
-            <Grid container spacing={2}>
+            <Grid container spacing={2} ref={listRef}>
                 {answers.map((answer, i) => (
                     <Grid item key={answer.id} xs={6}>
                         <AnswerWithCheckbox

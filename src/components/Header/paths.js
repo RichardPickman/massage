@@ -8,6 +8,10 @@ export const paths = [
         path: '/quiz',
     },
     {
+        name: 'Massage',
+        path: '/massages',
+    },
+    {
         name: 'Constructor',
         path: '/quiz/constructor',
     },
