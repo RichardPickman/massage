@@ -1,19 +1,21 @@
 import React from 'react';
-import Home from './pages/Home';
-import ThemeProviderHook from './components/ThemeProvider';
-import Layout from './layouts';
-
+import { Provider } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import store from './store';
+import Layout from './layouts';
+import Home from './pages/Home';
+import Error from './pages/Error';
+import ThemeProviderHook from './components/ThemeProvider';
+
 import { quizRouter } from './routes/Quiz';
 import { lectureRouter } from './routes/Lectures';
 import { massageRouter } from './routes/Massage';
+import { authRouter } from './routes/Auth';
 
 import './styles.css';
-import Error from './pages/Error';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Provider } from 'react-redux';
-import store from './store';
 
 const router = createBrowserRouter([
     {
@@ -30,6 +32,7 @@ const router = createBrowserRouter([
     ...lectureRouter,
     quizRouter,
     massageRouter,
+    authRouter,
 ]);
 
 const App = () => {
