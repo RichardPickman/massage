@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Button,
@@ -10,7 +10,21 @@ import {
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
+import { login } from '../../store/reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Signin = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const handleEmail = (event) => setEmail(event.target.value);
+    const handlePassword = (event) => setPassword(event.target.value);
+
+    const handleSubmit = () => dispatch(login({ email, password }));
+
     return (
         <Card
             sx={{
@@ -35,8 +49,17 @@ const Signin = () => {
                         flexDirection="column"
                         gap={2}
                     >
-                        <TextField label="Login" />
-                        <TextField type="password" label="Password" />
+                        <TextField
+                            value={email}
+                            onChange={handleEmail}
+                            label="Login"
+                        />
+                        <TextField
+                            value={password}
+                            onChange={handlePassword}
+                            type="password"
+                            label="Password"
+                        />
                     </Box>
                     <Box
                         display="flex"
@@ -44,14 +67,8 @@ const Signin = () => {
                         alignItems="center"
                         gap={2}
                     >
-                        <Button variant="outlined">
-                            <Link
-                                underline="none"
-                                to={''}
-                                component={RouterLink}
-                            >
-                                Submit
-                            </Link>
+                        <Button variant="outlined" onClick={handleSubmit}>
+                            Submit
                         </Button>
                     </Box>
                     <Link
