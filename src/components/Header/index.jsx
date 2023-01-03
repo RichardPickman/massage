@@ -37,7 +37,7 @@ const Header = () => {
                     <Box
                         component="ul"
                         display="flex"
-                        justifyContent="center"
+                        justifyContent="right"
                         alignItems="center"
                         gap={4}
                     >
