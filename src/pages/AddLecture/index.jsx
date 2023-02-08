@@ -16,7 +16,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 import React, { useCallback, useState } from 'react';
 import Alert from '../../components/Alert';
-import Header from '../../components/Header';
+
 import LectureService from '../../services/Lecture';
 import ImageCard from '../../components/ImageCard';
 import update from 'immutability-helper';
@@ -69,7 +69,6 @@ function AddLecture() {
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <Box display="flex" flexDirection="column" gap={2}>
-                <Header />
                 {alert.status !== 'onhold' && (
                     <Alert
                         text={alert.message}

@@ -1,14 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { useRouteError } from 'react-router-dom';
-import Header from '../../components/Header';
 
 function Error() {
     const error = useRouteError();
 
     return (
-        <Box margin={2}>
-            <Header />
+        <Box>
             <Box
                 display="flex"
                 flexDirection="column"

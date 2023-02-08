@@ -94,7 +94,7 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
                 removeImage={() => setImage(null)}
             />
             <Grid container spacing={2} ref={listRef}>
-                {answers.map((answer, i) => (
+                {answers.map((answer) => (
                     <Grid item key={answer.id} xs={6}>
                         <AnswerWithCheckbox
                             questionId={questionId}

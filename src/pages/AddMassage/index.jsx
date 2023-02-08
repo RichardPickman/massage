@@ -4,7 +4,6 @@ import { Box, Button, Card, CardContent, Grid, Stack } from '@mui/material';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { getDraggableGrip, getTechnic, template } from './components/helpers';
 
-import Header from '../../components/Header';
 import TechnicItem from './components/TechnicItem';
 import ListWithSearch from './components/ListWithSearch';
 import TechnicControls from './components/TechnicControls';
@@ -65,7 +64,6 @@ function AddMassage() {
 
     return (
         <Box display="flex" flexDirection="column" gap={2} ref={listRef}>
-            <Header />
             {alert.status !== 'onhold' && (
                 <Alert
                     text={alert.message}

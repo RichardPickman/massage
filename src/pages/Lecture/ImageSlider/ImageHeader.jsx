@@ -40,7 +40,6 @@ const ImageHeader = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    margin={2}
                 >
                     <Box display="flex" gap={1}>
                         <Typography variant="body1">

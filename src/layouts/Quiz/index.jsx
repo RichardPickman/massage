@@ -3,25 +3,25 @@ import React from 'react';
 import { Box } from '@mui/material';
 
 import { Outlet } from 'react-router-dom';
-import Header from '../../components/Header';
+import Wrapper from '../../components/Wrapper';
 
 function QuizLayout() {
     const { innerWidth } = window;
 
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            margin={2}
-            gap={2}
-        >
-            <Header />
-            <Box width={innerWidth > 500 ? '50%' : '100%'}>
-                <Outlet />
+        <Wrapper>
+            <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                gap={2}
+            >
+                <Box width={innerWidth > 500 ? '50%' : '100%'}>
+                    <Outlet />
+                </Box>
             </Box>
-        </Box>
+        </Wrapper>
     );
 }
 
