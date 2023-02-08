@@ -29,6 +29,7 @@ const ImageHeader = () => {
                 sx={{
                     width: '100%',
                     position: 'absolute',
+                    p: 1,
                     backgroundColor: theme.darkEnabled
                         ? 'rgba(0, 0, 0, 0.4)'
                         : 'rgba(255, 255, 255, 0.4)',

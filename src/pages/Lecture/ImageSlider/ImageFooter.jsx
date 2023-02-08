@@ -18,11 +18,11 @@ const ImageFooter = () => {
         images.showMenus && (
             <Box
                 display="flex"
-                padding={1}
-                gap={1}
                 sx={{
                     width: '100%',
                     position: 'absolute',
+                    p: 1,
+                    gap: 1,
                     bottom: 0,
                     overflow: 'hidden',
                     backgroundColor: theme.darkEnabled
