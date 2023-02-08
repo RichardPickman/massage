@@ -12,21 +12,22 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getForm, putFilesToArray } from './helpers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 import React, { useCallback, useState } from 'react';
-import Alert from '../../components/Alert';
+import Alert from '../../components/AlertWithLink';
 
+import TeacherService from '../../services/Teacher';
+import LessonService from '../../services/Lesson';
 import LectureService from '../../services/Lecture';
 import ImageCard from '../../components/ImageCard';
 import update from 'immutability-helper';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useLoaderData } from 'react-router-dom';
 
 function AddLecture() {
-    const dumbDB = {
-        teachers: ['Monika Kosji', 'Kamil'],
-        lessons: ['Zasady masażu', 'BHP', 'Anatomia', 'Fizioterapia'],
-    };
+    const loaderData = useLoaderData();
     const [teacher, setTeachers] = useState('');
     const [lesson, setLesson] = useState('');
     const [images, setImages] = useState([]);
@@ -67,11 +68,11 @@ function AddLecture() {
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterMoment}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box display="flex" flexDirection="column" gap={2}>
                 {alert.status !== 'onhold' && (
                     <Alert
-                        text={alert.message}
+                        text={alert.messageWithLink}
                         status={alert.status}
                         onClose={() => setAlert({ status: 'onhold' })}
                         path={`/lectures/${id}`}
@@ -106,9 +107,11 @@ function AddLecture() {
                                 setTeachers(event.target.value)
                             }
                         >
-                            {dumbDB.teachers.map((name) => (
-                                <MenuItem value={name} key={name}>
-                                    {name}
+                            {loaderData.teachers.map((teacher) => (
+                                <MenuItem value={teacher.id} key={teacher.id}>
+                                    {[teacher.firstName, teacher.lastName].join(
+                                        ' '
+                                    )}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -121,9 +124,9 @@ function AddLecture() {
                             label="Lesson"
                             onChange={(event) => setLesson(event.target.value)}
                         >
-                            {dumbDB.lessons.map((lessonName) => (
-                                <MenuItem value={lessonName} key={lessonName}>
-                                    {lessonName}
+                            {loaderData.lessons.map((lesson) => (
+                                <MenuItem value={lesson.id} key={lesson.id}>
+                                    {lesson.title}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -189,5 +192,16 @@ function AddLecture() {
         </LocalizationProvider>
     );
 }
+
+export const loader = async () => {
+    try {
+        const teachers = await TeacherService.getAllTeachers();
+        const lessons = await LessonService.getAllLessons();
+
+        return { teachers, lessons };
+    } catch (error) {
+        throw { message: error.message };
+    }
+};
 
 export default AddLecture;

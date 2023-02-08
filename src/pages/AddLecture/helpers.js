@@ -1,8 +1,8 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export const getForm = (topic, teacher, date, lesson, images) => {
     const lecture = new FormData();
-    const currentDate = moment(date).format('MM/DD/YYYY');
+    const currentDate = dayjs(date).format('MM/DD/YYYY');
 
     lecture.append('topic', topic);
     lecture.append('teacher', teacher);
