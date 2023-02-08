@@ -1,70 +1,42 @@
-import {
-    Card,
-    CardContent,
-    Box,
-    Typography,
-    TextField,
-    Button,
-    Link,
-} from '@mui/material';
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
-function Signup() {
+import Auth from '../../forms/Auth';
+import { fetchRegister } from '../../store/reducers/auth/fetch';
+import { cleanUp, clearError } from '../../store/reducers/auth/user';
+import { useNavigate } from 'react-router-dom';
+import { fetchStatuses } from '../../utils/consts';
+
+const SignUp = () => {
+    const { status, allowRedirect, error } = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const onSubmit = (data) => dispatch(fetchRegister(data));
+
+    useLayoutEffect(() => {
+        dispatch(cleanUp());
+    }, []);
+
+    useEffect(() => {
+        if (status === fetchStatuses.SUCCEEDED && allowRedirect) {
+            dispatch(clearError());
+
+            return navigate('/', { replace: true });
+        }
+    }, [status, allowRedirect]);
+
     return (
-        <Card
-            sx={{
-                display: 'inline-flex',
-                marginLeft: '50%',
-                marginTop: '30%',
-                transform: 'translate(-50%, -30%)',
-            }}
-        >
-            <CardContent>
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    gap={2}
-                >
-                    <Typography variant="h4">Sign In</Typography>
-                    <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        flexDirection="column"
-                        gap={2}
-                    >
-                        <TextField label="Login" />
-                        <TextField label="Password" type="password" />
-                    </Box>
-                    <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={2}
-                    >
-                        <Button variant="outlined">
-                            <Link
-                                underline="none"
-                                to={''}
-                                component={RouterLink}
-                            >
-                                Submit
-                            </Link>
-                        </Button>
-                    </Box>
-                    <Link
-                        underline="none"
-                        to={'/auth/recover'}
-                        component={RouterLink}
-                    >
-                        Forgot password?
-                    </Link>
-                </Box>
-            </CardContent>
-        </Card>
+        <Box>
+            <Auth
+                submitting={status === 'pending'}
+                errorData={status === 'failed' ? error : null}
+                onSubmit={onSubmit}
+                header={'Sign Up'}
+            />
+        </Box>
     );
-}
+};
 
-export default Signup;
+export default SignUp;

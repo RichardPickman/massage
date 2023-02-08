@@ -1,87 +1,43 @@
-import React, { useState } from 'react';
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Link,
-    TextField,
-    Typography,
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-
-import { login } from '../../store/reducers/user';
+import React, { useLayoutEffect } from 'react';
+import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-const Signin = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+import Auth from '../../forms/Auth';
+import { fetchLogin } from '../../store/reducers/auth/fetch';
+import { cleanUp, clearError } from '../../store/reducers/auth/user';
+import { useEffect } from 'react';
+import { fetchStatuses } from '../../utils/consts';
 
-    const user = useSelector((state) => state.user);
+const SignIn = () => {
     const dispatch = useDispatch();
+    const { status, allowRedirect, error } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
 
-    const handleEmail = (event) => setEmail(event.target.value);
-    const handlePassword = (event) => setPassword(event.target.value);
+    const onSubmit = (data) => dispatch(fetchLogin(data));
 
-    const handleSubmit = () => dispatch(login({ email, password }));
+    useLayoutEffect(() => {
+        dispatch(cleanUp());
+    }, []);
+
+    useEffect(() => {
+        if (status === fetchStatuses.SUCCEEDED && allowRedirect) {
+            dispatch(clearError());
+
+            return navigate('/', { replace: true });
+        }
+    }, [status, allowRedirect]);
 
     return (
-        <Card
-            sx={{
-                display: 'inline-flex',
-                marginLeft: '50%',
-                marginTop: '30%',
-                transform: 'translate(-50%, -30%)',
-            }}
-        >
-            <CardContent>
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    gap={2}
-                >
-                    <Typography variant="h4">Sign In</Typography>
-                    <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        flexDirection="column"
-                        gap={2}
-                    >
-                        <TextField
-                            value={email}
-                            onChange={handleEmail}
-                            label="Login"
-                        />
-                        <TextField
-                            value={password}
-                            onChange={handlePassword}
-                            type="password"
-                            label="Password"
-                        />
-                    </Box>
-                    <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={2}
-                    >
-                        <Button variant="outlined" onClick={handleSubmit}>
-                            Submit
-                        </Button>
-                    </Box>
-                    <Link
-                        underline="none"
-                        to={'/auth/recover'}
-                        component={RouterLink}
-                    >
-                        Forgot password?
-                    </Link>
-                </Box>
-            </CardContent>
-        </Card>
+        <Box>
+            <Auth
+                submitting={status === 'pending'}
+                errorData={status === 'failed' ? error : null}
+                onSubmit={onSubmit}
+                header={'Sign In'}
+            />
+        </Box>
     );
 };
 
-export default Signin;
+export default SignIn;
