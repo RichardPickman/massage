@@ -2,18 +2,17 @@ export const paths = [
     {
         name: 'Lectures',
         path: '/lectures',
+        authRequired: false,
     },
     {
         name: 'Quizzes',
         path: '/quiz',
+        authRequired: false,
     },
     {
         name: 'Massage',
         path: '/massages',
-    },
-    {
-        name: 'Constructor',
-        path: '/quiz/constructor',
+        authRequired: false,
     },
 ];
 
