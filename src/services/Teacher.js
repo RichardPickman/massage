@@ -1,9 +1,9 @@
 import { load } from './loader';
 
-class LectureService {
-    static async createLecture(body) {
+class TeacherService {
+    static async createTeacher(body) {
         return load({
-            url: 'api/lectures/create',
+            url: 'api/teacher/create',
             method: 'POST',
             body: body,
             credentials: 'include',
@@ -12,9 +12,9 @@ class LectureService {
             .then((res) => res);
     }
 
-    static async getLecture(id) {
+    static async get(id) {
         return load({
-            url: `api/lectures/${id}`,
+            url: `api/teacher/${id}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,9 +24,9 @@ class LectureService {
             .then((res) => res);
     }
 
-    static async getAllLectures() {
+    static async getAllTeachers() {
         return load({
-            url: 'api/lectures/all',
+            url: 'api/teacher/all',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,9 +36,9 @@ class LectureService {
             .then((res) => res);
     }
 
-    static async removeLecture(id) {
+    static async removeTeacher(id) {
         return load({
-            url: `api/lectures/remove/${id}`,
+            url: `api/teacher/remove/${id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,6 +48,17 @@ class LectureService {
             .then((res) => res.json())
             .then((res) => res);
     }
+
+    static async update(id, body) {
+        return load({
+            url: `api/teacher/update/${id}`,
+            method: 'PUT',
+            body: body,
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
+    }
 }
 
-export default LectureService;
+export default TeacherService;

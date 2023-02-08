@@ -5,8 +5,11 @@ class QuestionService {
         return load({
             url: 'api/question/create',
             method: 'POST',
-            body: JSON.stringify(body),
-        });
+            body: body,
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getQuestion(id) {
@@ -16,7 +19,9 @@ class QuestionService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async updateQuestion(id, body) {
@@ -26,8 +31,11 @@ class QuestionService {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(body),
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async removeQuestion(id) {
@@ -37,7 +45,10 @@ class QuestionService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 }
 

@@ -1,20 +1,23 @@
 import { load } from './loader';
 
-class LectureService {
-    static async createLecture(body) {
+class LessonService {
+    static async createLesson(body) {
         return load({
-            url: 'api/lectures/create',
+            url: 'api/lesson/create',
             method: 'POST',
-            body: body,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
             credentials: 'include',
         })
             .then((res) => res.json())
             .then((res) => res);
     }
 
-    static async getLecture(id) {
+    static async get(id) {
         return load({
-            url: `api/lectures/${id}`,
+            url: `api/lesson/${id}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,9 +27,9 @@ class LectureService {
             .then((res) => res);
     }
 
-    static async getAllLectures() {
+    static async getAllLessons() {
         return load({
-            url: 'api/lectures/all',
+            url: 'api/lesson/all',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,9 +39,9 @@ class LectureService {
             .then((res) => res);
     }
 
-    static async removeLecture(id) {
+    static async removeLesson(id) {
         return load({
-            url: `api/lectures/remove/${id}`,
+            url: `api/lesson/remove/${id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,6 +51,20 @@ class LectureService {
             .then((res) => res.json())
             .then((res) => res);
     }
+
+    static async update(body) {
+        return load({
+            url: `api/lesson/update/${body.id}`,
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
+    }
 }
 
-export default LectureService;
+export default LessonService;

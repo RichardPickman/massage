@@ -9,7 +9,10 @@ class QuizService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async updateQuiz(id, body) {
@@ -20,7 +23,10 @@ class QuizService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getQuiz(id, body) {
@@ -31,7 +37,9 @@ class QuizService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getAllQuizzes() {
@@ -41,7 +49,9 @@ class QuizService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async removeQuiz(id) {
@@ -51,7 +61,10 @@ class QuizService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 }
 

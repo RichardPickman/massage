@@ -8,8 +8,11 @@ class MassageService {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(body),
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getMassage(id) {
@@ -19,7 +22,9 @@ class MassageService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getAllMassages() {
@@ -29,7 +34,9 @@ class MassageService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async removeMassage(id) {
@@ -39,7 +46,10 @@ class MassageService {
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 }
 

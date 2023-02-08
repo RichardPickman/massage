@@ -1,3 +1,6 @@
+import { handleResponse } from './helpers/handleResponse';
+import { setHeaders } from './helpers/setHeaders';
+
 export const baseURL = process.env.REACT_APP_API_URL;
 
 export const makeURL = (request) => {
@@ -6,38 +9,18 @@ export const makeURL = (request) => {
     return resultURL.toString();
 };
 
-const handleResponse = (response) => {
-    if (!response.ok) {
-        switch (response.status) {
-            case Number(41): {
-                throw { status: 41, message: response.message };
-            }
-            case Number(417): {
-                throw { status: 417, message: response.message };
-            }
-            case Number(403): {
-                throw { status: 403, message: response.message };
-            }
-            case Number(404): {
-                throw { status: 404, message: response.message };
-            }
-            default: {
-                throw { status: 500, message: response.message };
-            }
-        }
-    }
-    return response;
-};
-
 export const load = (request) => {
-    const fetchUrl = makeURL(request);
+    const fetchData = {
+        url: makeURL(request),
+        payload: {
+            headers: setHeaders(request.headers),
+            method: request.method,
+            body: request.body,
+            credentials: request.credentials,
+        },
+    };
 
-    return fetch(fetchUrl, {
-        headers: request.headers,
-        method: request.method,
-        body: request.body,
-    })
-        .then((response) => handleResponse(response))
-        .then((res) => res.json())
+    return fetch(fetchData.url, fetchData.payload)
+        .then((response) => handleResponse(response, request))
         .then((data) => data);
 };
