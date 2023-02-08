@@ -13,7 +13,7 @@ import Avatar from '../../../../components/Avatar';
 import LessonService from '../../../../services/Lesson';
 import TeacherService from '../../../../services/Teacher';
 import { fetchStatuses } from '../../../../utils/consts';
-import { getFormData } from '../../../../utils/formDataParser';
+import { getFormData } from '../../../../utils/formDataConstructor';
 import TransferList from './TransferList';
 
 function NewTeacher() {
