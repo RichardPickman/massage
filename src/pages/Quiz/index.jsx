@@ -46,13 +46,14 @@ const Quiz = () => {
             sx={{ width: '100%' }}
             flexDirection="column"
             alignItems="center"
+            maxHeight="calc(100vh - 4rem)"
             justifyContent="center"
             gap="1rem"
         >
             {quiz.questions.length === 0 ? (
                 <CircularProgress />
             ) : (
-                <Card>
+                <Card height="100%">
                     <CardHeader
                         title={quiz.title}
                         subheader={`Question ${quiz.currentQuestionIndex + 1} / 

@@ -6,16 +6,30 @@ export const columns = [
     {
         field: 'topic',
         headerName: 'Topic',
-        width: 300,
+        flex: 1,
         renderCell: (params) => (
             <Link to={`/lectures/${params.row.id}`} component={RouterLink}>
                 {params.row.topic}
             </Link>
         ),
     },
-    { field: 'lesson', headerName: 'Lesson', width: 200 },
-    { field: 'date', headerName: 'Date', width: 150 },
-    { field: 'teacher', headerName: 'Teacher', width: 150 },
+    {
+        field: 'lesson',
+        headerName: 'Lesson',
+        flex: 1,
+        renderCell: ({ row: { lesson } }) => {
+            return lesson.title;
+        },
+    },
+    { field: 'date', headerName: 'Date', flex: 1 },
+    {
+        field: 'teacher',
+        headerName: 'Teacher',
+        flex: 1,
+        renderCell: ({ row: { teacher } }) => {
+            return teacher.firstName + ' ' + teacher.lastName;
+        },
+    },
 ];
 
 export const getTableRows = (payload) => {

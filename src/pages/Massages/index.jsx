@@ -1,9 +1,11 @@
-import { Box, Button, Link, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { Link as RouterLink, useLoaderData } from 'react-router-dom';
 import React from 'react';
 import MassageService from '../../services/Massage';
+import { useSelector } from 'react-redux';
 
 function Massages() {
+    const { isAuth } = useSelector((state) => state.auth);
     const loaderData = useLoaderData();
 
     return (
@@ -14,23 +16,20 @@ function Massages() {
             alignItems="center"
             gap={1}
         >
-            <Button variant="outlined">
-                <Link underline="none" to={'create'} component={RouterLink}>
-                    Add massage
-                </Link>
-            </Button>
-            <Typography variant="h3">Massages</Typography>
+            <Box display="flex" justifyContent="space-between" width="40%">
+                <Typography variant="h4">Massages</Typography>
+                {isAuth && (
+                    <Link underline="none" to={'create'} component={RouterLink}>
+                        <Button variant="outlined">Add massage</Button>
+                    </Link>
+                )}
+            </Box>
             {loaderData.length === 0 && (
                 <Typography variant="body1">
                     There is no any massages yet...
                 </Typography>
             )}
-            <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-            >
+            <Stack>
                 {loaderData.map((massage, index) => (
                     <Link
                         underline="none"
@@ -41,7 +40,7 @@ function Massages() {
                         <Button>{massage.title}</Button>
                     </Link>
                 ))}
-            </Box>
+            </Stack>
         </Box>
     );
 }

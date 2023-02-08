@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Box, Button, Link } from '@mui/material';
 import { Link as RouterLink, useLoaderData } from 'react-router-dom';
-import { useLayoutEffect } from 'react';
 import { getTableRows, columns } from './helpers';
 import LectureService from '../../services/Lecture';
+import { useSelector } from 'react-redux';
 
 const Lectures = () => {
+    const { user } = useSelector((state) => state.auth);
     const loaderData = useLoaderData();
-    const [lectures, setLectures] = useState([]);
-
-    useLayoutEffect(() => {
-        const rows = getTableRows(loaderData);
-
-        setLectures(rows);
-    }, []);
 
     return (
-        <Box display="flex" flexDirection="column" justifyContent="center">
-            <Link to="create" component={RouterLink} underline="none">
-                <Button variant="outlined" sx={{ margin: 1, width: '100%' }}>
-                    ADD LECTURE
-                </Button>
-            </Link>
-            <Box height="75vh" width="100%" margin={1}>
-                <DataGrid rows={[...lectures]} columns={columns} />
+        <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            margin={1}
+            gap={1}
+        >
+            {user && (
+                <Link to="create" component={RouterLink} underline="none">
+                    <Button variant="outlined" fullWidth>
+                        ADD LECTURE
+                    </Button>
+                </Link>
+            )}
+            <Box height="75vh">
+                <DataGrid
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    checkboxSelection
+                    disableSelectionOnClick
+                    experimentalFeatures={{ newEditingApi: true }}
+                    rows={loaderData}
+                    columns={columns}
+                />
             </Box>
         </Box>
     );
@@ -32,8 +42,9 @@ const Lectures = () => {
 
 export const loader = async () => {
     const { payload } = await LectureService.getAllLectures();
+    const rows = getTableRows(payload);
 
-    return payload;
+    return rows;
 };
 
 export default Lectures;

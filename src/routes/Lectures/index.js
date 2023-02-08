@@ -1,5 +1,5 @@
 import React from 'react';
-import AddLecture, { action as addLectureAction } from '../../pages/AddLecture';
+import AddLecture, { loader as addLectureLoader } from '../../pages/AddLecture';
 import Lectures, { loader as lecturesLoader } from '../../pages/Lectures';
 import Lecture, { loader as lectureLoader } from '../../pages/Lecture';
 import LecturesLayout from '../../layouts/Lecture';
@@ -19,7 +19,7 @@ export const lectureRouter = [
             {
                 path: 'create',
                 element: <AddLecture />,
-                // action: addLectureAction,
+                loader: addLectureLoader,
             },
         ],
     },
