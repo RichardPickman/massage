@@ -1,47 +1,32 @@
-import React from 'react';
-import { Provider } from 'react-redux';
+import React, { useLayoutEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 
-import store from './store';
-import Layout from './layouts';
-import Home from './pages/Home';
-import Error from './pages/Error';
+import router from './routes';
 import ThemeProviderHook from './components/ThemeProvider';
 
-import { quizRouter } from './routes/Quiz';
-import { lectureRouter } from './routes/Lectures';
-import { massageRouter } from './routes/Massage';
-import { authRouter } from './routes/Auth';
-
 import './styles.css';
-
-const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Layout />,
-        errorElement: <Error />,
-        children: [
-            {
-                index: true,
-                element: <Home />,
-            },
-        ],
-    },
-    ...lectureRouter,
-    quizRouter,
-    massageRouter,
-    authRouter,
-]);
+import { fetchRefresh } from './store/reducers/auth/fetch';
 
 const App = () => {
+    const { user } = useSelector((state) => state.auth);
+    const token = localStorage.getItem('token');
+    const dispatch = useDispatch();
+
+    useLayoutEffect(() => {
+        if (!user) {
+            if (token) {
+                dispatch(fetchRefresh());
+            }
+        }
+    }, []);
+
     return (
         <ThemeProviderHook>
             <DndProvider backend={HTML5Backend}>
-                <Provider store={store}>
-                    <RouterProvider router={router} />
-                </Provider>
+                <RouterProvider router={router} />
             </DndProvider>
         </ThemeProviderHook>
     );
