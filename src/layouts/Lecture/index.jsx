@@ -9,7 +9,7 @@ export default function LecturesLayout() {
     return (
         <Wrapper>
             <Box display="flex" justifyContent="center" alignItems="center">
-                <Box width={innerWidth > 720 ? '50%' : '100%'}>
+                <Box width={innerWidth >= 1000 ? '50%' : '100%'}>
                     <Outlet />
                 </Box>
             </Box>

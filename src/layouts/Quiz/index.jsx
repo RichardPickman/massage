@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 import Wrapper from '../../components/Wrapper';
 
 function QuizLayout() {
-    const { innerWidth } = window;
+    const contentWidth = window.innerWidth;
 
     return (
         <Wrapper>
@@ -17,7 +17,7 @@ function QuizLayout() {
                 alignItems="center"
                 gap={2}
             >
-                <Box width={innerWidth > 500 ? '50%' : '100%'}>
+                <Box width={contentWidth >= 768 ? '70%' : '100%'}>
                     <Outlet />
                 </Box>
             </Box>
