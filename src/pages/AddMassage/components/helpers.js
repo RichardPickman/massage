@@ -38,3 +38,13 @@ export const template = [
     getTechnic('Rostrząsanie'),
     getTechnic('Głaskania'),
 ];
+
+export const parseTechnics = (technics) =>
+    technics.map((technic) => {
+        const grips = technic.grips.map((grip) => grip._id);
+
+        return {
+            title: technic.title,
+            grips: grips,
+        };
+    });

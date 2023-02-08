@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import {
@@ -49,7 +49,7 @@ function ListWithSearch({ arr, textKey }) {
                                             noWrap
                                             sx={{ width: '90%' }}
                                         >
-                                            {grip.text}
+                                            {grip.title}
                                         </Typography>
                                         <DragIndicatorOutlinedIcon />
                                     </Item>
@@ -68,4 +68,4 @@ ListWithSearch.propTypes = {
     textKey: PropTypes.string,
 };
 
-export default ListWithSearch;
+export default memo(ListWithSearch);
