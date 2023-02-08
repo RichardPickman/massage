@@ -44,7 +44,7 @@ const Result = () => {
                 alignItems="center"
             >
                 <Typography variant="body1">
-                    You&apos;ve got {quiz.currentAnswerCount} of{' '}
+                    You&apos;ve got {quiz.currentAnswerCount.toFixed(1)} of{' '}
                     {quiz.questions.length} right
                 </Typography>
                 <Button

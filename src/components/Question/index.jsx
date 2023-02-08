@@ -16,11 +16,7 @@ const Question = ({ currentState, currentQuestion, onSelect }) => {
                 <CardMedia
                     component="img"
                     loading="lazy"
-                    sx={{
-                        objectFit: 'contain',
-                        background: '#000000',
-                        heigth: '400px',
-                    }}
+                    height="35  0px"
                     alt={currentQuestion.question}
                     image={
                         typeof currentQuestion.img === 'object'
