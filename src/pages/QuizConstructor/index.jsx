@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-
-import Alert from '../../components/Alert';
+import { Stack, TextField, Button, Box } from '@mui/material';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import SaveIcon from '@mui/icons-material/Save';
+
+import Alert from '../../components/AlertWithLink';
 import QuestionTemplate from './template';
 import QuestionService from '../../services/Question';
 import QuizService from '../../services/Quiz';
 
 import { getObjectWithId, prepareQuestion, questionTemp } from './helpers';
-import { Stack, TextField, Button, Box } from '@mui/material';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
+import RandomData from '../../services/RandomData';
 
 const QuizConstructor = () => {
     const [questions, setQuestions] = useState([]);
@@ -26,6 +27,8 @@ const QuizConstructor = () => {
             return QuestionService.createQuestion(preparedQuestion);
         });
 
+        const imageResponse = await RandomData.getImage(250, 150);
+
         const ids = await Promise.all(savedQuestions).then((result) =>
             result.map((question) => (question ? question.payload._id : null))
         );
@@ -34,6 +37,7 @@ const QuizConstructor = () => {
             const response = await QuizService.createQuiz({
                 questions: ids,
                 title: title,
+                image: imageResponse.url,
             });
 
             setId(response.payload._id);
@@ -68,6 +72,15 @@ const QuizConstructor = () => {
         setQuestions(questionsArray);
     };
 
+    const AlertComponent = () => (
+        <Alert
+            text={alert.message}
+            status={alert.status}
+            onClose={() => setAlert({ status: 'onhold' })}
+            path={`/quiz/${id}`}
+        />
+    );
+
     return (
         <Box
             display="flex"
@@ -75,14 +88,7 @@ const QuizConstructor = () => {
             justifyContent="center"
             gap="2rem"
         >
-            {alert.status !== 'onhold' && (
-                <Alert
-                    text={alert.message}
-                    status={alert.status}
-                    onClose={() => setAlert({ status: 'onhold' })}
-                    path={`/quiz/${id}`}
-                />
-            )}
+            {alert.status !== 'onhold' && <AlertComponent />}
             <Box
                 display="flex"
                 flexDirection="column"

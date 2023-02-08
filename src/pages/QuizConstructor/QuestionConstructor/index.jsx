@@ -62,6 +62,12 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
         updateQuestion(questionId, { img: event.target.files[0] });
     };
 
+    const handleImageRemove = () => {
+        setImage(null);
+
+        updateQuestion(questionId, { img: null });
+    };
+
     const handleQuestion = (event) => {
         setQuestion(event.target.value);
         updateQuestion(questionId, { question: event.target.value });
@@ -91,7 +97,7 @@ const QuestionConstructor = ({ questionData, questionId, updateQuestion }) => {
                 image={image ? window.URL.createObjectURL(image) : null}
                 text={image ? image.name : 'File unnamed'}
                 handleImage={handleImage}
-                removeImage={() => setImage(null)}
+                removeImage={handleImageRemove}
             />
             <Grid container spacing={2} ref={listRef}>
                 {answers.map((answer) => (
