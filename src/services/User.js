@@ -9,7 +9,10 @@ class UserService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async login(body) {
@@ -20,7 +23,10 @@ class UserService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async logout(body) {
@@ -31,14 +37,29 @@ class UserService {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
-        });
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
+    }
+
+    static async refreshToken() {
+        return load({
+            url: 'api/users/refresh',
+            method: 'GET',
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 
     static async getAll() {
         return load({
             url: 'api/users/all',
             method: 'GET',
-        });
+        })
+            .then((res) => res.json())
+            .then((res) => res);
     }
 }
 
