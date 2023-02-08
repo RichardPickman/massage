@@ -1,12 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
 import quizReducer from './reducers/quiz';
 import imagesReducer from './reducers/images';
-import userReducer from './reducers/user';
+import userReducer from './reducers/auth/user';
+import gripReducer from './reducers/grips';
+import teachersReducer from './reducers/teachers';
+import massageReducer from './reducers/massage';
+import quizzesReducer from './reducers/quizzes';
+import thunk from 'redux-thunk';
 
 export default configureStore({
     reducer: {
         quiz: quizReducer,
         images: imagesReducer,
-        user: userReducer,
+        auth: userReducer,
+        grip: gripReducer,
+        teachers: teachersReducer,
+        massage: massageReducer,
+        quizzes: quizzesReducer,
     },
+    middleware: [thunk],
 });
