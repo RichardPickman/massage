@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import TeacherService from '../../../services/Teacher';
 
 export const fetchCreate = createAsyncThunk(
-    'teacher/create',
+    'teachers/create',
     async (data, { rejectWithValue }) => {
         try {
             const response = await TeacherService.createGrip(data);
@@ -15,7 +15,7 @@ export const fetchCreate = createAsyncThunk(
 );
 
 export const fetchAllTeachers = createAsyncThunk(
-    'teacher/all',
+    'teachers/all',
     async (data, { rejectWithValue }) => {
         try {
             const response = await TeacherService.getAllTeachers();
@@ -28,12 +28,13 @@ export const fetchAllTeachers = createAsyncThunk(
 );
 
 export const fetchRemove = createAsyncThunk(
-    'teacher/remove',
+    'teachers/remove',
     async (data, { rejectWithValue }) => {
         try {
-            const response = await TeacherService.removeGrip();
+            const response = await TeacherService.removeTeacher(data);
+            const teachers = await TeacherService.getAllTeachers();
 
-            return response;
+            return teachers;
         } catch (error) {
             return rejectWithValue(error);
         }
@@ -41,7 +42,7 @@ export const fetchRemove = createAsyncThunk(
 );
 
 export const fetchUpdate = createAsyncThunk(
-    'teacher/update',
+    'teachers/update',
     async (data, { rejectWithValue }) => {
         try {
             const response = await TeacherService.update(data);

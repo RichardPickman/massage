@@ -17,8 +17,13 @@ const initialState = {
 };
 
 export const teacherSlice = createSlice({
-    name: 'teacher',
+    name: 'teachers',
     initialState: initialState,
+    reducers: {
+        setTeachers: (state, action) => {
+            state.teachers = action.payload.teachers;
+        },
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchCreate.fulfilled, (state, action) => {
             state.teachers = action.payload;
@@ -33,9 +38,7 @@ export const teacherSlice = createSlice({
         builder.addCase(fetchAllTeachers.rejected, statusCallbacks.REJECTED);
 
         builder.addCase(fetchRemove.fulfilled, (state, action) => {
-            state.teachers = [...state.teachers].filter(
-                (item) => item.id !== action.payload
-            );
+            state.teachers = action.payload;
         });
         builder.addCase(fetchRemove.pending, statusCallbacks.PENDING);
         builder.addCase(fetchRemove.rejected, statusCallbacks.REJECTED);
@@ -47,5 +50,7 @@ export const teacherSlice = createSlice({
         builder.addCase(fetchUpdate.rejected, statusCallbacks.REJECTED);
     },
 });
+
+export const { setTeachers } = teacherSlice.actions;
 
 export default teacherSlice.reducer;
