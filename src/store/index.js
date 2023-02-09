@@ -4,6 +4,7 @@ import imagesReducer from './reducers/images';
 import userReducer from './reducers/auth/user';
 import gripReducer from './reducers/grips';
 import teachersReducer from './reducers/teachers';
+import teacherReducer from './reducers/teacher';
 import massageReducer from './reducers/massage';
 import quizzesReducer from './reducers/quizzes';
 import thunk from 'redux-thunk';
@@ -17,6 +18,7 @@ export default configureStore({
         teachers: teachersReducer,
         massage: massageReducer,
         quizzes: quizzesReducer,
+        teacher: teacherReducer,
     },
     middleware: [thunk],
 });
