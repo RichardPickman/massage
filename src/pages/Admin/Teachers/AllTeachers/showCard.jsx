@@ -39,7 +39,7 @@ function Card({ teacher }) {
                         <Typography variant="caption">Lessons:</Typography>
                         <Box display="flex" flexWrap="wrap" gap={1}>
                             {teacher.lessons.map((lesson) => (
-                                <Typography key={lesson._id} variant="body1">
+                                <Typography key={lesson.id} variant="body1">
                                     {lesson.title}
                                 </Typography>
                             ))}

@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Box, Button, Grid, Stack } from '@mui/material';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
 import Card from './showCard';
 import TeacherService from '../../../../services/Teacher';
 import PageHeader from '../../helpers/PageHeader';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRemove } from '../../../../store/reducers/teachers/fetch';
+import { setTeachers } from '../../../../store/reducers/teachers';
 
 function Teachers() {
-    const teachers = useLoaderData();
+    const { teachers } = useSelector((state) => state.teachers);
+    const loaderData = useLoaderData();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useLayoutEffect(() => {
+        dispatch(setTeachers({ teachers: loaderData }));
+    }, []);
 
     const handleNewTeacher = () => navigate('new', { replace: true });
     const handleEdit = (id) => navigate(`edit/${id}`, { replace: true });
-    const handleDelete = async (id) => {
-        try {
-            const response = await TeacherService.removeTeacher(id);
-
-            navigate(0);
-        } catch (error) {
-            throw { message: error.message };
-        }
-    };
+    const handleDelete = (id) => dispatch(fetchRemove(id));
 
     return (
         <Box
