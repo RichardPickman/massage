@@ -6,79 +6,66 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import React from 'react';
-import { useState } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import Avatar from '../../../../components/Avatar';
+import { drawerWidth } from '../../../../layouts/Admin';
 import LessonService from '../../../../services/Lesson';
-import TeacherService from '../../../../services/Teacher';
+import {
+    changeEmail,
+    changeFirstName,
+    changeImage,
+    changeLastName,
+    changeLessons,
+    clearState,
+} from '../../../../store/reducers/teacher';
+import { fetchCreate } from '../../../../store/reducers/teacher/fetch';
 import { fetchStatuses } from '../../../../utils/consts';
-import { getFormData } from '../../../../utils/formDataConstructor';
+import InputWithLabel from '../components/InputWithLabel';
 import TransferList from './TransferList';
 
 function NewTeacher() {
+    const { status, ...teacher } = useSelector((state) => state.teacher);
+    const dispatch = useDispatch();
     const lessonsData = useLoaderData();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [img, setImg] = useState('');
-    const [lessons, setLessons] = useState([]);
-    const [emailStatus, setEmailStatus] = useState(fetchStatuses.IDLE);
+    const width = window.innerWidth - drawerWidth;
+
     const navigate = useNavigate();
 
-    const onLessonChange = (data) => setLessons(data);
+    useLayoutEffect(() => {
+        dispatch(clearState());
+    }, []);
 
-    const handleFirstName = (e) => setFirstName(e.target.value);
-    const handleLastName = (e) => setLastName(e.target.value);
-    const handleEmail = (e) => {
-        setEmailStatus(fetchStatuses.IDLE);
-        setEmail(e.target.value);
-    };
-    const handleImage = (img) => setImg(img);
-
-    const handleSave = async () => {
-        const payload = getFormData({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            img: img,
-            lessons: lessons.map((lesson) => lesson.id),
-        });
-
-        try {
-            const result = await TeacherService.createTeacher(payload);
-
+    useEffect(() => {
+        if (status === fetchStatuses.SUCCEEDED) {
             navigate('/admin/teachers', { replace: true });
-        } catch (e) {
-            if (e.message === 'Validation error') {
-                setEmailStatus(fetchStatuses.FAILED);
-            }
-
-            throw { message: e.message };
         }
-    };
+    }, [status]);
+
+    const onLessonChange = (data) => dispatch(changeLessons(data));
+    const handleFirstName = (e) => dispatch(changeFirstName(e.target.value));
+    const handleLastName = (e) => dispatch(changeLastName(e.target.value));
+    const handleEmail = (e) => dispatch(changeEmail(e.target.value));
+    const handleImage = (img) => dispatch(changeImage(img));
+
+    const handleSave = () =>
+        dispatch(
+            fetchCreate({
+                ...teacher,
+            })
+        );
 
     const handleCancel = () => navigate(-1);
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                margin: '0 auto',
-                flexDirection: 'column',
-                width: '80%',
-                gap: 2,
-                p: 2,
-            }}
-        >
+        <Box display="flex" flexDirection="column" gap={2}>
             <Paper
                 variant="outlined"
                 sx={{
                     display: 'flex',
                     margin: '0 auto',
                     flexDirection: 'column',
-                    background: '#222222',
-                    width: '50%',
                     gap: 2,
                     p: 2,
                 }}
@@ -86,9 +73,10 @@ function NewTeacher() {
                 <Typography variant="h5">Profile</Typography>
                 <Box
                     display="flex"
+                    flexDirection={width <= 768 ? 'column' : 'row'}
                     justifyContent="space-between"
                     alignItems="center"
-                    gap={1}
+                    gap={2}
                 >
                     <Avatar
                         width={200}
@@ -96,54 +84,29 @@ function NewTeacher() {
                         onAvatarChange={handleImage}
                     />
                     <Box display="flex" flexDirection="column" gap={1}>
-                        <Stack
-                            direction="row"
-                            justifyContent="right"
-                            alignItems="center"
-                            spacing={1}
-                        >
-                            <Typography variant="caption">
-                                First name:{' '}
-                            </Typography>
-                            <TextField
-                                value={firstName}
+                        <Box display="flex" flexDirection="column" gap={1}>
+                            <InputWithLabel
+                                caption={'First Name'}
+                                value={teacher.firstName}
                                 onChange={handleFirstName}
                             />
-                        </Stack>
-                        <Stack
-                            direction="row"
-                            justifyContent="right"
-                            alignItems="center"
-                            spacing={1}
-                        >
-                            <Typography variant="caption">
-                                Last name:{' '}
-                            </Typography>
-                            <TextField
-                                value={lastName}
+                            <InputWithLabel
+                                caption={'Last name'}
+                                value={teacher.lastName}
                                 onChange={handleLastName}
                             />
-                        </Stack>
-                        <Stack
-                            direction="row"
-                            justifyContent="right"
-                            alignItems="center"
-                            spacing={1}
-                        >
-                            <Typography variant="caption">Email: </Typography>
-                            <TextField
-                                error={
-                                    emailStatus.status === fetchStatuses.FAILED
-                                }
+                            <InputWithLabel
+                                caption={'Email'}
+                                error={status === fetchStatuses.FAILED}
                                 helperText={
-                                    emailStatus.status === fetchStatuses.FAILED
+                                    status === fetchStatuses.FAILED
                                         ? 'Invalid email'
                                         : ''
                                 }
-                                value={email}
+                                value={teacher.email}
                                 onChange={handleEmail}
                             />
-                        </Stack>
+                        </Box>
                     </Box>
                 </Box>
                 <TransferList
