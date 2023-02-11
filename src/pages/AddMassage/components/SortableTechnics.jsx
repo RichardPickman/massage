@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { memo, useRef } from 'react';
+import React, { useRef } from 'react';
 import itemTypes from '../../../utils/itemTypes';
 import { useDrag, useDrop } from 'react-dnd';
 
@@ -12,7 +12,7 @@ function SortableTechnicItem({
     moveTechnic,
 }) {
     const ref = useRef(null);
-    const [{ handlerId, isOver, isOverCurrent }, drop] = useDrop({
+    const [_, drop] = useDrop({
         accept,
         collect(monitor) {
             return {
@@ -50,7 +50,7 @@ function SortableTechnicItem({
             item.index = hoverIndex;
         },
     });
-    const [{ isDragging }, drag] = useDrag({
+    const [__, drag] = useDrag({
         type: itemTypes.BOX,
         item: () => ({ technic, index }),
         collect: (monitor) => ({

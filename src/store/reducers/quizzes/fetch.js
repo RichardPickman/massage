@@ -18,7 +18,7 @@ export const fetchRemove = createAsyncThunk(
     'quizzes/remove',
     async (data, { rejectWithValue }) => {
         try {
-            const removedQuiz = await QuizService.removeQuiz(data.id);
+            const _ = await QuizService.removeQuiz(data.id);
             const allQuizzes = await QuizService.getAllQuizzes();
 
             return allQuizzes.payload;

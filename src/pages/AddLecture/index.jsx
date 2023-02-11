@@ -13,7 +13,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getForm, putFilesToArray } from './helpers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
 
 import React, { useCallback, useState } from 'react';
 import Alert from '../../components/AlertWithLink';

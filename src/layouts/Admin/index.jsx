@@ -7,7 +7,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Outlet, Link as RouterLink, redirect } from 'react-router-dom';
+import { Outlet, Link as RouterLink } from 'react-router-dom';
 import { links } from './links';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { CssBaseline, Divider, IconButton, Link } from '@mui/material';
@@ -58,8 +58,6 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Sidebar() {
-    const contentWidth = window.innerWidth - drawerWidth;
-
     const [open, setOpen] = React.useState(true);
 
     const handleDrawerToggle = () => setOpen(!open);

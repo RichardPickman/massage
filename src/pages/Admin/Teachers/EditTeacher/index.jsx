@@ -1,11 +1,4 @@
-import {
-    Box,
-    Button,
-    Paper,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoaderData, useNavigate } from 'react-router-dom';
@@ -19,7 +12,6 @@ import {
     changeImage,
     changeLastName,
     changeLessons,
-    clearState,
     setEditTeacher,
 } from '../../../../store/reducers/teacher';
 import { fetchUpdate } from '../../../../store/reducers/teacher/fetch';

@@ -4,7 +4,7 @@ import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
 
 function DragItem({ item, type, children }) {
-    const [{ opacity }, drag] = useDrag(
+    const [_, drag] = useDrag(
         () => ({
             type,
             item,

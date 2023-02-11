@@ -5,7 +5,7 @@ export const fetchCreate = createAsyncThunk(
     'grip/create',
     async (data, { rejectWithValue }) => {
         try {
-            const response = await GripsService.createGrip(data);
+            const _ = await GripsService.createGrip(data);
             const grips = await GripsService.getAllGrips();
 
             return grips;
@@ -37,7 +37,7 @@ export const fetchRemove = createAsyncThunk(
     'grip/remove',
     async (data, { rejectWithValue }) => {
         try {
-            const response = await GripsService.removeGrip(data);
+            const _ = await GripsService.removeGrip(data);
             const allGrips = await GripsService.getAllGrips();
 
             return allGrips;

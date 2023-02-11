@@ -6,8 +6,7 @@ export const fetchUpdate = createAsyncThunk(
     'teacher/update',
     async (data, { rejectWithValue }) => {
         try {
-            const { id, firstName, lastName, email, img, lessons, ...props } =
-                data;
+            const { id, firstName, lastName, email, img, lessons, ..._ } = data;
             const payload = getFormData({
                 firstName,
                 lastName,

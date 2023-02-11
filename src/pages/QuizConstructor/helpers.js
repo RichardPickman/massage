@@ -33,7 +33,7 @@ export const getQuestionFormData = (data) => {
 export const prepareQuestion = (question) => {
     const notBlankAnswers = question.answers.filter((answer) => answer.text);
 
-    const { id, isPreview, ...fields } = question;
+    const { id: _, isPreview: __, ...fields } = question;
 
     const properQuestion = {
         ...fields,

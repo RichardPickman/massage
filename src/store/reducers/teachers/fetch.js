@@ -31,7 +31,7 @@ export const fetchRemove = createAsyncThunk(
     'teachers/remove',
     async (data, { rejectWithValue }) => {
         try {
-            const response = await TeacherService.removeTeacher(data);
+            const _ = await TeacherService.removeTeacher(data);
             const teachers = await TeacherService.getAllTeachers();
 
             return teachers;

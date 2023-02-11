@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { fetchStatuses } from '../../../utils/consts';
 import { getTechnic, getTemplate } from './helpers';
 import produce from 'immer';
@@ -34,7 +34,7 @@ const massageSlice = createSlice({
 
             state.technics = technics;
         },
-        addTemplateTechnics: (state, action) => {
+        addTemplateTechnics: (state) => {
             return {
                 ...state,
                 technics: getTemplate(),

@@ -1,4 +1,4 @@
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Link, Typography } from '@mui/material';
 import { Link as RouterLink, useLoaderData } from 'react-router-dom';
 import React, { useLayoutEffect } from 'react';
 import QuizService from '../../services/Quiz';

@@ -6,7 +6,6 @@ import GripService from '../../services/Grip';
 import ListWithSearch from './components/ListWithSearch';
 import TechnicControls from './components/TechnicControls';
 import { getDraggableGrip } from './components/helpers';
-import AnimatedList from '../../components/AnimatedList';
 import TechnicsList from './components/TechnicsList';
 import Alert from './components/Alert';
 import { useDispatch, useSelector } from 'react-redux';

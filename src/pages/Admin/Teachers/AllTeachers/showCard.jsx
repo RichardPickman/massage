@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { imageURL } from '../../../../utils/consts';
 
 function Card({ teacher }) {

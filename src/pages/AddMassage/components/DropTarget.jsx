@@ -9,7 +9,7 @@ export const DropTarget = memo(function DropTarget({
     onDrop,
     children,
 }) {
-    const [{ isOver, canDrop }, drop] = useDrop({
+    const [_, drop] = useDrop({
         accept: accept,
         drop: onDrop,
         collect: (monitor) => ({

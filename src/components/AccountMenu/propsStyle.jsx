@@ -1,7 +1,3 @@
-import React from 'react';
-import { Menu } from '@mui/material';
-import PropTypes from 'prop-types';
-
 export const propsStyle = {
     elevation: 0,
     sx: {

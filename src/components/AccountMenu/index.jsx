@@ -11,7 +11,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import { useDispatch, useSelector } from 'react-redux';
 import { propsStyle } from './propsStyle';
 import { Menu } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchLogout } from '../../store/reducers/auth/fetch';
 

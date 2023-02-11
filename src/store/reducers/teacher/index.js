@@ -44,18 +44,18 @@ const teacherSlice = createSlice({
                 lessons,
             };
         },
-        clearState: (state, action) => {
+        clearState: () => {
             return initialState;
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchCreate.fulfilled, (state, action) => {
+        builder.addCase(fetchCreate.fulfilled, (state) => {
             state.status = fetchStatuses.SUCCEEDED;
         });
         builder.addCase(fetchCreate.pending, statusCallbacks.PENDING);
         builder.addCase(fetchCreate.rejected, statusCallbacks.REJECTED);
 
-        builder.addCase(fetchUpdate.fulfilled, (state, action) => {
+        builder.addCase(fetchUpdate.fulfilled, (state) => {
             state.status = fetchStatuses.SUCCEEDED;
         });
         builder.addCase(fetchUpdate.pending, statusCallbacks.PENDING);
