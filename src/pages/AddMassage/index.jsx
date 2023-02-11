@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Box, Button, Grid, Stack } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
@@ -23,11 +23,11 @@ function AddMassage() {
 
     const handleSave = () => {
         dispatch(fetchCreate({ title, technics }));
-
-        return () => {
-            dispatch(clearData());
-        };
     };
+
+    useLayoutEffect(() => {
+        dispatch(clearData());
+    }, []);
 
     return (
         <Box display="flex" flexDirection="column" gap={2}>
