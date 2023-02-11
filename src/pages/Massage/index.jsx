@@ -3,7 +3,12 @@ import { Box } from '@mui/system';
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import Accordion from '../../components/Accordion';
+import {
+    StyledAccordionDetails,
+    StyledAccordionSummary,
+} from '../../components/Accordion/styles';
 import MassageService from '../../services/Massage';
+import { ExpandMoreOutlined } from '@mui/icons-material';
 
 export default function Massage() {
     const loaderData = useLoaderData();
@@ -18,12 +23,31 @@ export default function Massage() {
         >
             <Typography variant={'h3'}>{loaderData.title}</Typography>
             <Box width="50%">
-                {loaderData.technics.map((item) => (
-                    <Accordion
-                        key={item._id}
-                        technic={item}
-                        isConstructor={false}
-                    />
+                {loaderData.technics.map((technic) => (
+                    <Accordion key={technic._id}>
+                        <StyledAccordionSummary
+                            expandIcon={
+                                technic.grips.length > 0 ? (
+                                    <ExpandMoreOutlined />
+                                ) : (
+                                    false
+                                )
+                            }
+                        >
+                            <Typography textTransform={'capitalize'}>
+                                {technic.title}
+                            </Typography>
+                        </StyledAccordionSummary>
+                        {technic.grips.length > 0 && (
+                            <StyledAccordionDetails>
+                                {technic.grips.map((grip) => (
+                                    <Typography key={grip._id}>
+                                        {technic.title}
+                                    </Typography>
+                                ))}
+                            </StyledAccordionDetails>
+                        )}
+                    </Accordion>
                 ))}
             </Box>
         </Box>
