@@ -30,7 +30,7 @@ export const ImageList = ({ images, setImages }) => {
                     <ImageCard
                         remove={() =>
                             setImages((prev) =>
-                                prev.filter((item, i) => item.id !== img.id)
+                                prev.filter((item) => item.id !== img.id)
                             )
                         }
                         img={window.URL.createObjectURL(img.file)}

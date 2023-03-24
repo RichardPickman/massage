@@ -1,25 +1,21 @@
-import {
-    Box,
-    MenuItem,
-    TextField,
-    Button,
-    Stack,
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { getForm } from './helpers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import React, { useState } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
+import { useLoaderData } from 'react-router-dom';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box, MenuItem, TextField, Button, Stack} from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 import Alert from '../../components/AlertWithLink';
 
 import TeacherService from '../../services/Teacher';
 import LessonService from '../../services/Lesson';
 import LectureService from '../../services/Lecture';
-import { useLoaderData } from 'react-router-dom';
+
 import { ImageList } from './elements/ImageList';
-import { nanoid } from '@reduxjs/toolkit';
 import { FormControl } from './elements/FormControl';
+
+import { getForm } from './helpers';
 
 function AddLecture() {
     const loaderData = useLoaderData();
@@ -31,7 +27,7 @@ function AddLecture() {
     const [alert, setAlert] = useState({ status: 'onhold', message: '' });
     const [id, setId] = useState(null);
 
-    const submitForm = async (e) => {
+    const submitForm = async () => {
         const lecture = getForm(topic, teacher, date, lesson, images);
         
         try {
