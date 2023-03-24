@@ -10,18 +10,8 @@ export const getForm = (topic, teacher, date, lesson, images) => {
     lecture.append('lesson', lesson);
 
     for (let img of images) {
-        lecture.append('images', img);
+        lecture.append('images', img.file);
     }
 
     return lecture;
-};
-
-export const putFilesToArray = (files, images) => {
-    const imgs = [...images];
-
-    for (let image of files) {
-        imgs.push(image);
-    }
-
-    return imgs;
 };

@@ -1,29 +1,21 @@
-import {
-    Box,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    TextField,
-    Button,
-    Stack,
-    Grid,
-} from '@mui/material';
+import React, { useState } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
+import { useLoaderData } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { getForm, putFilesToArray } from './helpers';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box, MenuItem, TextField, Button, Stack} from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import React, { useCallback, useState } from 'react';
 import Alert from '../../components/AlertWithLink';
 
 import TeacherService from '../../services/Teacher';
 import LessonService from '../../services/Lesson';
 import LectureService from '../../services/Lecture';
-import ImageCard from '../../components/ImageCard';
-import update from 'immutability-helper';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { useLoaderData } from 'react-router-dom';
+
+import { ImageList } from './elements/ImageList';
+import { FormControl } from './elements/FormControl';
+
+import { getForm } from './helpers';
 
 function AddLecture() {
     const loaderData = useLoaderData();
@@ -35,24 +27,9 @@ function AddLecture() {
     const [alert, setAlert] = useState({ status: 'onhold', message: '' });
     const [id, setId] = useState(null);
 
-    const [listRef] = useAutoAnimate();
-
-    const moveImage = useCallback((dragIndex, hoverIndex) => {
-        setImages((prevImages) =>
-            update(prevImages, {
-                $splice: [
-                    [dragIndex, 1],
-                    [hoverIndex, 0, prevImages[dragIndex]],
-                ],
-            })
-        );
-    }, []);
-
-    const submitForm = async (e) => {
-        e.preventDefault();
-
-        const lecture = getForm(topic, teacher, date, lesson, images.reverse());
-
+    const submitForm = async () => {
+        const lecture = getForm(topic, teacher, date, lesson, images);
+        
         try {
             const response = await LectureService.createLecture(lecture);
 
@@ -66,6 +43,14 @@ function AddLecture() {
         }
     };
 
+    const handleImageUpload = (e) => {
+        const arr = Array.from(e.target.files);
+
+        const result = arr.map((img) => ({ id: nanoid(), file: img }));
+
+        setImages((prev) => [...prev, ...result]);
+    };
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box display="flex" flexDirection="column" gap={2}>
@@ -77,116 +62,62 @@ function AddLecture() {
                         path={`/lectures/${id}`}
                     />
                 )}
-                <Box
-                    component="form"
-                    action="/lectures"
-                    method="POST"
-                    encType="multipart/form-data"
-                    onSubmit={submitForm}
-                    display="flex"
-                    flexDirection="column"
-                    gap={2}
-                >
-                    <TextField
-                        label="Topic"
-                        error={topic.length === 0}
-                        value={topic}
-                        onChange={(event) => setTopic(event.target.value)}
-                        helperText={
-                            topic.length === 0 ? 'Topic cannot be empty' : ''
-                        }
+                <TextField
+                    label="Topic"
+                    error={topic.length === 0}
+                    value={topic}
+                    onChange={(event) => setTopic(event.target.value)}
+                    helperText={
+                        topic.length === 0 ? 'Topic cannot be empty' : ''
+                    }
+                />
+                <FormControl value={teacher} label="Teacher" onClick={(e) => setTeachers(e.target.value)}>
+                    {loaderData.teachers.map((teacher) => (
+                        <MenuItem value={teacher.id} key={teacher.id}>
+                            {[teacher.firstName, teacher.lastName].join(
+                                ' '
+                            )}
+                        </MenuItem>
+                    ))}
+                </FormControl>
+                <FormControl value={lesson} label="Lesson" onClick={(event) => setLesson(event.target.value)}>
+                    {loaderData.lessons.map((lesson) => (
+                        <MenuItem value={lesson.id} key={lesson.id}>
+                            {lesson.title}
+                        </MenuItem>
+                    ))}
+                </FormControl>
+                <DatePicker
+                    label="Lecture day"
+                    value={date}
+                    onChange={(newValue) => setDate(newValue)}
+                    renderInput={(params) => <TextField {...params} />}
+                />
+                <Button variant="outlined" component="label">
+                    Upload File
+                    <input
+                        type="file"
+                        name="images"
+                        accept="image/*"
+                        hidden
+                        multiple
+                        onChange={handleImageUpload}
                     />
-                    <FormControl fullWidth>
-                        <InputLabel id="teacher-label">Teacher</InputLabel>
-                        <Select
-                            labelId="teacher-label"
-                            value={teacher}
-                            label="Teacher"
-                            onChange={(event) =>
-                                setTeachers(event.target.value)
-                            }
-                        >
-                            {loaderData.teachers.map((teacher) => (
-                                <MenuItem value={teacher.id} key={teacher.id}>
-                                    {[teacher.firstName, teacher.lastName].join(
-                                        ' '
-                                    )}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <InputLabel id="lesson-label">Lesson</InputLabel>
-                        <Select
-                            labelId="lesson-label"
-                            value={lesson}
-                            label="Lesson"
-                            onChange={(event) => setLesson(event.target.value)}
-                        >
-                            {loaderData.lessons.map((lesson) => (
-                                <MenuItem value={lesson.id} key={lesson.id}>
-                                    {lesson.title}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <DatePicker
-                        label="Lecture day"
-                        value={date}
-                        onChange={(newValue) => setDate(newValue)}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                    <Button variant="outlined" component="label">
-                        Upload File
-                        <input
-                            type="file"
-                            name="images"
-                            accept="image/*"
-                            hidden
-                            multiple
-                            onChange={(event) =>
-                                setImages(
-                                    putFilesToArray(event.target.files, images)
-                                )
-                            }
-                        />
-                    </Button>
-                    <Grid
-                        container
-                        justifyContent="left"
-                        spacing={2}
-                        ref={listRef}
+                </Button>
+                <ImageList images={images} setImages={setImages} />
+                <Stack direction="row" spacing={2}>
+                    <Button
+                        variant="outlined"
+                        onClick={submitForm}
+                        color="success"
+                        fullWidth
                     >
-                        {images.map((img, index) => (
-                            <Grid item key={img.name} xs={6} sm={4} md={3}>
-                                <ImageCard
-                                    remove={() =>
-                                        setImages((prev) =>
-                                            prev.filter((img, i) => i !== index)
-                                        )
-                                    }
-                                    img={window.URL.createObjectURL(img)}
-                                    text={img.name}
-                                    index={index}
-                                    moveImage={moveImage}
-                                />
-                            </Grid>
-                        ))}
-                    </Grid>
-                    <Stack direction="row" spacing={2}>
-                        <Button
-                            variant="outlined"
-                            color="success"
-                            type="submit"
-                            fullWidth
-                        >
-                            Save
-                        </Button>
-                        <Button variant="outlined" color="error" fullWidth>
-                            Delete
-                        </Button>
-                    </Stack>
-                </Box>
+                        Save
+                    </Button>
+                    <Button variant="outlined" color="error" fullWidth>
+                        Delete
+                    </Button>
+                </Stack>
             </Box>
         </LocalizationProvider>
     );
