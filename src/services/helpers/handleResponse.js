@@ -1,5 +1,4 @@
 import { handleAuth } from './handleAuth';
-import { repeatRequest } from './repeatResponse';
 
 export const baseURL = process.env.REACT_APP_API_URL;
 
@@ -21,10 +20,6 @@ export const handleResponse = async (response, requestData) => {
                 return response;
             }
         }
-    }
-
-    if (response.url === `${baseURL}/auth/refresh`) {
-        return repeatRequest(requestData);
     }
 
     return response;
