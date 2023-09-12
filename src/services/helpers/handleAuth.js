@@ -4,7 +4,11 @@ import { updateTokens } from './updateTokens';
 export const handleAuth = async (request) => {
     if (!request._isRetry) {
         try {
-            const newTokens = await updateTokens();
+            const newTokens = await load(request);
+
+            console.log(
+                'Request is not retried yet... Tokens updated... processing'
+            );
 
             localStorage.setItem('token', `Bearer ${newTokens.accessToken}`);
 
@@ -13,7 +17,12 @@ export const handleAuth = async (request) => {
                 _isRetry: true,
                 credentials: 'include',
             };
+
+            console.log('Repeat is going to be initiated, processing: ');
+
             const repeatRequest = await load(newRequest);
+
+            console.log('Repeat initiated, processing: ');
 
             return repeatRequest;
         } catch (error) {
@@ -21,5 +30,12 @@ export const handleAuth = async (request) => {
         }
     }
 
-    throw { ...request, status: 401 };
+    if (request._isRetry) {
+        throw new Error('Failed to get an authorization after retry');
+    }
+
+    throw new Error('Error while processing auth: ', {
+        ...request,
+        status: 401,
+    });
 };
