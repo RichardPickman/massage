@@ -12,6 +12,7 @@ export const makeURL = (request) => {
 export const load = (request) => {
     const fetchData = {
         url: makeURL(request),
+        _isRetry: request._isRetry || false,
         payload: {
             headers: setHeaders(request.headers),
             method: request.method,
@@ -21,6 +22,6 @@ export const load = (request) => {
     };
 
     return fetch(fetchData.url, fetchData.payload)
-        .then((response) => handleResponse(response, request))
+        .then((response) => handleResponse(response, fetchData))
         .then((data) => data);
 };
