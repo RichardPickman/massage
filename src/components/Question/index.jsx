@@ -1,37 +1,42 @@
-import {
-    CardActions,
-    CardContent,
-    CardMedia,
-    Grid,
-    Typography,
-} from '@mui/material';
+import { CardActions, Grid, Typography } from '@mui/material';
 import React from 'react';
 import PropTypes from 'prop-types';
 import ButtonHandler from '../ButtonHandler';
 
+const containerStyle = {
+    display: 'flex',
+    height: 'fit-content',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+};
+
 const Question = ({ currentState, currentQuestion, onSelect }) => {
     return (
         <>
-            {currentQuestion.img && (
-                <CardMedia
-                    component="img"
-                    loading="lazy"
-                    height="35  0px"
-                    alt={currentQuestion.question}
-                    image={
-                        typeof currentQuestion.img === 'object'
-                            ? window.URL.createObjectURL(currentQuestion.img)
-                            : currentQuestion.img
-                    }
-                />
-            )}
-            {currentQuestion.question && (
-                <CardContent>
+            <div style={containerStyle}>
+                {currentQuestion.img && (
+                    <img
+                        src={
+                            typeof currentQuestion.img === 'object'
+                                ? window.URL.createObjectURL(
+                                      currentQuestion.img
+                                  )
+                                : currentQuestion.img
+                        }
+                        style={{
+                            height: '400px',
+                            width: 'auto',
+                            objectFit: 'contain',
+                        }}
+                    />
+                )}
+                {currentQuestion.question && (
                     <Typography variant="h4" align="center">
                         {currentQuestion.question}
                     </Typography>
-                </CardContent>
-            )}
+                )}
+            </div>
             <CardActions>
                 <Grid container spacing={2}>
                     {currentQuestion.answers.map(
