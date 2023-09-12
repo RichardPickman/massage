@@ -3,7 +3,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { useLoaderData } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Box, MenuItem, TextField, Button, Stack} from '@mui/material';
+import { Box, MenuItem, TextField, Button, Stack } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import Alert from '../../components/AlertWithLink';
@@ -29,7 +29,7 @@ function AddLecture() {
 
     const submitForm = async () => {
         const lecture = getForm(topic, teacher, date, lesson, images);
-        
+
         try {
             const response = await LectureService.createLecture(lecture);
 
@@ -56,7 +56,7 @@ function AddLecture() {
             <Box display="flex" flexDirection="column" gap={2}>
                 {alert.status !== 'onhold' && (
                     <Alert
-                        text={alert.messageWithLink}
+                        text={alert.message}
                         status={alert.status}
                         onClose={() => setAlert({ status: 'onhold' })}
                         path={`/lectures/${id}`}
@@ -71,16 +71,22 @@ function AddLecture() {
                         topic.length === 0 ? 'Topic cannot be empty' : ''
                     }
                 />
-                <FormControl value={teacher} label="Teacher" onClick={(e) => setTeachers(e.target.value)}>
+                <FormControl
+                    value={teacher}
+                    label="Teacher"
+                    onClick={(e) => setTeachers(e.target.value)}
+                >
                     {loaderData.teachers.map((teacher) => (
                         <MenuItem value={teacher.id} key={teacher.id}>
-                            {[teacher.firstName, teacher.lastName].join(
-                                ' '
-                            )}
+                            {[teacher.firstName, teacher.lastName].join(' ')}
                         </MenuItem>
                     ))}
                 </FormControl>
-                <FormControl value={lesson} label="Lesson" onClick={(event) => setLesson(event.target.value)}>
+                <FormControl
+                    value={lesson}
+                    label="Lesson"
+                    onClick={(event) => setLesson(event.target.value)}
+                >
                     {loaderData.lessons.map((lesson) => (
                         <MenuItem value={lesson.id} key={lesson.id}>
                             {lesson.title}
