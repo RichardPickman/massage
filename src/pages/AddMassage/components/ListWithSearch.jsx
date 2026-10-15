@@ -1,16 +1,6 @@
-import React, { memo, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import {
-    Box,
-    Card,
-    CardContent,
-    Stack,
-    TextField,
-    Typography,
-} from '@mui/material';
-import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
-
+import React, { memo, useMemo, useState } from 'react';
+import { Card } from '../../../components/ui/card';
 import DragItem from './DragItem';
 import { Item } from './helpers';
 
@@ -27,17 +17,17 @@ function ListWithSearch({ arr, textKey }) {
     );
 
     return (
-        <Card variant="outlined" sx={{ overflow: 'auto' }}>
+        <Card>
             <CardContent>
-                <Box display="flex" flexDirection="column" gap={2}>
+                <Card flex gap={2}>
                     <TextField
                         value={query}
                         label="Search"
                         size="small"
                         onChange={(e) => setQuery(e.target.value)}
                     />
-                    <Box ref={listRef} overflow="auto">
-                        <Stack spacing={1} ref={listRef}>
+                    <Card ref={listRef} overflow="auto">
+                        <Stack ref={listRef}>
                             {filteredItems.map((grip) => (
                                 <DragItem
                                     key={grip._id}
@@ -45,27 +35,19 @@ function ListWithSearch({ arr, textKey }) {
                                     type={grip.type}
                                 >
                                     <Item elevation={2}>
-                                        <Typography
-                                            noWrap
-                                            sx={{ width: '90%' }}
-                                        >
+                                        <p sx={{ width: '90%' }}>
                                             {grip.title}
-                                        </Typography>
+                                        </p>
                                         <DragIndicatorOutlinedIcon />
                                     </Item>
                                 </DragItem>
                             ))}
                         </Stack>
-                    </Box>
-                </Box>
+                    </Card>
+                </Card>
             </CardContent>
         </Card>
     );
 }
-
-ListWithSearch.propTypes = {
-    arr: PropTypes.array,
-    textKey: PropTypes.string,
-};
 
 export default memo(ListWithSearch);

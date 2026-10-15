@@ -1,0 +1,50 @@
+import { Card } from '@/components/ui/card';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { AccountMenu } from '../AccountMenu';
+import Theme from '../Theme';
+import { Button } from '../ui/button';
+import { auth, paths } from './paths';
+
+const Header = () => {
+    const { isAuth } = useSelector((state) => state.auth);
+
+    return (
+        <div className="flex items-center justify-center">
+            <p>RP</p>
+            <div className="flex gap-2">
+                {paths.map((elem, index) => {
+                    if (!elem.authRequired) {
+                        return (
+                            <Button key={index}>
+                                <Link to={elem.path}>{elem.name}</Link>
+                            </Button>
+                        );
+                    }
+
+                    if (elem.authRequired) {
+                        return isAuth ? (
+                            <Button key={index}>
+                                <Link to={elem.path}>{elem.name}</Link>
+                            </Button>
+                        ) : null;
+                    }
+                })}
+            </div>
+            <div className="flex gap-2">
+                {isAuth ? (
+                    <AccountMenu />
+                ) : (
+                    auth.map((link, index) => (
+                        <Button key={index} variant="link">
+                            <Link to={link.path}>{link.name}</Link>
+                        </Button>
+                    ))
+                )}
+                <Theme />
+            </div>
+        </div>
+    );
+};
+
+export default Header;

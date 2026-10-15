@@ -1,8 +1,6 @@
-import React from 'react';
-import { Box } from '@mui/material';
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { useDrop } from 'react-dnd';
-import PropTypes from 'prop-types';
+import { Card } from '../../../components/ui/card';
 
 export const DropTarget = memo(function DropTarget({
     accept,
@@ -17,15 +15,5 @@ export const DropTarget = memo(function DropTarget({
         }),
     });
 
-    return (
-        <Box width="100%" ref={drop}>
-            {children}
-        </Box>
-    );
+    return <Card>{children}</Card>;
 });
-
-DropTarget.propTypes = {
-    accept: PropTypes.array,
-    onDrop: PropTypes.func,
-    children: PropTypes.node,
-};

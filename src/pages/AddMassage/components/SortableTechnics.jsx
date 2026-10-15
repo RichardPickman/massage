@@ -1,8 +1,7 @@
-import { Box } from '@mui/material';
-import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import itemTypes from '../../../utils/itemTypes';
 import { useDrag, useDrop } from 'react-dnd';
+import { Card } from '../../../components/ui/card';
+import itemTypes from '../../../utils/itemTypes';
 
 function SortableTechnicItem({
     children,
@@ -60,19 +59,7 @@ function SortableTechnicItem({
 
     drag(drop(ref));
 
-    return (
-        <Box ref={ref} display="flex" width="100%">
-            {children}
-        </Box>
-    );
+    return <Card>{children}</Card>;
 }
 
 export default SortableTechnicItem;
-
-SortableTechnicItem.propTypes = {
-    children: PropTypes.node,
-    accept: PropTypes.array,
-    moveTechnic: PropTypes.func,
-    technic: PropTypes.object,
-    index: PropTypes.number,
-};

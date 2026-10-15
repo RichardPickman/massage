@@ -1,24 +1,21 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { Box, IconButton, Typography } from '@mui/material';
-import { DropTarget } from './DropTarget';
-import Accordion from '../../../components/Accordion';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDispatch } from 'react-redux';
+import Accordion from '../../../components/Accordion';
+import {
+    StyledAccordionDetails,
+    StyledAccordionSummary,
+} from '../../../components/Accordion/styles';
+import AnimatedList from '../../../components/AnimatedList';
+import { Card } from '../../../components/ui/card';
 import {
     addGrip,
     moveTechnic,
     removeGrip,
     removeTechnic,
 } from '../../../store/reducers/massage';
-import ClearIcon from '@mui/icons-material/Clear';
-import SortableTechnicItem from './SortableTechnics';
-import {
-    StyledAccordionDetails,
-    StyledAccordionSummary,
-} from '../../../components/Accordion/styles';
-import AnimatedList from '../../../components/AnimatedList';
+import { DropTarget } from './DropTarget';
 import { Item } from './helpers';
+import SortableTechnicItem from './SortableTechnics';
 
 function TechnicItem({ technic, technicIndex }) {
     const dispatch = useDispatch();
@@ -45,7 +42,7 @@ function TechnicItem({ technic, technicIndex }) {
     };
 
     return (
-        <Box display="flex" gap={2}>
+        <Card>
             <DropTarget accept={technic.acceptsChildren} onDrop={handleDrop}>
                 <Accordion
                     technic={technic}
@@ -59,20 +56,14 @@ function TechnicItem({ technic, technicIndex }) {
                         moveTechnic={handleTechnic}
                     >
                         <StyledAccordionSummary>
-                            <Typography textTransform={'capitalize'}>
-                                {technic.title}
-                            </Typography>
+                            <p textTransform={'capitalize'}>{technic.title}</p>
                         </StyledAccordionSummary>
                     </SortableTechnicItem>
                     <StyledAccordionDetails>
-                        <AnimatedList
-                            display="flex"
-                            flexDirection="column"
-                            gap={1}
-                        >
+                        <AnimatedList flex>
                             {technic.grips.map((item) => (
                                 <Item key={item._id} elevation={2}>
-                                    <Typography noWrap>{item.title}</Typography>
+                                    <p>{item.title}</p>
                                     <IconButton
                                         size="small"
                                         value={item._id}
@@ -91,18 +82,13 @@ function TechnicItem({ technic, technicIndex }) {
                     </StyledAccordionDetails>
                 </Accordion>
             </DropTarget>
-            <Box>
+            <Card>
                 <IconButton color="error" onClick={handleRemove}>
                     <DeleteOutlineIcon />
                 </IconButton>
-            </Box>
-        </Box>
+            </Card>
+        </Card>
     );
 }
-
-TechnicItem.propTypes = {
-    technicIndex: PropTypes.number,
-    technic: PropTypes.object,
-};
 
 export default memo(TechnicItem);

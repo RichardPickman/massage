@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import AnimatedList from '../../../components/AnimatedList';
 import TechnicItem from './TechnicItem';

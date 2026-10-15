@@ -1,7 +1,5 @@
-import { Box } from '@mui/material';
-import React from 'react';
 import { useDrag } from 'react-dnd';
-import PropTypes from 'prop-types';
+import { Card } from '../../../components/ui/card';
 
 function DragItem({ item, type, children }) {
     const [_, drag] = useDrag(
@@ -14,14 +12,7 @@ function DragItem({ item, type, children }) {
         }),
         [item, type]
     );
-    return <Box ref={drag}>{children}</Box>;
+    return <Card ref={drag}>{children}</Card>;
 }
 
 export default DragItem;
-
-DragItem.propTypes = {
-    item: PropTypes.object,
-    type: PropTypes.string,
-    isDropped: PropTypes.bool,
-    children: PropTypes.node,
-};

@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
-import { Box } from '@mui/material';
-import Title from './TechnicControls/Title';
+import { Card } from '../../../components/ui/card';
 import Technics from './TechnicControls/Technics';
+import Title from './TechnicControls/Title';
 
 function TechnicControls() {
     return (
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Card>
             <Title />
             <Technics />
-        </Box>
+        </Card>
     );
 }
 

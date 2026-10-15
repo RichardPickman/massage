@@ -1,17 +1,17 @@
 import React, { useLayoutEffect } from 'react';
-import { Box, Button, Grid, Stack } from '@mui/material';
 import { useLoaderData } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { Card } from '../../components/ui/card';
 import GripService from '../../services/Grip';
+import { clearData } from '../../store/reducers/massage';
+import { fetchCreate } from '../../store/reducers/massage/fetch';
+import { fetchStatuses } from '../../utils/consts';
+import Alert from './components/Alert';
+import { getDraggableGrip } from './components/helpers';
 import ListWithSearch from './components/ListWithSearch';
 import TechnicControls from './components/TechnicControls';
-import { getDraggableGrip } from './components/helpers';
 import TechnicsList from './components/TechnicsList';
-import Alert from './components/Alert';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchStatuses } from '../../utils/consts';
-import { fetchCreate } from '../../store/reducers/massage/fetch';
-import { clearData } from '../../store/reducers/massage';
 
 function AddMassage() {
     const loaderData = useLoaderData();
@@ -30,35 +30,29 @@ function AddMassage() {
     }, []);
 
     return (
-        <Box display="flex" flexDirection="column" gap={2}>
+        <Card>
             {isSaved && <Alert />}
             <Grid container spacing={2}>
                 <Grid item xs={8}>
-                    <Box
+                    <Card
                         gap={2}
-                        display="flex"
                         overflow="auto"
-                        flexDirection="column"
+                        flex
                         sx={{ maxHeight: '80vh' }}
                     >
                         <TechnicControls />
                         <TechnicsList />
-                    </Box>
+                    </Card>
                 </Grid>
                 <Grid item xs={4}>
-                    <Box
-                        gap={2}
-                        display="flex"
-                        flexDirection="column"
-                        sx={{ maxHeight: '80vh' }}
-                    >
+                    <Card gap={2} flex sx={{ maxHeight: '80vh' }}>
                         {loaderData && (
                             <ListWithSearch
                                 arr={loaderData.grips}
                                 textKey={'title'}
                             />
                         )}
-                        <Stack direction="column" spacing={1}>
+                        <Stack>
                             <Button
                                 fullWidth
                                 variant="outlined"
@@ -71,10 +65,10 @@ function AddMassage() {
                                 Delete
                             </Button>
                         </Stack>
-                    </Box>
+                    </Card>
                 </Grid>
             </Grid>
-        </Box>
+        </Card>
     );
 }
 
