@@ -1,5 +1,3 @@
-import type { ItemType } from '../utils/itemTypes';
-
 export interface Answer {
     id: string;
     text: string;
@@ -25,59 +23,12 @@ export interface Quiz {
 export interface QuizPayload {
     title: string;
     questions: string[];
-    image: string;
 }
 
 export interface QuizSummary {
     _id: string;
     title: string;
     questions: string[];
-}
-
-export interface Grip {
-    _id: string;
-    title: string;
-}
-
-export interface DraggableGrip extends Grip {
-    type: ItemType;
-}
-
-export interface Technic {
-    _id?: string;
-    title: string;
-    grips: Grip[];
-}
-
-export interface ConstructorTechnic {
-    acceptsSelf: ItemType[];
-    acceptsChildren: ItemType[];
-    id: string;
-    title: string;
-    grips: Grip[];
-}
-
-export interface Massage {
-    _id: string;
-    title: string;
-    technics: Technic[];
-}
-
-export interface MassageTechnicPayload {
-    title: string;
-    grips: string[];
-}
-
-export interface MassagePayload {
-    title: string;
-    technics: MassageTechnicPayload[];
-}
-
-export interface Lesson {
-    _id: string;
-    title: string;
-    time: string;
-    days: string[];
 }
 
 export interface Lecture {
@@ -91,25 +42,4 @@ export interface Lecture {
 
 export interface LectureImages {
     images: string[];
-}
-
-export interface Teacher {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    img: string | null;
-    lessons: Lesson[];
-}
-
-export interface TeacherFormValues {
-    firstName: string;
-    lastName: string;
-    email: string;
-    img: File | null;
-    lessons: Lesson[];
-}
-
-export interface Beer {
-    style: string;
 }

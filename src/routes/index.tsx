@@ -1,5 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { adminRouter } from './Admin';
 import { authRouter } from './Auth';
 import { lectureRouter } from './Lectures';
 import { quizRouter } from './Quiz';
@@ -21,9 +20,7 @@ const router = createBrowserRouter([
         ],
     },
     ...lectureRouter,
-    adminRouter,
     quizRouter,
-    // massageRouter,
     authRouter,
 ]);
 

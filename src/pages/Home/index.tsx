@@ -1,5 +1,7 @@
+import { Navigate } from 'react-router-dom';
+
 const Home = () => {
-    return <p> HOME </p>;
+    return <Navigate to="/lectures" replace />;
 };
 
 export default Home;

@@ -1,18 +1,18 @@
 import { useLayoutEffect, useRef } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useDispatch, useSelector } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 
 import router from './routes';
 import { getToken } from './services/helpers/token';
+import { useAppDispatch, useAppSelector } from './store';
 import { fetchRefresh } from './store/reducers/auth/fetch';
 import './styles.css';
 
 const App = () => {
-    const { user } = useSelector((state) => state.auth);
+    const { user } = useAppSelector((state) => state.auth);
     const isRefreshRequested = useRef(false);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useLayoutEffect(() => {
         const shouldRefresh =

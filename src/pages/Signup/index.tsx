@@ -1,17 +1,17 @@
 import { useLayoutEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
 
 import { Card } from '@/components/ui/card';
 import { Auth, type AuthFormData } from '../../forms/Auth';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchRegister } from '../../store/reducers/auth/fetch';
 import { cleanUp } from '../../store/reducers/auth/user';
 import { fetchStatuses } from '../../utils/consts';
 
 const SignUp = () => {
-    const { status, error } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
+    const { status, error } = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const onSubmit = (data: AuthFormData) => {

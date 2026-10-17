@@ -5,22 +5,16 @@ import {
     useSelector,
 } from 'react-redux';
 import userReducer from './reducers/auth/user';
-import gripReducer from './reducers/grips';
 import imagesReducer from './reducers/images';
 import quizReducer from './reducers/quiz';
 import quizzesReducer from './reducers/quizzes';
-import teacherReducer from './reducers/teacher';
-import teachersReducer from './reducers/teachers';
 
 export const store = configureStore({
     reducer: {
         quiz: quizReducer,
         images: imagesReducer,
         auth: userReducer,
-        grip: gripReducer,
-        teachers: teachersReducer,
         quizzes: quizzesReducer,
-        teacher: teacherReducer,
     },
 });
 

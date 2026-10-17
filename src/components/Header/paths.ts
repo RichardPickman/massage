@@ -9,11 +9,6 @@ export const paths = [
         path: '/quiz',
         authRequired: false,
     },
-    {
-        name: 'Massage',
-        path: '/massages',
-        authRequired: false,
-    },
 ];
 
 export const auth = [

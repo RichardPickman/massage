@@ -1,5 +1,5 @@
 import LecturesLayout from '../../layouts/Lecture';
-import { AddLecture, loader as addLectureLoader } from '../../pages/AddLecture';
+import { AddLecture } from '../../pages/AddLecture';
 import { ErrorPage } from '../../pages/Error';
 import { Lecture, loader as lectureLoader } from '../../pages/Lecture';
 import { Lectures, loader as lecturesLoader } from '../../pages/Lectures';
@@ -18,7 +18,6 @@ export const lectureRouter = [
             {
                 path: 'create',
                 element: <AddLecture />,
-                loader: addLectureLoader,
             },
         ],
     },

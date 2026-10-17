@@ -2,7 +2,6 @@ import { nanoid } from '@reduxjs/toolkit';
 import { FloppyDiskIcon, ImageIcon, TrashIcon } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
 import { type ChangeEvent, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
 import { AlertWithLink } from '../../components/AlertWithLink';
 import { Button } from '../../components/ui/button';
 import { Calendar } from '../../components/ui/calendar';
@@ -20,19 +19,10 @@ import {
     PopoverTrigger,
 } from '../../components/ui/popover';
 import LectureService from '../../services/Lecture';
-import LessonService from '../../services/Lesson';
-import TeacherService from '../../services/Teacher';
 import { getErrorMessage } from '../../services/errors';
-import type { Lesson, Teacher } from '../../services/models';
 import { alertStatuses, type AlertStatus } from '../../utils/consts';
-import { FormControl } from './elements/FormControl';
 import { ImageList } from './elements/ImageList';
 import { getForm, type StagedImage } from './helpers';
-
-interface LectureLoaderData {
-    teachers: Teacher[];
-    lessons: Lesson[];
-}
 
 interface LectureAlert {
     status: AlertStatus;
@@ -41,23 +31,7 @@ interface LectureAlert {
     title?: string;
 }
 
-const getFullName = (teacher: Teacher) =>
-    [teacher.firstName, teacher.lastName].filter(Boolean).join(' ');
-
-const getOptions = (teachers: Teacher[], lessons: Lesson[]) => ({
-    teacherOptions: teachers.map((item) => ({
-        value: item._id,
-        label: getFullName(item),
-    })),
-    lessonOptions: lessons.map((item) => ({
-        value: item._id,
-        label: item.title,
-    })),
-});
-
 export const AddLecture = () => {
-    const loaderData = useLoaderData() as LectureLoaderData;
-
     const [topic, setTopic] = useState('');
     const [teacher, setTeacher] = useState('');
     const [lesson, setLesson] = useState('');
@@ -65,11 +39,6 @@ export const AddLecture = () => {
     const [images, setImages] = useState<StagedImage[]>([]);
     const [alert, setAlert] = useState<LectureAlert | null>(null);
     const [isSaving, setIsSaving] = useState(false);
-
-    const { teacherOptions, lessonOptions } = getOptions(
-        loaderData.teachers,
-        loaderData.lessons
-    );
 
     const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files ?? []);
@@ -173,28 +142,24 @@ export const AddLecture = () => {
                         </p>
                     ) : null}
                 </div>
-                <FormControl
-                    label="Teacher"
-                    value={teacher}
-                    options={teacherOptions}
-                    onChange={setTeacher}
-                    emptyHint={
-                        teacherOptions.length === 0
-                            ? 'No teachers available - type a teacher id or name'
-                            : undefined
-                    }
-                />
-                <FormControl
-                    label="Lesson"
-                    value={lesson}
-                    options={lessonOptions}
-                    onChange={setLesson}
-                    emptyHint={
-                        lessonOptions.length === 0
-                            ? 'No lessons available - type a lesson id or title'
-                            : undefined
-                    }
-                />
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="lecture-teacher">Teacher</Label>
+                    <Input
+                        id="lecture-teacher"
+                        placeholder="Optional"
+                        value={teacher}
+                        onChange={(event) => setTeacher(event.target.value)}
+                    />
+                </div>
+                <div className="flex flex-col gap-1">
+                    <Label htmlFor="lecture-lesson">Lesson</Label>
+                    <Input
+                        id="lecture-lesson"
+                        placeholder="Optional"
+                        value={lesson}
+                        onChange={(event) => setLesson(event.target.value)}
+                    />
+                </div>
                 <div className="flex flex-col gap-1">
                     <Label>Lecture day</Label>
                     <Popover>
@@ -256,16 +221,4 @@ export const AddLecture = () => {
             </CardContent>
         </Card>
     );
-};
-
-// The API exposes no teachers or lessons endpoint yet, so a missing collection
-// must not stop the page from rendering: the fields fall back to free text
-// instead of failing the whole loader.
-export const loader = async () => {
-    const [teachers, lessons] = await Promise.all([
-        TeacherService.getAllTeachers().catch(() => [] as Teacher[]),
-        LessonService.getAllLessons().catch(() => [] as Lesson[]),
-    ]);
-
-    return { teachers, lessons };
 };

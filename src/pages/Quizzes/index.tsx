@@ -8,15 +8,13 @@ import {
     CardTitle,
 } from '../../components/ui/card';
 import QuizService from '../../services/Quiz';
-import RandomData from '../../services/RandomData';
-import type { Beer, QuizSummary } from '../../services/models';
+import type { QuizSummary } from '../../services/models';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setQuizzes } from '../../store/reducers/quizzes';
 import { QuizCard } from './components/Card';
 
 interface QuizzesLoaderData {
     quizzes: QuizSummary[];
-    beers: string[];
 }
 
 export const Quizzes = () => {
@@ -45,16 +43,8 @@ export const Quizzes = () => {
                         There is no quiz yet.
                     </p>
                 ) : (
-                    quizzes.map((quiz, index) => (
-                        <QuizCard
-                            key={quiz._id}
-                            quiz={quiz}
-                            fallbackAuthor={
-                                loaderData.beers[index]
-                                    ? loaderData.beers[index]
-                                    : 'Anonymous'
-                            }
-                        />
+                    quizzes.map((quiz) => (
+                        <QuizCard key={quiz._id} quiz={quiz} />
                     ))
                 )}
             </CardContent>
@@ -64,14 +54,7 @@ export const Quizzes = () => {
 
 export const loader = async () => {
     const { payload } = await QuizService.getAllQuizzes();
-    const quizzes = Array.isArray(payload) ? payload : [];
-    const beer = await RandomData.getBeer(quizzes.length).catch(
-        () => [] as Beer[]
-    );
 
-    return {
-        quizzes,
-        beers: Array.isArray(beer) ? beer.map((item) => item.style) : [],
-    };
+    return { quizzes: Array.isArray(payload) ? payload : [] };
 };
 

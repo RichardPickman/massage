@@ -1,13 +1,11 @@
-import { Card } from '@/components/ui/card';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../store';
 import { AccountMenu } from '../AccountMenu';
-import Theme from '../Theme';
 import { Button } from '../ui/button';
 import { auth, paths } from './paths';
 
 const Header = () => {
-    const { isAuth } = useSelector((state) => state.auth);
+    const { isAuth } = useAppSelector((state) => state.auth);
 
     return (
         <div className="flex items-center justify-center">
@@ -41,7 +39,6 @@ const Header = () => {
                         </Button>
                     ))
                 )}
-                <Theme />
             </div>
         </div>
     );

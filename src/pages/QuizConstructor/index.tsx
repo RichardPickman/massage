@@ -13,7 +13,6 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import QuestionService from '../../services/Question';
 import QuizService from '../../services/Quiz';
-import RandomData from '../../services/RandomData';
 import { getErrorMessage } from '../../services/errors';
 import { alertStatuses, type AlertStatus } from '../../utils/consts';
 import { QuestionTemplate } from './template';
@@ -123,14 +122,9 @@ export const QuizConstructor = () => {
                 (question) => question.payload._id
             );
 
-            const imageResponse = await RandomData.getImage(250, 150).catch(
-                () => null
-            );
-
             const response = await QuizService.createQuiz({
                 questions: questionIds,
                 title: title.trim(),
-                image: imageResponse ? imageResponse.url : '',
             });
 
             setAlert({

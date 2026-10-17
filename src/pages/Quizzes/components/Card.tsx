@@ -15,10 +15,9 @@ import { fetchRemove } from '../../../store/reducers/quizzes/fetch';
 
 interface QuizCardProps {
     quiz: QuizSummary;
-    fallbackAuthor: string;
 }
 
-export const QuizCard = ({ quiz, fallbackAuthor }: QuizCardProps) => {
+export const QuizCard = ({ quiz }: QuizCardProps) => {
     const { user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
@@ -26,7 +25,6 @@ export const QuizCard = ({ quiz, fallbackAuthor }: QuizCardProps) => {
 
     const questionCount = quiz.questions ? quiz.questions.length : 0;
 
-    // The quiz payload carries no author, so the caller supplies a stand-in.
     const handleDelete = async () => {
         setIsRemoving(true);
         await dispatch(fetchRemove(quiz._id));
@@ -48,10 +46,7 @@ export const QuizCard = ({ quiz, fallbackAuthor }: QuizCardProps) => {
             <CardContent className="text-muted-foreground">
                 {questionCount} {questionCount === 1 ? 'question' : 'questions'}
             </CardContent>
-            <CardFooter className="justify-between">
-                <span className="text-xs tracking-widest uppercase">
-                    {fallbackAuthor}
-                </span>
+            <CardFooter className="justify-end">
                 {user ? (
                     <Button
                         variant="ghost"
