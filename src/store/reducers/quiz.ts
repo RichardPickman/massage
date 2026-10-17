@@ -1,18 +1,26 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Answer, Question } from '../../services/models';
-import { countGrade, saveToHistory, type AnswerHistory } from './helpers';
+import {
+    createAsyncThunk,
+    createSlice,
+    type PayloadAction,
+} from '@reduxjs/toolkit';
+import { getErrorMessage } from '../../services/errors';
+import QuizService from '../../services/Quiz';
+import type { Question } from '../../services/models';
+import type { SubmitResult, SubmittedAnswer } from '../../services/types';
+import { saveToHistory, type AnswerHistory } from './helpers';
 
 export interface QuizState {
     questions: Question[];
     title: string;
     currentQuestionIndex: number;
     isFinished: boolean;
-    currentAnswerCount: number;
-    answers: Answer[];
     correctAnswers: string[];
     currentAnswers: string[];
     history: AnswerHistory[];
     currentQuestion: Question | null;
+    submission: SubmitResult | null;
+    isSubmitting: boolean;
+    submitError: string | null;
 }
 
 export interface QuizPayload {
@@ -20,18 +28,37 @@ export interface QuizPayload {
     title: string;
 }
 
+export interface SubmitPayload {
+    quizId: string;
+    answers: SubmittedAnswer[];
+}
+
 const initialState: QuizState = {
     questions: [],
     title: '',
     currentQuestionIndex: 0,
     isFinished: false,
-    currentAnswerCount: 0,
-    answers: [],
     correctAnswers: [],
     currentAnswers: [],
     history: [],
     currentQuestion: null,
+    submission: null,
+    isSubmitting: false,
+    submitError: null,
 };
+
+// Grading happens on the server so a score can never be spoofed from the
+// client. The response carries the correct answers, which is what the result
+// view colours the questions with.
+export const submitAttempt = createAsyncThunk<
+    SubmitResult,
+    SubmitPayload,
+    { rejectValue: string }
+>('quiz/submit', ({ quizId, answers }, { rejectWithValue }) =>
+    QuizService.submitQuiz(quizId, answers)
+        .then(({ payload }) => payload)
+        .catch((error: unknown) => rejectWithValue(getErrorMessage(error)))
+);
 
 export const quizSlice = createSlice({
     name: 'quiz',
@@ -44,10 +71,11 @@ export const quizSlice = createSlice({
             state.title = action.payload.title;
             state.currentQuestionIndex = 0;
             state.isFinished = false;
-            state.currentAnswerCount = 0;
-            state.answers = [];
             state.currentAnswers = [];
             state.history = [];
+            state.submission = null;
+            state.isSubmitting = false;
+            state.submitError = null;
             state.correctAnswers = firstQuestion
                 ? firstQuestion.correctAnswers
                 : [];
@@ -84,7 +112,6 @@ export const quizSlice = createSlice({
             state.currentQuestionIndex = currentQuestionIndex;
             state.isFinished = isFinished;
             state.history = history;
-            state.currentAnswerCount = isFinished ? countGrade(state) : 0;
         },
         prevQuestion: (state) => {
             const currentQuestionIndex = state.currentQuestionIndex - 1;
@@ -136,6 +163,22 @@ export const quizSlice = createSlice({
                 currentQuestion: firstQuestion ? firstQuestion : null,
             };
         },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(submitAttempt.pending, (state) => {
+                state.isSubmitting = true;
+                state.submitError = null;
+            })
+            .addCase(submitAttempt.fulfilled, (state, action) => {
+                state.isSubmitting = false;
+                state.submission = action.payload;
+            })
+            .addCase(submitAttempt.rejected, (state, action) => {
+                state.isSubmitting = false;
+                state.submitError =
+                    action.payload ?? 'Could not grade this quiz';
+            });
     },
 });
 

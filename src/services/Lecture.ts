@@ -31,6 +31,15 @@ class LectureService {
         });
     }
 
+    // Multipart, because a new image arrives alongside the fields.
+    static async updateLecture(id: string, body: FormData) {
+        return load<ApiResponse<Lecture>>({
+            url: `lectures/update/${id}`,
+            method: 'PUT',
+            body: body,
+        });
+    }
+
     static async removeLecture(id: string) {
         return load<ApiResponse<Lecture>>({
             url: `lectures/remove/${id}`,

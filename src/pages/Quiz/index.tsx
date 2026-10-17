@@ -1,8 +1,7 @@
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
 import { Question } from '../../components/Question';
 import { Result } from '../../components/Result';
-import { ShowAnswers } from '../../components/ShowAnswer';
 import { Button } from '../../components/ui/button';
 import {
     Card,
@@ -14,11 +13,13 @@ import {
 import QuizService from '../../services/Quiz';
 import type { Quiz as QuizModel } from '../../services/models';
 import { useAppDispatch, useAppSelector } from '../../store';
+import { buildAnswers } from '../../store/reducers/helpers';
 import {
     nextQuestion,
     prevQuestion,
     selectQuestion,
     setQuiz,
+    submitAttempt,
 } from '../../store/reducers/quiz';
 
 export const Quiz = () => {
@@ -26,7 +27,7 @@ export const Quiz = () => {
     const quiz = useAppSelector((state) => state.quiz);
     const dispatch = useAppDispatch();
 
-    const [showAnswers, setShowAnswers] = useState(false);
+    const quizId = loaderData._id;
 
     useLayoutEffect(() => {
         dispatch(setQuiz(loaderData));
@@ -43,7 +44,7 @@ export const Quiz = () => {
     }
 
     if (quiz.isFinished) {
-        return <Result />;
+        return <Result quizId={quizId} />;
     }
 
     const currentQuestion = quiz.currentQuestion;
@@ -54,6 +55,16 @@ export const Quiz = () => {
 
     const isLastQuestion =
         quiz.currentQuestionIndex === quiz.questions.length - 1;
+
+    // The last click is also the submission: the answers go to the server,
+    // which decides the score, and only then does the result view open.
+    const handleNext = () => {
+        if (isLastQuestion) {
+            dispatch(submitAttempt({ quizId, answers: buildAnswers(quiz) }));
+        }
+
+        dispatch(nextQuestion());
+    };
 
     return (
         <Card>
@@ -67,7 +78,7 @@ export const Quiz = () => {
             <CardContent>
                 <Question
                     currentQuestion={currentQuestion}
-                    currentState={{ ...quiz, showAnswers }}
+                    currentState={{ ...quiz, showAnswers: false }}
                     onSelect={(id) => dispatch(selectQuestion({ id }))}
                 />
             </CardContent>
@@ -79,14 +90,7 @@ export const Quiz = () => {
                 >
                     Previous question
                 </Button>
-                <ShowAnswers
-                    showAnswersState={showAnswers}
-                    onChange={() => setShowAnswers(!showAnswers)}
-                />
-                <Button
-                    variant="outline"
-                    onClick={() => dispatch(nextQuestion())}
-                >
+                <Button variant="outline" onClick={handleNext}>
                     {isLastQuestion ? 'Finish' : 'Next question'}
                 </Button>
             </CardFooter>
@@ -105,4 +109,3 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
     return payload;
 };
-

@@ -1,9 +1,21 @@
+import type { SubmittedAnswer } from '../../services/types';
 import type { QuizState } from './quiz';
 
 export interface AnswerHistory {
     id: string;
     currentAnswers: string[];
 }
+
+// The payload the server grades: every question, with whatever was selected.
+export const buildAnswers = (state: QuizState): SubmittedAnswer[] =>
+    state.questions.map((question) => {
+        const entry = state.history.find((snap) => snap.id === question._id);
+
+        return {
+            questionId: question._id,
+            selected: entry ? entry.currentAnswers : [],
+        };
+    });
 
 export const saveToHistory = (
     state: QuizState,
@@ -35,28 +47,4 @@ export const saveToHistory = (
             currentAnswers,
         },
     ];
-};
-
-export const countGrade = (state: QuizState): number => {
-    const { history, questions } = state;
-    let overallPoint = 0;
-
-    for (let i = 0; i < questions.length; i++) {
-        const question = questions[i];
-        const answers = history[i];
-
-        if (!answers || question.correctAnswers.length === 0) {
-            continue;
-        }
-
-        const point = 1 / question.correctAnswers.length;
-
-        answers.currentAnswers.forEach((answerId) => {
-            overallPoint += question.correctAnswers.includes(answerId)
-                ? point
-                : -point;
-        });
-    }
-
-    return overallPoint;
 };

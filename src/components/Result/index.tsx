@@ -1,19 +1,42 @@
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
-import type { AnswerHistory } from '../../store/reducers/helpers';
+import { useEffect, useState } from 'react';
+import QuizService from '../../services/Quiz';
+import type { QuestionResult, QuizStats } from '../../services/types';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { restart } from '../../store/reducers/quiz';
+import { buildAnswers, type AnswerHistory } from '../../store/reducers/helpers';
+import { restart, submitAttempt } from '../../store/reducers/quiz';
 import { Question } from '../Question';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 
-export const Result = () => {
+interface ResultProps {
+    quizId: string;
+}
+
+export const Result = ({ quizId }: ResultProps) => {
     const quiz = useAppSelector((state) => state.quiz);
     const dispatch = useAppDispatch();
 
     const [showWrong, setShowWrong] = useState(false);
     const [showUnanswered, setShowUnanswered] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [stats, setStats] = useState<QuizStats | null>(null);
+
+    const { submission } = quiz;
+
+    // Refetched once the submission lands, so the attempt just made counts.
+    useEffect(() => {
+        if (!submission) {
+            return;
+        }
+
+        QuizService.getQuizStats(quizId)
+            .then(({ payload }) => setStats(payload))
+            .catch(() => setStats(null));
+    }, [quizId, submission]);
+
+    const resultFor = (questionId: string): QuestionResult | undefined =>
+        submission?.results.find((result) => result.questionId === questionId);
 
     const renderQuestion = (snap: AnswerHistory) => {
         const currentQuestion = quiz.questions.find(
@@ -24,12 +47,16 @@ export const Result = () => {
             return null;
         }
 
+        // The key comes from the server's verdict, never from the loaded quiz:
+        // the play view is handed questions with no answers on them.
+        const correctAnswers = resultFor(snap.id)?.correctAnswers ?? [];
+
         return (
             <Question
                 key={snap.id}
                 currentQuestion={currentQuestion}
                 currentState={{
-                    correctAnswers: currentQuestion.correctAnswers,
+                    correctAnswers,
                     currentAnswers: snap.currentAnswers,
                     isFinished: true,
                     showAnswers: false,
@@ -40,15 +67,9 @@ export const Result = () => {
     };
 
     const wrongAnswers = quiz.history.filter((snap) => {
-        const question = quiz.questions.find((item) => item._id === snap.id);
+        const result = resultFor(snap.id);
 
-        if (!question) {
-            return false;
-        }
-
-        return snap.currentAnswers.some(
-            (answerId) => !question.correctAnswers.includes(answerId)
-        );
+        return Boolean(result && !result.correct && snap.currentAnswers.length);
     });
 
     const unanswered = quiz.history.filter(
@@ -58,8 +79,8 @@ export const Result = () => {
     const visibleHistory = showWrong
         ? wrongAnswers
         : showUnanswered
-          ? unanswered
-          : quiz.history;
+        ? unanswered
+        : quiz.history;
 
     const handleShowWrong = () => {
         setShowWrong(!showWrong);
@@ -71,13 +92,52 @@ export const Result = () => {
         setShowWrong(false);
     };
 
+    const handleRetry = () => {
+        dispatch(submitAttempt({ quizId, answers: buildAnswers(quiz) }));
+    };
+
+    // The score is the server's answer, so there is nothing to render until it
+    // arrives - and a failed request must be retryable, not a silent zero.
+    if (!submission) {
+        return (
+            <Card>
+                <CardContent className="flex flex-col items-center gap-4 py-6">
+                    {quiz.submitError ? (
+                        <>
+                            <p className="text-destructive">
+                                {quiz.submitError}
+                            </p>
+                            <Button variant="outline" onClick={handleRetry}>
+                                Try again
+                            </Button>
+                        </>
+                    ) : (
+                        <p className="text-muted-foreground">
+                            Checking your answers...
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card>
             <CardContent className="flex flex-col items-center gap-4 py-6">
                 <p className="text-lg">
-                    You&apos;ve got {quiz.currentAnswerCount.toFixed(1)} of{' '}
-                    {quiz.questions.length} right
+                    You&apos;ve got {submission.correctCount} of{' '}
+                    {submission.questionCount} right
+                    <span className="text-muted-foreground">
+                        {' '}
+                        ({submission.percent}%)
+                    </span>
                 </p>
+                {stats ? (
+                    <p className="text-sm text-muted-foreground">
+                        Attempt {stats.count} · best {stats.best}% · average{' '}
+                        {stats.average}%
+                    </p>
+                ) : null}
                 <Button
                     onClick={() =>
                         dispatch(
@@ -131,4 +191,3 @@ export const Result = () => {
         </Card>
     );
 };
-
