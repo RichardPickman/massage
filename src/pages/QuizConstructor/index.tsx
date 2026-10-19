@@ -39,11 +39,18 @@ const getBlankQuestion = (): ConstructorQuestion =>
 
 export const QuizConstructor = () => {
     const [questions, setQuestions] = useState<ConstructorQuestion[]>([]);
+    const [questionCount, setQuestionCount] = useState(0);
+    const [countInput, setCountInput] = useState('');
     const [title, setTitle] = useState('');
     const [alert, setAlert] = useState<ConstructorAlert | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     const [listRef] = useAutoAnimate();
+
+    // Lowering the count only hides rows; the authored data stays in state so
+    // a mistyped number cannot destroy answers, and raising the count brings
+    // the hidden rows back.
+    const visibleQuestions = questions.slice(0, questionCount);
 
     const updateQuestion = (id: string, data: Partial<ConstructorQuestion>) =>
         setQuestions((prevQuestions) =>
@@ -52,10 +59,16 @@ export const QuizConstructor = () => {
             )
         );
 
-    const removeQuestion = (id: string) =>
+    const removeQuestion = (id: string) => {
         setQuestions((prevQuestions) =>
             prevQuestions.filter((item) => item.id !== id)
         );
+
+        const nextCount = Math.max(questionCount - 1, 0);
+
+        setQuestionCount(nextCount);
+        setCountInput(nextCount === 0 ? '' : String(nextCount));
+    };
 
     const setQuestionsCount = (amount: string) => {
         const parsed = Number(amount);
@@ -63,7 +76,26 @@ export const QuizConstructor = () => {
             ? Math.min(Math.max(Math.trunc(parsed), 0), 100)
             : 0;
 
-        setQuestions(Array.from({ length: count }, () => getBlankQuestion()));
+        setCountInput(amount);
+        setQuestions((prevQuestions) => {
+            if (count <= prevQuestions.length) {
+                return prevQuestions;
+            }
+
+            return [
+                ...prevQuestions,
+                ...Array.from({ length: count - prevQuestions.length }, () =>
+                    getBlankQuestion()
+                ),
+            ];
+        });
+        setQuestionCount(count);
+    };
+
+    const clearQuestions = () => {
+        setQuestions([]);
+        setQuestionCount(0);
+        setCountInput('');
     };
 
     const saveQuiz = async () => {
@@ -79,7 +111,7 @@ export const QuizConstructor = () => {
         // A question without answers makes the API throw, and a single answer
         // arrives as a bare string there and crashes it, so both are caught
         // before anything is sent.
-        const filledQuestions = questions.filter(
+        const filledQuestions = visibleQuestions.filter(
             (question) =>
                 question.question.trim() &&
                 question.answers.some((answer) => answer.text.trim())
@@ -96,8 +128,8 @@ export const QuizConstructor = () => {
 
         const singleAnswerQuestion = filledQuestions.some(
             (question) =>
-                question.answers.filter((answer) => answer.text.trim())
-                    .length < 2
+                question.answers.filter((answer) => answer.text.trim()).length <
+                2
         );
 
         if (singleAnswerQuestion) {
@@ -111,19 +143,22 @@ export const QuizConstructor = () => {
 
         setIsSaving(true);
 
-        try {
-            const savedQuestions = await Promise.all(
-                filledQuestions.map((question) =>
-                    QuestionService.createQuestion(prepareQuestion(question))
-                )
-            );
+        const savedQuestionIds: string[] = [];
 
-            const questionIds = savedQuestions.map(
-                (question) => question.payload._id
-            );
+        try {
+            // Questions are created one at a time so a failure leaves a known
+            // set to roll back, rather than the orphans a rejected
+            // Promise.all would leave behind.
+            for (const question of filledQuestions) {
+                const savedQuestion = await QuestionService.createQuestion(
+                    prepareQuestion(question)
+                );
+
+                savedQuestionIds.push(savedQuestion.payload._id);
+            }
 
             const response = await QuizService.createQuiz({
-                questions: questionIds,
+                questions: savedQuestionIds,
                 title: title.trim(),
             });
 
@@ -133,9 +168,24 @@ export const QuizConstructor = () => {
                 path: `/quiz/${response.payload._id}`,
             });
         } catch (error) {
+            // A quiz that was never created would leave its questions orphaned,
+            // so everything created above is removed before the error shows.
+            const cleanupResults = await Promise.allSettled(
+                savedQuestionIds.map((id) => QuestionService.removeQuestion(id))
+            );
+
+            const failedCleanups = cleanupResults.filter(
+                (result) => result.status === 'rejected'
+            ).length;
+
             setAlert({
                 status: alertStatuses.FAIL,
-                text: getErrorMessage(error),
+                text:
+                    failedCleanups > 0
+                        ? `${getErrorMessage(
+                              error
+                          )} ${failedCleanups} created question(s) could not be removed and may still exist on the server.`
+                        : getErrorMessage(error),
             });
         } finally {
             setIsSaving(false);
@@ -172,13 +222,14 @@ export const QuizConstructor = () => {
                         type="number"
                         min={0}
                         max={100}
+                        value={countInput}
                         onChange={(event) =>
                             setQuestionsCount(event.target.value)
                         }
                     />
                 </div>
                 <div ref={listRef} className="flex flex-col gap-4">
-                    {questions.map((question) => (
+                    {visibleQuestions.map((question) => (
                         <QuestionTemplate
                             key={question.id}
                             questionData={question}
@@ -192,10 +243,7 @@ export const QuizConstructor = () => {
                         <FloppyDiskIcon />
                         {isSaving ? 'Saving...' : 'Save quiz'}
                     </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={() => setQuestions([])}
-                    >
+                    <Button variant="destructive" onClick={clearQuestions}>
                         <TrashIcon />
                         Clear questions
                     </Button>
