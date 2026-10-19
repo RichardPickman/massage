@@ -1,0 +1,256 @@
+import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import type { QuestionResult } from '../../services/types';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { buildAnswers, type AnswerHistory } from '../../store/reducers/helpers';
+import {
+    fetchQuizStats,
+    restart,
+    submitAttempt,
+} from '../../store/reducers/quiz';
+import { Question } from '../Question';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Skeleton } from '../ui/skeleton';
+
+interface ResultProps {
+    quizId: string;
+}
+
+export const Result = ({ quizId }: ResultProps) => {
+    const quiz = useAppSelector((state) => state.quiz);
+    const { isAuth, isRestoringSession } = useAppSelector(
+        (state) => state.auth
+    );
+    const dispatch = useAppDispatch();
+
+    const [showWrong, setShowWrong] = useState(false);
+    const [showUnanswered, setShowUnanswered] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+
+    const { submission, stats, isFetchingStats, statsError } = quiz;
+
+    // Refetched once the submission lands, so the attempt just made counts.
+    // Signed-out visitors are never asked: there is nothing to summarise.
+    useEffect(() => {
+        if (!submission || !isAuth) {
+            return;
+        }
+
+        dispatch(fetchQuizStats(quizId));
+    }, [dispatch, quizId, submission, isAuth]);
+
+    const handleStatsRetry = () => {
+        dispatch(fetchQuizStats(quizId));
+    };
+
+    // The first render after the submission happens before the effect can
+    // dispatch, so that gap reads as loading rather than as missing stats.
+    const isStatsLoading =
+        isRestoringSession ||
+        isFetchingStats ||
+        (isAuth && !stats && !statsError);
+
+    const resultFor = (questionId: string): QuestionResult | undefined =>
+        submission?.results.find((result) => result.questionId === questionId);
+
+    const renderQuestion = (snap: AnswerHistory) => {
+        const currentQuestion = quiz.questions.find(
+            (item) => item._id === snap.id
+        );
+
+        if (!currentQuestion) {
+            return null;
+        }
+
+        // The key comes from the server's verdict, never from the loaded quiz:
+        // the play view is handed questions with no answers on them.
+        const correctAnswers = resultFor(snap.id)?.correctAnswers ?? [];
+
+        return (
+            <Question
+                key={snap.id}
+                currentQuestion={currentQuestion}
+                currentState={{
+                    correctAnswers,
+                    currentAnswers: snap.currentAnswers,
+                    isFinished: true,
+                    showAnswers: false,
+                }}
+                onSelect={() => {}}
+            />
+        );
+    };
+
+    const wrongAnswers = quiz.history.filter((snap) => {
+        const result = resultFor(snap.id);
+
+        return Boolean(result && !result.correct && snap.currentAnswers.length);
+    });
+
+    const unanswered = quiz.history.filter(
+        (snap) => snap.currentAnswers.length === 0
+    );
+
+    const visibleHistory = showWrong
+        ? wrongAnswers
+        : showUnanswered
+        ? unanswered
+        : quiz.history;
+
+    const handleShowWrong = () => {
+        setShowWrong(!showWrong);
+        setShowUnanswered(false);
+    };
+
+    const handleShowUnanswered = () => {
+        setShowUnanswered(!showUnanswered);
+        setShowWrong(false);
+    };
+
+    const handleRetry = () => {
+        dispatch(submitAttempt({ quizId, answers: buildAnswers(quiz) }));
+    };
+
+    // The score is the server's answer, so there is nothing to render until it
+    // arrives - and a failed request must be retryable, not a silent zero.
+    if (!submission) {
+        return (
+            <Card>
+                <CardContent className="flex flex-col items-center gap-4 py-6">
+                    {quiz.submitError ? (
+                        <>
+                            <p className="text-destructive">
+                                {quiz.submitError}
+                            </p>
+                            <Button variant="outline" onClick={handleRetry}>
+                                Try again
+                            </Button>
+                        </>
+                    ) : (
+                        <p className="text-muted-foreground">
+                            Checking your answers...
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+        <Card>
+            <CardContent className="flex flex-col items-center gap-4 py-6">
+                <p className="text-lg">
+                    You&apos;ve got {submission.correctCount} of{' '}
+                    {submission.questionCount} right
+                    <span className="text-muted-foreground">
+                        {' '}
+                        ({submission.percent}%)
+                    </span>
+                </p>
+                {!isAuth && !isRestoringSession ? (
+                    <Alert className="w-full max-w-md">
+                        <div className="flex flex-col gap-2">
+                            <AlertTitle>
+                                Your stats are behind sign-in
+                            </AlertTitle>
+                            <AlertDescription>
+                                Sign in to see how many attempts you have made
+                                and what your best score is.
+                            </AlertDescription>
+                            <Button
+                                asChild
+                                size="sm"
+                                variant="outline"
+                                className="self-start"
+                            >
+                                <Link to="/auth/login">Sign in</Link>
+                            </Button>
+                        </div>
+                    </Alert>
+                ) : isStatsLoading ? (
+                    <div
+                        role="status"
+                        className="flex w-full max-w-md flex-col items-center gap-2 py-1"
+                    >
+                        <Skeleton className="h-4 w-64" />
+                        <span className="sr-only">Loading your stats...</span>
+                    </div>
+                ) : statsError ? (
+                    <Alert variant="destructive" className="w-full max-w-md">
+                        <div className="flex flex-col gap-2">
+                            <AlertTitle>Could not load your stats</AlertTitle>
+                            <AlertDescription className="text-destructive">
+                                {statsError}
+                            </AlertDescription>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="self-start"
+                                onClick={handleStatsRetry}
+                            >
+                                Try again
+                            </Button>
+                        </div>
+                    </Alert>
+                ) : stats ? (
+                    <p className="text-sm text-muted-foreground">
+                        Attempt {stats.count} · best {stats.best}% · average{' '}
+                        {stats.average}%
+                    </p>
+                ) : null}
+                <Button
+                    onClick={() =>
+                        dispatch(
+                            restart({
+                                questions: quiz.questions,
+                                title: quiz.title,
+                            })
+                        )
+                    }
+                >
+                    Restart
+                </Button>
+            </CardContent>
+            <CardContent className="flex flex-col gap-4">
+                <Button
+                    variant="outline"
+                    className="self-start"
+                    onClick={() => setShowResults(!showResults)}
+                >
+                    {showResults ? 'Fold' : 'Unfold'}
+                    {showResults ? <CaretUpIcon /> : <CaretDownIcon />}
+                </Button>
+                {showResults ? (
+                    <>
+                        <div className="flex flex-wrap gap-2">
+                            <Button
+                                variant={showWrong ? 'default' : 'outline'}
+                                onClick={handleShowWrong}
+                            >
+                                Show wrong answers
+                            </Button>
+                            <Button
+                                variant={showUnanswered ? 'default' : 'outline'}
+                                onClick={handleShowUnanswered}
+                            >
+                                Show unanswered
+                            </Button>
+                        </div>
+                        <div className="flex flex-col gap-6">
+                            {visibleHistory.length === 0 ? (
+                                <p className="text-muted-foreground">
+                                    Nothing to show here.
+                                </p>
+                            ) : (
+                                visibleHistory.map(renderQuestion)
+                            )}
+                        </div>
+                    </>
+                ) : null}
+            </CardContent>
+        </Card>
+    );
+};

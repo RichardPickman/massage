@@ -1,1 +1,7 @@
 build/
+coverage/
+dist/
+node_modules/
+.agents/
+.scratch/
+pnpm-lock.yaml
