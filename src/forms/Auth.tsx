@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { Alert } from '@/components/Alert';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,12 @@ interface AuthProps {
     header: string;
 }
 
-export const Auth = ({ submitting, errorData, onSubmit, header }: AuthProps) => {
+export const Auth = ({
+    submitting,
+    errorData,
+    onSubmit,
+    header,
+}: AuthProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -50,11 +54,6 @@ export const Auth = ({ submitting, errorData, onSubmit, header }: AuthProps) => 
                 >
                     {submitting ? 'Submitting...' : 'Submit'}
                 </Button>
-                {header === 'Sign In' && (
-                    <RouterLink to={'/auth/recover'}>
-                        Forgot password?
-                    </RouterLink>
-                )}
             </div>
         </Card>
     );

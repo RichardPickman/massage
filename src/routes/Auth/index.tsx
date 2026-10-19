@@ -16,8 +16,5 @@ export const authRouter = {
             path: 'register',
             element: <Signup />,
         },
-        {
-            path: 'recover',
-        },
     ],
 };
