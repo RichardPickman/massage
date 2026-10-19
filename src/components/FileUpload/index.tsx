@@ -67,3 +67,4 @@ export const FileUpload = memo(
     }
 );
 
+FileUpload.displayName = 'FileUpload';

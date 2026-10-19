@@ -20,13 +20,13 @@ import { getTableRows, type LectureRow } from './helpers';
 
 export const Lectures = () => {
     const lectures = useLoaderData() as LectureRow[];
-    const { user } = useAppSelector((state) => state.auth);
+    const { isAuth } = useAppSelector((state) => state.auth);
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Lectures</CardTitle>
-                {user ? (
+                {isAuth ? (
                     <Button asChild size="sm">
                         <Link to="create">Add lecture</Link>
                     </Button>
@@ -76,4 +76,3 @@ export const loader = async () => {
 
     return getTableRows(payload);
 };
-

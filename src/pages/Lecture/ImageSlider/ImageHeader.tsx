@@ -50,3 +50,4 @@ export const ImageHeader = memo(() => {
     );
 });
 
+ImageHeader.displayName = 'ImageHeader';

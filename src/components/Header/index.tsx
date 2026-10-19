@@ -8,8 +8,8 @@ const Header = () => {
     const { isAuth } = useAppSelector((state) => state.auth);
 
     return (
-        <div className="flex items-center justify-center">
-            <p>RP</p>
+        <header className="flex items-center justify-between py-2 px-4">
+            <p className="text-lg">RP</p>
             <div className="flex gap-2">
                 {paths.map((elem, index) => {
                     if (!elem.authRequired) {
@@ -40,7 +40,7 @@ const Header = () => {
                     ))
                 )}
             </div>
-        </div>
+        </header>
     );
 };
 

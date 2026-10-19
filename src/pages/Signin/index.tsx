@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { readSignInReturnPath } from '@/components/RequireAuth/helpers';
 import { Card } from '@/components/ui/card';
 import { Auth, type AuthFormData } from '../../forms/Auth';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -12,11 +13,13 @@ const SignIn = () => {
     const { status, error } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnPath = readSignInReturnPath(location.state);
 
     const onSubmit = (data: AuthFormData) => {
         dispatch(fetchLogin(data)).then((result) => {
             if (fetchLogin.fulfilled.match(result)) {
-                navigate('/', { replace: true });
+                navigate(returnPath ?? '/', { replace: true });
             }
         });
     };

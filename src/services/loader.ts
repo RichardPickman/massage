@@ -1,5 +1,6 @@
 import { ApiError } from './errors';
 import { makeURL } from './helpers/makeUrl';
+import { notifySessionExpired } from './helpers/session';
 import { setHeaders } from './helpers/setHeaders';
 import { removeToken } from './helpers/token';
 import type { RequestPayload } from './types';
@@ -18,10 +19,12 @@ const readErrorMessage = async (response: Response) => {
 
 export const load = async <T>(request: RequestPayload) => {
     const url = makeURL(request.url);
+    const headers = setHeaders(request.headers);
+    const carriedToken = Boolean(headers.Authorization);
 
     const init: RequestInit = {
         method: request.method,
-        headers: setHeaders(request.headers),
+        headers,
         body: request.body,
         credentials: request.credentials,
     };
@@ -31,8 +34,11 @@ export const load = async <T>(request: RequestPayload) => {
     if (!response.ok) {
         const message = await readErrorMessage(response);
 
-        if (response.status === 401) {
+        // Only a rejected authenticated request means the session is dead;
+        // a 401 on a request without a token is just a failed sign-in.
+        if (response.status === 401 && carriedToken) {
             removeToken();
+            notifySessionExpired();
         }
 
         throw new ApiError(response.status, message);
@@ -40,4 +46,3 @@ export const load = async <T>(request: RequestPayload) => {
 
     return (await response.json()) as T;
 };
-

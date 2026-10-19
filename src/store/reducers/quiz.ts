@@ -6,7 +6,11 @@ import {
 import { getErrorMessage } from '../../services/errors';
 import QuizService from '../../services/Quiz';
 import type { Question } from '../../services/models';
-import type { SubmitResult, SubmittedAnswer } from '../../services/types';
+import type {
+    QuizStats,
+    SubmitResult,
+    SubmittedAnswer,
+} from '../../services/types';
 import { saveToHistory, type AnswerHistory } from './helpers';
 
 export interface QuizState {
@@ -21,6 +25,9 @@ export interface QuizState {
     submission: SubmitResult | null;
     isSubmitting: boolean;
     submitError: string | null;
+    stats: QuizStats | null;
+    isFetchingStats: boolean;
+    statsError: string | null;
 }
 
 export interface QuizPayload {
@@ -45,6 +52,9 @@ const initialState: QuizState = {
     submission: null,
     isSubmitting: false,
     submitError: null,
+    stats: null,
+    isFetchingStats: false,
+    statsError: null,
 };
 
 // Grading happens on the server so a score can never be spoofed from the
@@ -56,6 +66,18 @@ export const submitAttempt = createAsyncThunk<
     { rejectValue: string }
 >('quiz/submit', ({ quizId, answers }, { rejectWithValue }) =>
     QuizService.submitQuiz(quizId, answers)
+        .then(({ payload }) => payload)
+        .catch((error: unknown) => rejectWithValue(getErrorMessage(error)))
+);
+
+// The result view refetches the summary once the submission lands, so the
+// attempt just made counts. The server owns the numbers.
+export const fetchQuizStats = createAsyncThunk<
+    QuizStats,
+    string,
+    { rejectValue: string }
+>('quiz/stats', (quizId, { rejectWithValue }) =>
+    QuizService.getQuizStats(quizId)
         .then(({ payload }) => payload)
         .catch((error: unknown) => rejectWithValue(getErrorMessage(error)))
 );
@@ -76,6 +98,9 @@ export const quizSlice = createSlice({
             state.submission = null;
             state.isSubmitting = false;
             state.submitError = null;
+            state.stats = null;
+            state.isFetchingStats = false;
+            state.statsError = null;
             state.correctAnswers = firstQuestion
                 ? firstQuestion.correctAnswers
                 : [];
@@ -173,11 +198,30 @@ export const quizSlice = createSlice({
             .addCase(submitAttempt.fulfilled, (state, action) => {
                 state.isSubmitting = false;
                 state.submission = action.payload;
+                // A fresh attempt makes the previous summary stale until the
+                // result view refetches it.
+                state.stats = null;
+                state.statsError = null;
             })
             .addCase(submitAttempt.rejected, (state, action) => {
                 state.isSubmitting = false;
                 state.submitError =
                     action.payload ?? 'Could not grade this quiz';
+            });
+
+        builder
+            .addCase(fetchQuizStats.pending, (state) => {
+                state.isFetchingStats = true;
+                state.statsError = null;
+            })
+            .addCase(fetchQuizStats.fulfilled, (state, action) => {
+                state.isFetchingStats = false;
+                state.stats = action.payload;
+            })
+            .addCase(fetchQuizStats.rejected, (state, action) => {
+                state.isFetchingStats = false;
+                state.statsError =
+                    action.payload ?? 'Could not load your stats';
             });
     },
 });

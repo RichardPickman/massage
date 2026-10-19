@@ -1,3 +1,4 @@
+import { RequireAuth } from '../../components/RequireAuth';
 import LecturesLayout from '../../layouts/Lecture';
 import { AddLecture } from '../../pages/AddLecture';
 import { ErrorPage } from '../../pages/Error';
@@ -17,7 +18,11 @@ export const lectureRouter = [
             },
             {
                 path: 'create',
-                element: <AddLecture />,
+                element: (
+                    <RequireAuth>
+                        <AddLecture />
+                    </RequireAuth>
+                ),
             },
         ],
     },

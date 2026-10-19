@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { QuizSummary } from '../../../services/models';
 import { type FetchStatus, fetchStatuses } from '../../../utils/consts';
 import { statusCallbacks } from '../staticCallbacks';
-import { fetchAll, fetchRemove } from './fetch';
+import { fetchRemove } from './fetch';
 
 export interface QuizzesState {
     quizzes: QuizSummary[];
@@ -25,17 +25,10 @@ const quizzesSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(fetchAll.fulfilled, (state, action) => {
-            state.quizzes = action.payload;
-        });
-        builder.addCase(fetchAll.pending, statusCallbacks.PENDING);
-        builder.addCase(fetchAll.rejected, (state, action) => {
-            statusCallbacks.REJECTED(state);
-            state.errors = [action.payload ?? 'Failed to fetch quizzes'];
-        });
-
         builder.addCase(fetchRemove.fulfilled, (state, action) => {
-            state.quizzes = action.payload;
+            state.quizzes = state.quizzes.filter(
+                (quiz) => quiz._id !== action.payload
+            );
         });
         builder.addCase(fetchRemove.pending, statusCallbacks.PENDING);
         builder.addCase(fetchRemove.rejected, (state, action) => {

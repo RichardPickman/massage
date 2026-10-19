@@ -80,3 +80,4 @@ export const QuestionTemplate = memo(
     }
 );
 
+QuestionTemplate.displayName = 'QuestionTemplate';

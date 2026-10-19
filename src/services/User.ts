@@ -23,14 +23,12 @@ class UserService {
         });
     }
 
-    static async logout(body: Record<string, unknown>) {
+    // The token travels in the Authorization header, which `load` attaches
+    // from storage, so the call needs no body of its own.
+    static async logout() {
         return load({
             url: 'users/logout',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
         });
     }
 

@@ -1,3 +1,4 @@
+import { RequireAuth } from '../../components/RequireAuth';
 import QuizLayout from '../../layouts/Quiz';
 import { ErrorPage } from '../../pages/Error';
 import { Quiz, loader as quizLoader } from '../../pages/Quiz';
@@ -21,7 +22,11 @@ export const quizRouter = {
         },
         {
             path: 'constructor',
-            element: <QuizConstructor />,
+            element: (
+                <RequireAuth>
+                    <QuizConstructor />
+                </RequireAuth>
+            ),
         },
     ],
 };

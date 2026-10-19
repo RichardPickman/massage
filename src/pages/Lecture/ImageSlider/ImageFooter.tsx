@@ -32,3 +32,4 @@ export const ImageFooter = memo(() => {
     );
 });
 
+ImageFooter.displayName = 'ImageFooter';

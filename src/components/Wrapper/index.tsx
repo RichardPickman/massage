@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import Header from '../Header';
-import { Card } from '../ui/card';
 
 interface WrapperProps {
     children: ReactNode;
@@ -8,10 +7,10 @@ interface WrapperProps {
 
 const Wrapper = ({ children }: WrapperProps) => {
     return (
-        <Card>
+        <div>
             <Header />
             {children}
-        </Card>
+        </div>
     );
 };
 
