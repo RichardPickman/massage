@@ -6,6 +6,7 @@ export interface LectureRow {
     lesson: string;
     teacher: string;
     date: string;
+    author?: string;
 }
 
 const joinIds = (value: string[] | undefined) =>
@@ -20,5 +21,5 @@ export const getTableRows = (payload: Lecture[]): LectureRow[] =>
         lesson: joinIds(lecture.lesson),
         teacher: joinIds(lecture.teacher),
         date: lecture.date,
+        author: lecture.author,
     }));
-

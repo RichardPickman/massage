@@ -27,3 +27,6 @@ yarn-error.log*
 .scratch/
 .agents/
 .claude/
+
+# local planning docs
+docs/

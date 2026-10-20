@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
+
+import { Layout } from '../layouts';
+import { ErrorPage } from '../pages/Error';
+import { StatsPage } from '../pages/Stats';
 import { authRouter } from './Auth';
 import { lectureRouter } from './Lectures';
 import { quizRouter } from './Quiz';
-
-import Layout from '../layouts';
-import { ErrorPage } from '../pages/Error';
-import Home from '../pages/Home';
 
 const router = createBrowserRouter([
     {
@@ -15,13 +15,13 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Home />,
+                element: <StatsPage />,
             },
+            ...lectureRouter,
+            ...quizRouter,
+            ...authRouter,
         ],
     },
-    ...lectureRouter,
-    quizRouter,
-    authRouter,
 ]);
 
 export default router;

@@ -6,12 +6,29 @@ export interface StagedImage {
     preview: string;
 }
 
-interface LectureFormValues {
+// A stored image: the key is sent back so the server knows what to keep, the
+// URL is only for the preview.
+export interface ExistingImage {
+    key: string;
+    url: string;
+}
+
+export interface LectureFormValues {
     topic: string;
     teacher: string;
     lesson: string;
+    date?: Date;
+}
+
+export interface LectureFormResult {
+    message: string;
+    lectureId: string;
+}
+
+interface LectureFormPayload extends Omit<LectureFormValues, 'date'> {
     date: string;
     images: StagedImage[];
+    keepImages?: string[];
 }
 
 export const getForm = ({
@@ -20,7 +37,8 @@ export const getForm = ({
     lesson,
     date,
     images,
-}: LectureFormValues) => {
+    keepImages,
+}: LectureFormPayload) => {
     const lecture = new FormData();
 
     lecture.append('topic', topic);
@@ -35,6 +53,12 @@ export const getForm = ({
 
     if (lesson) {
         lecture.append('lesson', lesson);
+    }
+
+    // Only the edit form sends this: an empty array means every stored image
+    // was removed.
+    if (keepImages) {
+        lecture.append('keepImages', JSON.stringify(keepImages));
     }
 
     for (const image of images) {
