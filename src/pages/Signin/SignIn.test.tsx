@@ -8,11 +8,17 @@ import SignIn from '.';
 
 const routes = (
     <Routes>
-        <Route path="/" element={<p>Lectures page</p>} />
+        <Route path="/" element={<p>Overview page</p>} />
         <Route path="/auth/login" element={<SignIn />} />
         <Route path="/quiz/constructor" element={<p>Constructor page</p>} />
     </Routes>
 );
+
+const submitCredentials = async () => {
+    await userEvent.type(screen.getByLabelText('Email'), 'author@example.com');
+    await userEvent.type(screen.getByLabelText('Password'), 'test-password');
+    await userEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+};
 
 describe('SignIn', () => {
     afterEach(() => {
@@ -33,7 +39,7 @@ describe('SignIn', () => {
             },
         });
 
-        await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+        await submitCredentials();
 
         expect(await screen.findByText('Constructor page')).toBeInTheDocument();
     });
@@ -48,8 +54,8 @@ describe('SignIn', () => {
             route: '/auth/login',
         });
 
-        await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+        await submitCredentials();
 
-        expect(await screen.findByText('Lectures page')).toBeInTheDocument();
+        expect(await screen.findByText('Overview page')).toBeInTheDocument();
     });
 });

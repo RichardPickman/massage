@@ -8,6 +8,7 @@ import userReducer from './reducers/auth/user';
 import imagesReducer from './reducers/images';
 import quizReducer from './reducers/quiz';
 import quizzesReducer from './reducers/quizzes';
+import statsReducer from './reducers/stats';
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
         images: imagesReducer,
         auth: userReducer,
         quizzes: quizzesReducer,
+        stats: statsReducer,
     },
 });
 

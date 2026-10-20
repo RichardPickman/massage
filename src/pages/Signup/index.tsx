@@ -1,8 +1,6 @@
 import { useLayoutEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 
-import { Card } from '@/components/ui/card';
 import { Auth, type AuthFormData } from '../../forms/Auth';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchRegister } from '../../store/reducers/auth/fetch';
@@ -24,17 +22,15 @@ const SignUp = () => {
 
     useLayoutEffect(() => {
         dispatch(cleanUp());
-    }, []);
+    }, [dispatch]);
 
     return (
-        <Card>
-            <Auth
-                submitting={status === fetchStatuses.PENDING}
-                errorData={status === fetchStatuses.FAILED ? error : null}
-                onSubmit={onSubmit}
-                header={'Sign Up'}
-            />
-        </Card>
+        <Auth
+            submitting={status === fetchStatuses.PENDING}
+            errorData={status === fetchStatuses.FAILED ? error : null}
+            onSubmit={onSubmit}
+            header={'Sign Up'}
+        />
     );
 };
 

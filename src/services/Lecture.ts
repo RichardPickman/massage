@@ -1,6 +1,6 @@
 import { load } from './loader';
 import type { ApiResponse } from './types';
-import type { Lecture, LectureImages } from './models';
+import type { Lecture, LectureDetails } from './models';
 
 class LectureService {
     static async createLecture(body: FormData) {
@@ -12,7 +12,7 @@ class LectureService {
     }
 
     static async getLecture(id: string) {
-        return load<ApiResponse<LectureImages>>({
+        return load<ApiResponse<LectureDetails>>({
             url: `lectures/${id}`,
             method: 'GET',
             headers: {
