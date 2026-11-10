@@ -9,6 +9,7 @@ const lecture = {
     id: 'lecture-1',
     topic: 'Anatomy',
     canManage: true,
+    listState: { listUrl: '/lectures?page=3' },
 };
 
 describe('LectureActions', () => {

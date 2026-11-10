@@ -2,6 +2,7 @@ import {
     Link,
     redirect,
     useLoaderData,
+    useLocation,
     useRevalidator,
     type LoaderFunctionArgs,
 } from 'react-router-dom';
@@ -16,6 +17,7 @@ import {
 } from '../../components/ui/card';
 import LectureService from '../../services/Lecture';
 import { useAppSelector } from '../../store';
+import { lectureListState } from '../../utils/lectureList';
 import { pageSearch, readPage } from '../../utils/pagination';
 import { LecturesTable } from './components/LecturesTable';
 import { getTableRows, type LectureRow } from './helpers';
@@ -34,9 +36,13 @@ export const Lectures = () => {
     const { rows, page, pages } = useLoaderData() as LecturesLoaderData;
     const { isAuth, user } = useAppSelector((state) => state.auth);
     const revalidator = useRevalidator();
+    const location = useLocation();
 
     const canManage = (author?: string) =>
         isAuth && (user?.role === 'admin' || String(author ?? '') === user?.id);
+
+    // Handed to every row so the lecture can lead back to this exact page.
+    const listState = lectureListState(location.pathname, location.search);
 
     return (
         <Card>
@@ -62,6 +68,7 @@ export const Lectures = () => {
                     <LecturesTable
                         rows={rows}
                         canManage={canManage}
+                        listState={listState}
                         onRemoved={() => revalidator.revalidate()}
                     />
                 )}

@@ -22,11 +22,13 @@ import {
 } from '../../../components/ui/dialog';
 import LectureService from '../../../services/Lecture';
 import { getErrorMessage } from '../../../services/errors';
+import type { LectureListState } from '../../../utils/lectureList';
 
 interface LectureActionsProps {
     id: string;
     topic: string;
     canManage: boolean;
+    listState: LectureListState;
     onRemoved: () => void;
 }
 
@@ -34,6 +36,7 @@ export const LectureActions = ({
     id,
     topic,
     canManage,
+    listState,
     onRemoved,
 }: LectureActionsProps) => {
     const [isConfirming, setIsConfirming] = useState(false);
@@ -77,7 +80,7 @@ export const LectureActions = ({
                 size="icon-sm"
                 aria-label={`Edit ${topic}`}
             >
-                <Link to={`/lectures/${id}/edit`}>
+                <Link to={`/lectures/${id}/edit`} state={listState}>
                     <PencilSimpleIcon />
                 </Link>
             </Button>

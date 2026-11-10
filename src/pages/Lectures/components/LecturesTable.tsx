@@ -7,12 +7,14 @@ import {
     TableHeader,
     TableRow,
 } from '../../../components/ui/table';
+import type { LectureListState } from '../../../utils/lectureList';
 import type { LectureRow } from '../helpers';
 import { LectureActions } from './LectureActions';
 
 interface LecturesTableProps {
     rows: LectureRow[];
     canManage: (author?: string) => boolean;
+    listState: LectureListState;
     onRemoved: () => void;
 }
 
@@ -21,6 +23,7 @@ interface LecturesTableProps {
 export const LecturesTable = ({
     rows,
     canManage,
+    listState,
     onRemoved,
 }: LecturesTableProps) => (
     <Table>
@@ -40,6 +43,7 @@ export const LecturesTable = ({
                         <Link
                             className="underline underline-offset-4"
                             to={`/lectures/${lecture.id}`}
+                            state={listState}
                         >
                             {lecture.topic}
                         </Link>
@@ -52,6 +56,7 @@ export const LecturesTable = ({
                             id={lecture.id}
                             topic={lecture.topic}
                             canManage={canManage(lecture.author)}
+                            listState={listState}
                             onRemoved={onRemoved}
                         />
                     </TableCell>

@@ -27,6 +27,7 @@ describe('LecturesTable', () => {
             <LecturesTable
                 rows={rows}
                 canManage={() => false}
+                listState={{ listUrl: '/lectures?page=2' }}
                 onRemoved={vi.fn()}
             />,
             { store: makeStore() }
@@ -59,6 +60,7 @@ describe('LecturesTable', () => {
             <LecturesTable
                 rows={rows}
                 canManage={() => true}
+                listState={{ listUrl: '/lectures?page=2' }}
                 onRemoved={onRemoved}
             />,
             { store: makeStore() }

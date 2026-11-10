@@ -1,11 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { RouteObject } from 'react-router-dom';
+import { useLocation, type RouteObject } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import LectureService from '../../services/Lecture';
 import type { Lecture } from '../../services/models';
 import type { ApiResponse, Page } from '../../services/types';
 import { makeStore, renderWithDataRouter, signIn } from '../../test/helpers';
+import { readLectureListUrl } from '../../utils/lectureList';
 import { Lectures, loader } from '.';
 
 const lecture = (id: string): Lecture => ({
@@ -30,11 +31,26 @@ const routes: RouteObject[] = [
     { path: '/lectures', element: <Lectures />, loader },
 ];
 
-const renderLectures = (route = '/lectures') => {
+// Stands in for the lecture viewer: it shows the page the row link carried.
+const CarriedProbe = () => {
+    const { state } = useLocation();
+
+    return <p>{readLectureListUrl(state)}</p>;
+};
+
+const routesWithViewer: RouteObject[] = [
+    ...routes,
+    { path: '/lectures/:id', element: <CarriedProbe /> },
+];
+
+const renderLectures = (
+    route = '/lectures',
+    appRoutes: RouteObject[] = routes
+) => {
     const store = makeStore();
     signIn(store);
 
-    renderWithDataRouter(routes, { store, route });
+    renderWithDataRouter(appRoutes, { store, route });
 };
 
 describe('Lectures page', () => {
@@ -53,6 +69,20 @@ describe('Lectures page', () => {
             await screen.findByRole('link', { name: 'Lecture page-2' })
         ).toBeInTheDocument();
         expect(screen.getByText('Page 2 of 2')).toBeInTheDocument();
+    });
+
+    it('opens a lecture knowing which page it came from', async () => {
+        vi.spyOn(LectureService, 'getLecturesPage').mockResolvedValue(
+            pageOf([lecture('page-2')], 2, 2)
+        );
+
+        renderLectures('/lectures?page=2', routesWithViewer);
+
+        await userEvent.click(
+            await screen.findByRole('link', { name: 'Lecture page-2' })
+        );
+
+        expect(await screen.findByText('/lectures?page=2')).toBeInTheDocument();
     });
 
     it('keeps the empty copy when there are no lectures', async () => {

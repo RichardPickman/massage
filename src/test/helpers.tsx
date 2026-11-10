@@ -47,7 +47,7 @@ export const signIn = (store: TestStore) => {
     );
 };
 
-type TestRoute =
+export type TestRoute =
     | string
     | {
           pathname: string;
