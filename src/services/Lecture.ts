@@ -1,5 +1,5 @@
 import { load } from './loader';
-import type { ApiResponse } from './types';
+import type { ApiResponse, Page } from './types';
 import type { Lecture, LectureDetails } from './models';
 
 class LectureService {
@@ -21,9 +21,11 @@ class LectureService {
         });
     }
 
-    static async getAllLectures() {
-        return load<ApiResponse<Lecture[]>>({
-            url: 'lectures/all',
+    // One page at a time; the API answers with the clamped page, which is how
+    // the list learns its request landed past the end.
+    static async getLecturesPage(page: number, limit: number) {
+        return load<ApiResponse<Page<Lecture>>>({
+            url: `lectures/all?page=${page}&limit=${limit}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
