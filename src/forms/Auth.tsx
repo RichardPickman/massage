@@ -112,7 +112,9 @@ export const Auth = ({
                                 spellCheck={false}
                                 placeholder="XXXX-XXXX-XXXX-XXXX"
                                 value={code}
-                                onChange={(event) => setCode(event.target.value)}
+                                onChange={(event) =>
+                                    setCode(event.target.value)
+                                }
                             />
                             <p className="text-sm text-muted-foreground">
                                 Issued for this exact email address, so it will

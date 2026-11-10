@@ -16,14 +16,8 @@ const routes = (
 );
 
 const submitRegistration = async (code: string) => {
-    await userEvent.type(
-        screen.getByLabelText('Email'),
-        'friend@example.com'
-    );
-    await userEvent.type(
-        screen.getByLabelText('Password'),
-        'a-long-password'
-    );
+    await userEvent.type(screen.getByLabelText('Email'), 'friend@example.com');
+    await userEvent.type(screen.getByLabelText('Password'), 'a-long-password');
     await userEvent.type(screen.getByLabelText('Invite code'), code);
     await userEvent.click(
         screen.getByRole('button', { name: 'Create account' })

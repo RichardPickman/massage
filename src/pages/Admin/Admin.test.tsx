@@ -22,9 +22,7 @@ const stubClipboard = () => {
 
 const mintCode = async (email: string) => {
     await userEvent.type(screen.getByLabelText('Their email'), email);
-    await userEvent.click(
-        screen.getByRole('button', { name: 'Get the code' })
-    );
+    await userEvent.click(screen.getByRole('button', { name: 'Get the code' }));
 };
 
 describe('Admin invite panel', () => {
