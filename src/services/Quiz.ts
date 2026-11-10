@@ -1,6 +1,7 @@
 import { load } from './loader';
 import type {
     ApiResponse,
+    Page,
     QuizStats,
     SubmitResult,
     SubmittedAnswer,
@@ -74,9 +75,11 @@ class QuizService {
         });
     }
 
-    static async getAllQuizzes() {
-        return load<ApiResponse<QuizSummary[]>>({
-            url: 'quiz/all',
+    // One page at a time; the API answers with the clamped page, which is how
+    // the listing learns its request landed past the end.
+    static async getQuizzesPage(page: number, limit: number) {
+        return load<ApiResponse<Page<QuizSummary>>>({
+            url: `quiz/all?page=${page}&limit=${limit}`,
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
