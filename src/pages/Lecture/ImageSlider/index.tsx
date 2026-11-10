@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../store';
 import { finish, nextSlide, prevSlide } from '../../../store/reducers/images';
+import { readLectureListUrl } from '../../../utils/lectureList';
 import { ImageFooter } from './ImageFooter';
 import { ImageHeader } from './ImageHeader';
 import { MainImage } from './MainImage';
@@ -11,6 +12,8 @@ export const ImageSlider = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { state } = useLocation();
+    const listUrl = readLectureListUrl(state);
 
     useEffect(() => {
         const handleFullscreenChange = () => {
@@ -43,7 +46,7 @@ export const ImageSlider = () => {
             // the viewer.
             if (event.key === 'Escape' && !document.fullscreenElement) {
                 dispatch(finish());
-                navigate('/lectures');
+                navigate(listUrl);
             }
         };
 
@@ -52,7 +55,7 @@ export const ImageSlider = () => {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [dispatch, navigate]);
+    }, [dispatch, listUrl, navigate]);
 
     const toggleFullscreen = async () => {
         const element = containerRef.current;

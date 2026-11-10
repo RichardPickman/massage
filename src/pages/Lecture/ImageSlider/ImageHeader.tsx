@@ -5,10 +5,11 @@ import {
     XIcon,
 } from '@phosphor-icons/react';
 import { memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { finish } from '../../../store/reducers/images';
+import { readLectureListUrl } from '../../../utils/lectureList';
 
 interface ImageHeaderProps {
     isFullscreen: boolean;
@@ -25,6 +26,7 @@ export const ImageHeader = memo(
         const images = useAppSelector((state) => state.images);
         const dispatch = useAppDispatch();
         const navigate = useNavigate();
+        const { state } = useLocation();
 
         if (!images.showMenus) {
             return null;
@@ -32,7 +34,7 @@ export const ImageHeader = memo(
 
         const handleClose = () => {
             dispatch(finish());
-            navigate('/lectures');
+            navigate(readLectureListUrl(state));
         };
 
         return (

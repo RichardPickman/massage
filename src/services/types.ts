@@ -13,6 +13,16 @@ export interface ApiResponse<T> {
     payload: T;
 }
 
+// What a paged read answers with: one page of rows plus the numbers a
+// paginator needs.
+export interface Page<T> {
+    items: T[];
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+}
+
 export interface SubmittedAnswer {
     questionId: string;
     selected: string[];

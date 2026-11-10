@@ -1,15 +1,26 @@
 import dayjs from 'dayjs';
-import { Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import {
+    Navigate,
+    useLoaderData,
+    useLocation,
+    useNavigate,
+} from 'react-router-dom';
 import LectureService from '../../services/Lecture';
 import type { LectureDetails } from '../../services/models';
 import { useAppSelector } from '../../store';
+import { readLectureListUrl } from '../../utils/lectureList';
 import { LectureForm } from '../LectureForm';
 import type { ExistingImage, LectureFormValues } from '../LectureForm/helpers';
 
 export const EditLecture = () => {
     const lecture = useLoaderData() as LectureDetails;
     const navigate = useNavigate();
+    const { state } = useLocation();
     const { user } = useAppSelector((state) => state.auth);
+
+    // The page the lecture was opened from, or the first page when the address
+    // was typed or refreshed.
+    const listUrl = readLectureListUrl(state);
 
     const canManage =
         user?.role === 'admin' || String(lecture.author ?? '') === user?.id;
@@ -17,7 +28,7 @@ export const EditLecture = () => {
     // The server also rejects a non-owner, but sending them back to the list
     // beats showing a form that can never be saved.
     if (!canManage) {
-        return <Navigate to="/lectures" replace />;
+        return <Navigate to={listUrl} replace />;
     }
 
     const parsedDate = lecture.date ? dayjs(lecture.date) : null;
@@ -49,9 +60,11 @@ export const EditLecture = () => {
             resetLabel="Reset"
             initialValues={initialValues}
             initialImages={initialImages}
-            backTo="/lectures"
+            backTo={listUrl}
             onSubmit={handleSubmit}
-            onSuccess={(lectureId) => navigate(`/lectures/${lectureId}`)}
+            onSuccess={(lectureId) =>
+                navigate(`/lectures/${lectureId}`, { state: { listUrl } })
+            }
         />
     );
 };

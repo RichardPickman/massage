@@ -2,7 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import {
+    createMemoryRouter,
+    MemoryRouter,
+    RouterProvider,
+    type RouteObject,
+} from 'react-router-dom';
 import type { AuthUser } from '../services/helpers/getUserFromToken';
 import { fetchLogin } from '../store/reducers/auth/fetch';
 import userReducer from '../store/reducers/auth/user';
@@ -42,7 +47,7 @@ export const signIn = (store: TestStore) => {
     );
 };
 
-type TestRoute =
+export type TestRoute =
     | string
     | {
           pathname: string;
@@ -63,5 +68,21 @@ export const renderWithProviders = (
     render(
         <Provider store={store}>
             <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
+        </Provider>
+    );
+
+// A page that reads loader data needs a data router, so this keeps the same
+// providers while React Router runs the real loaders.
+export const renderWithDataRouter = (
+    routes: RouteObject[],
+    { store, route = '/' }: RenderWithProvidersOptions
+) =>
+    render(
+        <Provider store={store}>
+            <RouterProvider
+                router={createMemoryRouter(routes, {
+                    initialEntries: [route],
+                })}
+            />
         </Provider>
     );
