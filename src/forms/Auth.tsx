@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 export type AuthFormData = {
     email: string;
     password: string;
+    code?: string;
 };
 
 interface AuthProps {
@@ -34,12 +35,16 @@ export const Auth = ({
 }: AuthProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [code, setCode] = useState('');
 
     const isSignIn = header === 'Sign In';
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onSubmit({ email, password });
+
+        // Signing in carries no code: the account already exists, and asking for
+        // one would suggest the invite is still needed after registration.
+        onSubmit(isSignIn ? { email, password } : { email, password, code });
     };
 
     return (
@@ -49,7 +54,7 @@ export const Auth = ({
                 <CardDescription>
                     {isSignIn
                         ? 'Welcome back. Your test record is waiting.'
-                        : 'Create an account to keep track of every attempt.'}
+                        : 'Create an account with the invite code you were sent.'}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -97,6 +102,26 @@ export const Auth = ({
                             }
                         />
                     </div>
+                    {isSignIn ? null : (
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="auth-code">Invite code</Label>
+                            <Input
+                                id="auth-code"
+                                required
+                                autoComplete="off"
+                                spellCheck={false}
+                                placeholder="XXXX-XXXX-XXXX-XXXX"
+                                value={code}
+                                onChange={(event) =>
+                                    setCode(event.target.value)
+                                }
+                            />
+                            <p className="text-sm text-muted-foreground">
+                                Issued for this exact email address, so it will
+                                not work with another one.
+                            </p>
+                        </div>
+                    )}
                     <Button type="submit" disabled={submitting}>
                         {submitting
                             ? 'Submitting...'

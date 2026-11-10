@@ -52,6 +52,20 @@ export const AccountMenu = () => {
                     <span className="truncate">{user.email}</span>
                 </div>
                 <div className="h-px bg-foreground/10" />
+                {/* Only an admin has anything to do here, so everyone else's
+                    menu stays exactly as it was. */}
+                {user.role === 'admin' ? (
+                    <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start"
+                    >
+                        <Link to="/admin" onClick={() => setIsOpen(false)}>
+                            Invite codes
+                        </Link>
+                    </Button>
+                ) : null}
                 <Button
                     asChild
                     variant="ghost"

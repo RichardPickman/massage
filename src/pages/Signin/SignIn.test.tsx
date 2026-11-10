@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ApiError } from '../../services/errors';
 import UserService from '../../services/User';
 import { makeStore, renderWithProviders } from '../../test/helpers';
 import SignIn from '.';
@@ -57,5 +58,37 @@ describe('SignIn', () => {
         await submitCredentials();
 
         expect(await screen.findByText('Overview page')).toBeInTheDocument();
+    });
+
+    it('asks for no invite code, because the account already exists', () => {
+        renderWithProviders(routes, {
+            store: makeStore(),
+            route: '/auth/login',
+        });
+
+        expect(screen.queryByLabelText('Invite code')).not.toBeInTheDocument();
+    });
+
+    it('passes on the wait when the server refuses repeated attempts', async () => {
+        vi.spyOn(UserService, 'login').mockRejectedValue(
+            new ApiError(
+                429,
+                'Too many attempts. Wait a few minutes and try again.'
+            )
+        );
+
+        renderWithProviders(routes, {
+            store: makeStore(),
+            route: '/auth/login',
+        });
+
+        await submitCredentials();
+
+        expect(
+            await screen.findByText(
+                'Too many attempts. Wait a few minutes and try again.'
+            )
+        ).toBeInTheDocument();
+        expect(screen.queryByText('Overview page')).not.toBeInTheDocument();
     });
 });
