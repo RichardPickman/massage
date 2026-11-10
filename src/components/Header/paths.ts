@@ -1,5 +1,10 @@
 export const paths = [
     {
+        name: 'Overview',
+        path: '/',
+        authRequired: false,
+    },
+    {
         name: 'Lectures',
         path: '/lectures',
         authRequired: false,
@@ -8,16 +13,5 @@ export const paths = [
         name: 'Quizzes',
         path: '/quiz',
         authRequired: false,
-    },
-];
-
-export const auth = [
-    {
-        name: 'Sign in',
-        path: '/auth/login',
-    },
-    {
-        name: 'Sign up',
-        path: '/auth/register',
     },
 ];

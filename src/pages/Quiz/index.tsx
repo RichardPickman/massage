@@ -10,6 +10,7 @@ import {
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
+import { Progress } from '../../components/ui/progress';
 import QuizService from '../../services/Quiz';
 import type { Quiz as QuizModel } from '../../services/models';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -35,7 +36,7 @@ export const Quiz = () => {
 
     if (quiz.questions.length === 0) {
         return (
-            <Card>
+            <Card className="mx-auto w-full max-w-3xl">
                 <CardContent className="py-8 text-center text-muted-foreground">
                     This quiz has no questions yet.
                 </CardContent>
@@ -67,13 +68,23 @@ export const Quiz = () => {
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{quiz.title}</CardTitle>
-                <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                    Question {quiz.currentQuestionIndex + 1} /{' '}
-                    {quiz.questions.length}
-                </p>
+        <Card className="mx-auto w-full max-w-3xl">
+            <CardHeader className="border-b">
+                <div className="flex flex-wrap items-end justify-between gap-2">
+                    <CardTitle>{quiz.title}</CardTitle>
+                    <p className="text-xs tracking-widest text-muted-foreground uppercase">
+                        Question {quiz.currentQuestionIndex + 1} /{' '}
+                        {quiz.questions.length}
+                    </p>
+                </div>
+                <Progress
+                    value={
+                        ((quiz.currentQuestionIndex + 1) /
+                            quiz.questions.length) *
+                        100
+                    }
+                    className="mt-2 h-1"
+                />
             </CardHeader>
             <CardContent>
                 <Question
@@ -82,7 +93,7 @@ export const Quiz = () => {
                     onSelect={(id) => dispatch(selectQuestion({ id }))}
                 />
             </CardContent>
-            <CardFooter className="flex flex-wrap items-center justify-between gap-2 px-6">
+            <CardFooter className="flex flex-wrap items-center justify-between gap-2">
                 <Button
                     variant="outline"
                     disabled={quiz.currentQuestionIndex === 0}
@@ -90,8 +101,8 @@ export const Quiz = () => {
                 >
                     Previous question
                 </Button>
-                <Button variant="outline" onClick={handleNext}>
-                    {isLastQuestion ? 'Finish' : 'Next question'}
+                <Button onClick={handleNext}>
+                    {isLastQuestion ? 'Finish test' : 'Next question'}
                 </Button>
             </CardFooter>
         </Card>

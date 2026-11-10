@@ -9,6 +9,7 @@ import userReducer from '../store/reducers/auth/user';
 import imagesReducer from '../store/reducers/images';
 import quizReducer from '../store/reducers/quiz';
 import quizzesReducer from '../store/reducers/quizzes';
+import statsReducer from '../store/reducers/stats';
 
 export const testUser: AuthUser = {
     id: 'user-1',
@@ -23,6 +24,7 @@ export const makeStore = () =>
             images: imagesReducer,
             auth: userReducer,
             quizzes: quizzesReducer,
+            stats: statsReducer,
         },
     });
 

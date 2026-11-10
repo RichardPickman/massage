@@ -29,6 +29,8 @@ export interface QuizSummary {
     _id: string;
     title: string;
     questions: string[];
+    // Missing on records created before the API started storing the author.
+    author?: string;
 }
 
 export interface Lecture {
@@ -38,8 +40,11 @@ export interface Lecture {
     teacher: string[];
     lesson: string[];
     date: string;
+    // Missing on records created before the API started storing the author.
+    author?: string;
 }
 
-export interface LectureImages {
-    images: string[];
+// The edit form needs the stored S3 keys as well as the signed preview URLs.
+export interface LectureDetails extends Lecture {
+    imageKeys: string[];
 }

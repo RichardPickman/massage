@@ -25,15 +25,16 @@ export const MainImage = () => {
                 aria-label="Previous image"
                 disabled={images.currentIndex === 0}
                 onClick={() => dispatch(prevSlide())}
-                className="absolute top-1/2 left-0 z-20 -translate-y-1/2"
+                className="absolute inset-y-0 left-3 z-20 my-auto rounded-full bg-black/40 text-white hover:bg-black/70! hover:text-white! active:translate-y-0!"
             >
-                <CaretLeftIcon className="size-8" />
+                <CaretLeftIcon className="size-7" />
             </Button>
             <img
                 src={images.currentImage}
                 alt={`Lecture image ${images.currentIndex + 1}`}
+                draggable={false}
                 onClick={() => dispatch(handleMenus(!images.showMenus))}
-                className="max-h-[80vh] max-w-full object-contain"
+                className="max-h-[85vh] max-w-full object-contain select-none"
             />
             <Button
                 variant="ghost"
@@ -41,11 +42,10 @@ export const MainImage = () => {
                 aria-label="Next image"
                 disabled={images.currentIndex === images.slides.length - 1}
                 onClick={() => dispatch(nextSlide())}
-                className="absolute top-1/2 right-0 z-20 -translate-y-1/2"
+                className="absolute inset-y-0 right-3 z-20 my-auto rounded-full bg-black/40 text-white hover:bg-black/70! hover:text-white! active:translate-y-0!"
             >
-                <CaretRightIcon className="size-8" />
+                <CaretRightIcon className="size-7" />
             </Button>
         </div>
     );
 };
-

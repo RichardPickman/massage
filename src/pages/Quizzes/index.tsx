@@ -2,8 +2,8 @@ import { useLayoutEffect } from 'react';
 import { Link, useLoaderData } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import {
-    Card,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
@@ -28,18 +28,23 @@ export const Quizzes = () => {
     }, [dispatch, loaderData.quizzes]);
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Quizzes</CardTitle>
+        <div>
+            <CardHeader className="flex flex-row items-start justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                    <CardTitle>Quizzes</CardTitle>
+                    <CardDescription>
+                        Scored tests. Every attempt lands on your record.
+                    </CardDescription>
+                </div>
                 {isAuth ? (
                     <Button asChild size="sm">
                         <Link to="constructor">Add quiz</Link>
                     </Button>
                 ) : null}
             </CardHeader>
-            <CardContent className="flex flex-wrap gap-4">
+            <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {quizzes.length === 0 ? (
-                    <p className="text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                         There is no quiz yet.
                     </p>
                 ) : (
@@ -48,7 +53,7 @@ export const Quizzes = () => {
                     ))
                 )}
             </CardContent>
-        </Card>
+        </div>
     );
 };
 
@@ -57,4 +62,3 @@ export const loader = async () => {
 
     return { quizzes: Array.isArray(payload) ? payload : [] };
 };
-

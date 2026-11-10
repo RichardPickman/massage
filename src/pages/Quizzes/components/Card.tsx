@@ -32,7 +32,7 @@ interface QuizCardProps {
 }
 
 export const QuizCard = ({ quiz }: QuizCardProps) => {
-    const { isAuth } = useAppSelector((state) => state.auth);
+    const { isAuth, user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
     const [isConfirming, setIsConfirming] = useState(false);
@@ -40,6 +40,12 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
     const [removeError, setRemoveError] = useState<string | null>(null);
 
     const questionCount = quiz.questions ? quiz.questions.length : 0;
+
+    // The server only lets the author (or an admin) delete, so the control is
+    // hidden for everyone else instead of offering an action that ends in 403.
+    const canRemove =
+        isAuth &&
+        (user?.role === 'admin' || String(quiz.author ?? '') === user?.id);
 
     // The request cannot be cancelled, so the dialog stays put until it settles.
     const handleConfirmOpenChange = (open: boolean) => {
@@ -63,8 +69,8 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
     };
 
     return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
+        <Card className="w-full transition-colors hover:ring-foreground/10">
+            <CardHeader className="border-b">
                 <CardTitle className="text-base normal-case">
                     <Link
                         className="underline underline-offset-4"
@@ -74,7 +80,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                     </Link>
                 </CardTitle>
             </CardHeader>
-            <CardContent className="text-muted-foreground">
+            <CardContent className="text-sm text-muted-foreground">
                 {questionCount} {questionCount === 1 ? 'question' : 'questions'}
             </CardContent>
             {removeError ? (
@@ -89,8 +95,8 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                     </Alert>
                 </CardContent>
             ) : null}
-            <CardFooter className="justify-end">
-                {isAuth ? (
+            {canRemove ? (
+                <CardFooter className="justify-end">
                     <Dialog
                         open={isConfirming}
                         onOpenChange={handleConfirmOpenChange}
@@ -140,8 +146,8 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                ) : null}
-            </CardFooter>
+                </CardFooter>
+            ) : null}
         </Card>
     );
 };

@@ -51,4 +51,3 @@ export const ImageList = ({ images, setImages }: ImageListProps) => {
         </div>
     );
 };
-

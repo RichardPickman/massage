@@ -1,15 +1,12 @@
 import { RequireAuth } from '../../components/RequireAuth';
-import LecturesLayout from '../../layouts/Lecture';
 import { AddLecture } from '../../pages/AddLecture';
-import { ErrorPage } from '../../pages/Error';
+import { EditLecture } from '../../pages/EditLecture';
 import { Lecture, loader as lectureLoader } from '../../pages/Lecture';
 import { Lectures, loader as lecturesLoader } from '../../pages/Lectures';
 
 export const lectureRouter = [
     {
-        path: '/lectures',
-        element: <LecturesLayout />,
-        errorElement: <ErrorPage />,
+        path: 'lectures',
         children: [
             {
                 index: true,
@@ -27,13 +24,17 @@ export const lectureRouter = [
         ],
     },
     {
-        path: '/lectures/:id',
-        children: [
-            {
-                index: true,
-                element: <Lecture />,
-                loader: lectureLoader,
-            },
-        ],
+        path: 'lectures/:id/edit',
+        element: (
+            <RequireAuth>
+                <EditLecture />
+            </RequireAuth>
+        ),
+        loader: lectureLoader,
+    },
+    {
+        path: 'lectures/:id',
+        element: <Lecture />,
+        loader: lectureLoader,
     },
 ];

@@ -1,8 +1,9 @@
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, useRevalidator } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import {
     Card,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
 } from '../../components/ui/card';
@@ -16,16 +17,26 @@ import {
 } from '../../components/ui/table';
 import LectureService from '../../services/Lecture';
 import { useAppSelector } from '../../store';
+import { LectureActions } from './components/LectureActions';
 import { getTableRows, type LectureRow } from './helpers';
 
 export const Lectures = () => {
     const lectures = useLoaderData() as LectureRow[];
-    const { isAuth } = useAppSelector((state) => state.auth);
+    const { isAuth, user } = useAppSelector((state) => state.auth);
+    const revalidator = useRevalidator();
+
+    const canManage = (author?: string) =>
+        isAuth && (user?.role === 'admin' || String(author ?? '') === user?.id);
 
     return (
         <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Lectures</CardTitle>
+            <CardHeader className="flex flex-row items-start justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                    <CardTitle>Lectures</CardTitle>
+                    <CardDescription>
+                        Image slides, grouped by session.
+                    </CardDescription>
+                </div>
                 {isAuth ? (
                     <Button asChild size="sm">
                         <Link to="create">Add lecture</Link>
@@ -34,7 +45,7 @@ export const Lectures = () => {
             </CardHeader>
             <CardContent>
                 {lectures.length === 0 ? (
-                    <p className="text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                         There are no lectures yet.
                     </p>
                 ) : (
@@ -45,6 +56,9 @@ export const Lectures = () => {
                                 <TableHead>Lesson</TableHead>
                                 <TableHead>Teacher</TableHead>
                                 <TableHead>Date</TableHead>
+                                <TableHead className="text-right">
+                                    Actions
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -61,6 +75,18 @@ export const Lectures = () => {
                                     <TableCell>{lecture.lesson}</TableCell>
                                     <TableCell>{lecture.teacher}</TableCell>
                                     <TableCell>{lecture.date}</TableCell>
+                                    <TableCell>
+                                        <LectureActions
+                                            id={lecture.id}
+                                            topic={lecture.topic}
+                                            canManage={canManage(
+                                                lecture.author
+                                            )}
+                                            onRemoved={() =>
+                                                revalidator.revalidate()
+                                            }
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -118,7 +118,7 @@ export const Result = ({ quizId }: ResultProps) => {
     // arrives - and a failed request must be retryable, not a silent zero.
     if (!submission) {
         return (
-            <Card>
+            <Card className="mx-auto w-full max-w-3xl">
                 <CardContent className="flex flex-col items-center gap-4 py-6">
                     {quiz.submitError ? (
                         <>
@@ -140,7 +140,7 @@ export const Result = ({ quizId }: ResultProps) => {
     }
 
     return (
-        <Card>
+        <Card className="mx-auto w-full max-w-3xl">
             <CardContent className="flex flex-col items-center gap-4 py-6">
                 <p className="text-lg">
                     You&apos;ve got {submission.correctCount} of{' '}
