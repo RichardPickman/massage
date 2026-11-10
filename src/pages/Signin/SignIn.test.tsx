@@ -58,4 +58,13 @@ describe('SignIn', () => {
 
         expect(await screen.findByText('Overview page')).toBeInTheDocument();
     });
+
+    it('asks for no invite code, because the account already exists', () => {
+        renderWithProviders(routes, {
+            store: makeStore(),
+            route: '/auth/login',
+        });
+
+        expect(screen.queryByLabelText('Invite code')).not.toBeInTheDocument();
+    });
 });
