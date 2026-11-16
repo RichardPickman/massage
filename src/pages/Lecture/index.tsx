@@ -31,4 +31,3 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
     return payload;
 };
-

@@ -27,9 +27,7 @@ const pageOf = (
 
 const storeWithPage = () => {
     const store = makeStore();
-    store.dispatch(
-        setQuizzes(pageOf([quiz('quiz-1'), quiz('quiz-2')], 2, 3))
-    );
+    store.dispatch(setQuizzes(pageOf([quiz('quiz-1'), quiz('quiz-2')], 2, 3)));
 
     return store;
 };
@@ -91,10 +89,7 @@ describe('fetchRemove', () => {
 
         const { quizzes, status, errors, revision } = store.getState().quizzes;
 
-        expect(quizzes.map(({ _id }) => _id)).toEqual([
-            'quiz-1',
-            'quiz-2',
-        ]);
+        expect(quizzes.map(({ _id }) => _id)).toEqual(['quiz-1', 'quiz-2']);
         expect(status).toBe(fetchStatuses.FAILED);
         expect(errors).toEqual(['Delete failed']);
         expect(revision).toBe(0);

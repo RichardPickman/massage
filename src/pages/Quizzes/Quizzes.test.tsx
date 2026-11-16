@@ -117,15 +117,7 @@ describe('Quizzes page', () => {
 
     it('counts the questions on each card, populated or not', async () => {
         vi.spyOn(QuizService, 'getQuizzesPage').mockResolvedValue(
-            pageOf(
-                [
-                    quiz('two'),
-                    quiz('one', ['q1']),
-                    quiz('none', []),
-                ],
-                1,
-                1
-            )
+            pageOf([quiz('two'), quiz('one', ['q1']), quiz('none', [])], 1, 1)
         );
 
         renderQuizzes();
