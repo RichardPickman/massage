@@ -42,7 +42,9 @@ export const Question = ({
                 />
             ) : null}
             {currentQuestion.question ? (
-                <p className="text-center text-lg">{currentQuestion.question}</p>
+                <p className="text-center text-lg">
+                    {currentQuestion.question}
+                </p>
             ) : null}
             <div className="grid w-full gap-2 sm:grid-cols-2">
                 {currentQuestion.answers.map((answer) =>
@@ -57,4 +59,3 @@ export const Question = ({
         </div>
     );
 };
-

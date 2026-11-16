@@ -1,6 +1,9 @@
 import { XIcon } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
-import { Alert as AlertPrimitive, AlertDescription } from '@/components/ui/alert';
+import {
+    Alert as AlertPrimitive,
+    AlertDescription,
+} from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { alertStatuses, type AlertStatus } from '../../utils/consts';
 
@@ -50,4 +53,3 @@ export const AlertWithLink = ({
         </AlertPrimitive>
     );
 };
-

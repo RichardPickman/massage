@@ -22,4 +22,3 @@ export const ShowAnswer = ({ state }: ShowAnswerProps) => {
         </Button>
     );
 };
-

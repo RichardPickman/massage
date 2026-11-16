@@ -35,4 +35,3 @@ export const IsFinished = ({ state }: IsFinishedProps) => {
         </Button>
     );
 };
-
