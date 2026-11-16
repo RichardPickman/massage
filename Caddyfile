@@ -1,0 +1,35 @@
+# The edge for the whole app: TLS for {$DOMAIN}, the static build, and /api
+# forwarded to the API container. DOMAIN and API_UPSTREAM come from the
+# environment, so the same image serves localhost and the real hostname.
+
+{$DOMAIN:localhost} {
+	encode zstd gzip
+
+	# The API already answers under /api, so nothing is rewritten: the backend
+	# mounts its router at /api in development too, and the paths must match.
+	handle /api/* {
+		reverse_proxy {$API_UPSTREAM:api:8280}
+	}
+
+	# SPA: any path that is not a file on disk is the app's own route, which is
+	# what createBrowserRouter needs for a deep link into /lectures/:id.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Vite fingerprints everything under /assets, so those can never go stale.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

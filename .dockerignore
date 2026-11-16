@@ -1,0 +1,12 @@
+node_modules
+dist
+
+# Secrets and local config stay on the machine that has them.
+.env
+.env.*
+
+.git
+.github
+.scratch
+Dockerfile
+.dockerignore
