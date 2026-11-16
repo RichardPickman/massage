@@ -23,6 +23,12 @@ export interface Page<T> {
     pages: number;
 }
 
+// What the admin panel mints: an address and the code that only works for it.
+export interface Invite {
+    email: string;
+    code: string;
+}
+
 export interface SubmittedAnswer {
     questionId: string;
     selected: string[];
