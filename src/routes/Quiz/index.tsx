@@ -16,6 +16,8 @@ export const quizRouter = [
                 path: ':id',
                 element: <Quiz />,
                 loader: quizLoader,
+                // The attempt owns the whole screen below the header.
+                handle: { fullBleed: true },
             },
             {
                 path: 'constructor',

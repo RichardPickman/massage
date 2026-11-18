@@ -1,0 +1,84 @@
+import { screen } from '@testing-library/react';
+import type { RouteObject } from 'react-router-dom';
+import { describe, expect, it, vi } from 'vitest';
+import QuizService from '../../services/Quiz';
+import type { Quiz as QuizModel } from '../../services/models';
+import { makeStore, renderWithDataRouter } from '../../test/helpers';
+import { Quiz, loader } from '.';
+
+const quiz: QuizModel = {
+    _id: 'quiz-1',
+    title: 'Anatomy',
+    questions: [
+        {
+            _id: 'q1',
+            question: 'Which muscle flexes the elbow?',
+            answers: [
+                { id: 'a1', text: 'Biceps brachii' },
+                { id: 'a2', text: 'Triceps brachii' },
+            ],
+            correctAnswers: ['a1'],
+            img: null,
+        },
+    ],
+};
+
+const routes: RouteObject[] = [
+    { path: '/quiz/:id', element: <Quiz />, loader },
+];
+
+const renderAttempt = () => {
+    vi.spyOn(QuizService, 'getQuiz').mockResolvedValue({
+        message: 'return quiz',
+        payload: quiz,
+    });
+
+    renderWithDataRouter(routes, {
+        store: makeStore(),
+        route: '/quiz/quiz-1',
+    });
+};
+
+describe('Quiz attempt', () => {
+    it('opens on the first question with its answers', async () => {
+        renderAttempt();
+
+        expect(
+            await screen.findByText('Which muscle flexes the elbow?')
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Biceps brachii' })
+        ).toBeInTheDocument();
+        expect(screen.getByText('Question 1 / 1')).toBeInTheDocument();
+    });
+
+    it('claims the height the layout hands it, without a cap of its own', async () => {
+        renderAttempt();
+
+        const card = (await screen.findByText('Anatomy')).closest(
+            '[data-slot="card"]'
+        );
+
+        // jsdom lays nothing out, so the classes stand in for the geometry: the
+        // card grows into the page column and no viewport height is hardcoded.
+        expect(card).toHaveClass('flex-1', 'flex-col');
+        expect(card?.className ?? '').not.toMatch(
+            /(^|\s)(h-dvh|h-screen|max-h-)/
+        );
+    });
+
+    it('grows the question area so the controls land at the bottom', async () => {
+        renderAttempt();
+
+        const card = (await screen.findByText('Anatomy')).closest(
+            '[data-slot="card"]'
+        );
+
+        expect(card?.querySelector('[data-slot="card-content"]')).toHaveClass(
+            'flex-1'
+        );
+        expect(card?.lastElementChild).toBe(
+            card?.querySelector('[data-slot="card-footer"]')
+        );
+    });
+});
