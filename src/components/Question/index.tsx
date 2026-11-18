@@ -38,7 +38,7 @@ export const Question = ({
                 <img
                     src={imageSource}
                     alt="Question"
-                    className="max-h-96 w-auto object-contain"
+                    className="max-h-[45dvh] w-auto max-w-full object-contain"
                 />
             ) : null}
             {currentQuestion.question ? (

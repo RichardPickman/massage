@@ -68,7 +68,7 @@ export const Quiz = () => {
     };
 
     return (
-        <Card className="mx-auto w-full max-w-3xl">
+        <Card className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
             <CardHeader className="border-b">
                 <div className="flex flex-wrap items-end justify-between gap-2">
                     <CardTitle>{quiz.title}</CardTitle>
@@ -86,7 +86,7 @@ export const Quiz = () => {
                     className="mt-2 h-1"
                 />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1">
                 <Question
                     currentQuestion={currentQuestion}
                     currentState={{ ...quiz, showAnswers: false }}
