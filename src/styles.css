@@ -131,6 +131,16 @@
         @apply bg-background text-foreground antialiased;
     }
 
+    /* The lecture viewer covers the viewport, so the page behind it has to stop
+       scrolling or a swipe drags the page instead of leaving the slide alone.
+       Keying the lock off the marker in the markup keeps it declarative: it
+       switches on and off with the viewer, and nothing has to be remembered or
+       restored. */
+    html:has([data-page-scroll-lock]),
+    body:has([data-page-scroll-lock]) {
+        overflow: hidden;
+    }
+
     ::selection {
         @apply bg-primary text-primary-foreground;
     }

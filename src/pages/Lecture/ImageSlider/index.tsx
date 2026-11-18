@@ -30,25 +30,6 @@ export const ImageSlider = () => {
         };
     }, []);
 
-    // The viewer is its own screen. Without this the document underneath keeps
-    // scrolling behind the fixed overlay, so a swipe drags the page instead of
-    // leaving the slide where it is.
-    useEffect(() => {
-        const { body, documentElement } = document;
-        const previous = {
-            body: body.style.overflow,
-            documentElement: documentElement.style.overflow,
-        };
-
-        body.style.overflow = 'hidden';
-        documentElement.style.overflow = 'hidden';
-
-        return () => {
-            body.style.overflow = previous.body;
-            documentElement.style.overflow = previous.documentElement;
-        };
-    }, []);
-
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'ArrowLeft') {
@@ -98,10 +79,14 @@ export const ImageSlider = () => {
         }
     };
 
+    // The viewer is its own screen: the page underneath must not scroll behind
+    // it. data-page-scroll-lock is what the stylesheet keys that lock off, so
+    // the lock follows this element in and out of the tree.
     return (
         <div
             ref={containerRef}
             aria-label="Lecture images"
+            data-page-scroll-lock
             className="fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center overflow-hidden overscroll-none bg-black"
         >
             <ImageHeader

@@ -59,32 +59,30 @@ describe('ImageSlider', () => {
         expect(viewer).toHaveClass('fixed', 'h-dvh', 'overscroll-none');
     });
 
-    it('holds the page still while it is open and gives it back on close', () => {
+    it('marks itself so the stylesheet can hold the page behind it still', () => {
+        renderSlider();
+
+        // jsdom applies no stylesheets, so the marker is the half of the
+        // contract a test can see: styles.css matches on it to lock the page
+        // and therefore unlocks when the viewer leaves the tree.
+        expect(
+            document.querySelector('[aria-label="Lecture images"]')
+        ).toHaveAttribute('data-page-scroll-lock');
+    });
+
+    it('leaves the document alone instead of rewriting its scroll setting', () => {
         document.body.style.overflow = '';
         document.documentElement.style.overflow = '';
 
         const { unmount } = renderSlider();
 
-        expect(document.body.style.overflow).toBe('hidden');
-        expect(document.documentElement.style.overflow).toBe('hidden');
+        // The lock is declarative, so the viewer has nothing to apply on the
+        // way in and nothing to restore on the way out.
+        expect(document.body.style.overflow).toBe('');
+        expect(document.documentElement.style.overflow).toBe('');
 
         unmount();
 
         expect(document.body.style.overflow).toBe('');
-        expect(document.documentElement.style.overflow).toBe('');
-    });
-
-    it('restores scroll it found already set by something else', () => {
-        document.body.style.overflow = 'scroll';
-
-        const { unmount } = renderSlider();
-
-        expect(document.body.style.overflow).toBe('hidden');
-
-        unmount();
-
-        expect(document.body.style.overflow).toBe('scroll');
-
-        document.body.style.overflow = '';
     });
 });
