@@ -25,7 +25,7 @@ const renderSlider = (state?: unknown) => {
 
     store.dispatch(setImages(['one.jpg']));
 
-    renderWithProviders(sliderRoutes, {
+    return renderWithProviders(sliderRoutes, {
         store,
         route: { pathname: '/lectures/lecture-1', state },
     });
@@ -46,5 +46,43 @@ describe('ImageSlider', () => {
         await userEvent.keyboard('{Escape}');
 
         expect(await screen.findByText('/lectures')).toBeInTheDocument();
+    });
+
+    it('is sized against the visible viewport rather than the document', () => {
+        renderSlider();
+
+        // jsdom lays nothing out, so the classes stand in for the geometry:
+        // dynamic viewport units keep browser chrome from overlapping the
+        // viewer, and overscroll keeps the gesture from chaining to the page.
+        const viewer = document.querySelector('[aria-label="Lecture images"]');
+
+        expect(viewer).toHaveClass('fixed', 'h-dvh', 'overscroll-none');
+    });
+
+    it('marks itself so the stylesheet can hold the page behind it still', () => {
+        renderSlider();
+
+        // jsdom applies no stylesheets, so the marker is the half of the
+        // contract a test can see: styles.css matches on it to lock the page
+        // and therefore unlocks when the viewer leaves the tree.
+        expect(
+            document.querySelector('[aria-label="Lecture images"]')
+        ).toHaveAttribute('data-page-scroll-lock');
+    });
+
+    it('leaves the document alone instead of rewriting its scroll setting', () => {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+
+        const { unmount } = renderSlider();
+
+        // The lock is declarative, so the viewer has nothing to apply on the
+        // way in and nothing to restore on the way out.
+        expect(document.body.style.overflow).toBe('');
+        expect(document.documentElement.style.overflow).toBe('');
+
+        unmount();
+
+        expect(document.body.style.overflow).toBe('');
     });
 });

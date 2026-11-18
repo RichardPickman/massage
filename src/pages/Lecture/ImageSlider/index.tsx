@@ -79,11 +79,15 @@ export const ImageSlider = () => {
         }
     };
 
+    // The viewer is its own screen: the page underneath must not scroll behind
+    // it. data-page-scroll-lock is what the stylesheet keys that lock off, so
+    // the lock follows this element in and out of the tree.
     return (
         <div
             ref={containerRef}
             aria-label="Lecture images"
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
+            data-page-scroll-lock
+            className="fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center overflow-hidden overscroll-none bg-black"
         >
             <ImageHeader
                 isFullscreen={isFullscreen}
