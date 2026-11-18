@@ -12,7 +12,7 @@ export const ImageFooter = memo(() => {
     }
 
     return (
-        <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto bg-black/60 p-2">
+        <div className="absolute inset-x-0 bottom-0 z-20 flex gap-1 overflow-x-auto bg-black/60 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
             {images.slides.map((slide, index) => (
                 <img
                     key={`${index}-${slide}`}

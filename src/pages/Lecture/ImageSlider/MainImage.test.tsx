@@ -48,4 +48,15 @@ describe('MainImage', () => {
             screen.getByRole('img', { name: 'Lecture image 2' })
         ).toBeInTheDocument();
     });
+
+    it('lets the photo fill the viewer instead of capping its height', () => {
+        renderWithProviders(<MainImage />, { store });
+
+        // jsdom lays nothing out, so the classes are the only guard that the
+        // photo is not capped at a fraction of the viewport.
+        const photo = screen.getByRole('img', { name: 'Lecture image 1' });
+
+        expect(photo).toHaveClass('h-full', 'w-full', 'object-contain');
+        expect(photo).not.toHaveClass('max-h-[85vh]');
+    });
 });

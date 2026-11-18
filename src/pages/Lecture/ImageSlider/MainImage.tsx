@@ -34,7 +34,7 @@ export const MainImage = () => {
                 alt={`Lecture image ${images.currentIndex + 1}`}
                 draggable={false}
                 onClick={() => dispatch(handleMenus(!images.showMenus))}
-                className="max-h-[85vh] max-w-full object-contain select-none"
+                className="h-full w-full object-contain select-none"
             />
             <Button
                 variant="ghost"

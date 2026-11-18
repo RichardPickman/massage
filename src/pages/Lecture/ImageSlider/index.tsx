@@ -30,6 +30,25 @@ export const ImageSlider = () => {
         };
     }, []);
 
+    // The viewer is its own screen. Without this the document underneath keeps
+    // scrolling behind the fixed overlay, so a swipe drags the page instead of
+    // leaving the slide where it is.
+    useEffect(() => {
+        const { body, documentElement } = document;
+        const previous = {
+            body: body.style.overflow,
+            documentElement: documentElement.style.overflow,
+        };
+
+        body.style.overflow = 'hidden';
+        documentElement.style.overflow = 'hidden';
+
+        return () => {
+            body.style.overflow = previous.body;
+            documentElement.style.overflow = previous.documentElement;
+        };
+    }, []);
+
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'ArrowLeft') {
@@ -83,7 +102,7 @@ export const ImageSlider = () => {
         <div
             ref={containerRef}
             aria-label="Lecture images"
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black"
+            className="fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center overflow-hidden overscroll-none bg-black"
         >
             <ImageHeader
                 isFullscreen={isFullscreen}

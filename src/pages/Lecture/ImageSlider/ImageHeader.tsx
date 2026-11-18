@@ -38,7 +38,7 @@ export const ImageHeader = memo(
         };
 
         return (
-            <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between bg-black/50 p-2 text-white">
+            <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between bg-black/50 px-2 pt-[calc(0.5rem+env(safe-area-inset-top))] pb-2 text-white">
                 <p className="text-sm">
                     {images.slides.length > 0
                         ? `${images.currentIndex + 1} / ${images.slides.length}`

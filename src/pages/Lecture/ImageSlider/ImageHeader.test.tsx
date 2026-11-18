@@ -114,4 +114,21 @@ describe('ImageHeader', () => {
 
         expect(await screen.findByText('/lectures')).toBeInTheDocument();
     });
+
+    it('keeps the bar clear of the notch', () => {
+        const store = makeStore();
+
+        store.dispatch(setImages(['one.jpg']));
+
+        renderWithProviders(
+            <ImageHeader isFullscreen={false} onToggleFullscreen={() => {}} />,
+            { store }
+        );
+
+        // jsdom computes no layout, so the safe-area padding is asserted as a
+        // class: a phone with a notch would otherwise push the bar under it.
+        expect(screen.getByText('1 / 1').closest('div')).toHaveClass(
+            'pt-[calc(0.5rem+env(safe-area-inset-top))]'
+        );
+    });
 });

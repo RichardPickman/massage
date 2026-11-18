@@ -25,7 +25,7 @@ const renderSlider = (state?: unknown) => {
 
     store.dispatch(setImages(['one.jpg']));
 
-    renderWithProviders(sliderRoutes, {
+    return renderWithProviders(sliderRoutes, {
         store,
         route: { pathname: '/lectures/lecture-1', state },
     });
@@ -46,5 +46,45 @@ describe('ImageSlider', () => {
         await userEvent.keyboard('{Escape}');
 
         expect(await screen.findByText('/lectures')).toBeInTheDocument();
+    });
+
+    it('is sized against the visible viewport rather than the document', () => {
+        renderSlider();
+
+        // jsdom lays nothing out, so the classes stand in for the geometry:
+        // dynamic viewport units keep browser chrome from overlapping the
+        // viewer, and overscroll keeps the gesture from chaining to the page.
+        const viewer = document.querySelector('[aria-label="Lecture images"]');
+
+        expect(viewer).toHaveClass('fixed', 'h-dvh', 'overscroll-none');
+    });
+
+    it('holds the page still while it is open and gives it back on close', () => {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+
+        const { unmount } = renderSlider();
+
+        expect(document.body.style.overflow).toBe('hidden');
+        expect(document.documentElement.style.overflow).toBe('hidden');
+
+        unmount();
+
+        expect(document.body.style.overflow).toBe('');
+        expect(document.documentElement.style.overflow).toBe('');
+    });
+
+    it('restores scroll it found already set by something else', () => {
+        document.body.style.overflow = 'scroll';
+
+        const { unmount } = renderSlider();
+
+        expect(document.body.style.overflow).toBe('hidden');
+
+        unmount();
+
+        expect(document.body.style.overflow).toBe('scroll');
+
+        document.body.style.overflow = '';
     });
 });
