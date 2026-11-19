@@ -16,7 +16,10 @@ permissions:
 
 concurrency:
     group: ci-${{ github.ref }}
-    cancel-in-progress: true
+    # A pull request's run is throwaway, so a new push may cancel it. A branch
+    # push is not: cancelling one mid-deploy would leave the stack's .env naming a
+    # commit that is not the one running.
+    cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
     gate:
@@ -91,3 +94,61 @@ jobs:
                   tags: ${{ steps.meta.outputs.tags }}
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
+
+    # Deploys the web container to the rehearsal stack. massage-backend has a twin
+    # of this job for the API, and neither can restart the other's container.
+    deploy-staging:
+        name: deploy staging
+        needs: publish
+        # A push to the integration branch is the only thing that deploys: a pull
+        # request has no tag to pull and no stack that should see it.
+        if: github.event_name == 'push' && github.ref_name == 'testing'
+        runs-on: ubuntu-latest
+        # The environment is what scopes the credential: each holds its own
+        # SSH_KEY, and its deployment rule admits only the branch that feeds it -
+        # testing here - so a run on any other ref is refused before it sees the
+        # secret. Host, user and host key are repository-level: one box, both
+        # stacks, and no credential in those three.
+        environment: staging
+        # A cancelled deploy leaves .env naming a commit that is not running, so
+        # the next one waits rather than interrupting.
+        concurrency:
+            group: deploy-staging
+            cancel-in-progress: false
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Unpack the key and pin the host
+              env:
+                  SSH_KEY: ${{ secrets.SSH_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+              run: |
+                  mkdir -p ~/.ssh
+                  printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
+                  chmod 600 ~/.ssh/deploy
+                  # Pinned, not scanned: ssh-keyscan trusts whatever answers
+                  # first, which is the one thing worth checking.
+                  printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+                  # A non-default port is keyed as [host]:port in known_hosts. The
+                  # secret holds the plain form, so derive the port-scoped line
+                  # instead of keeping a second copy that can drift.
+                  port="${SSH_PORT:-49152}"
+                  if [ "$port" != "22" ]; then
+                      awk -v p="$port" '{ if ($1 !~ /^\[/) $1 = "[" $1 "]:" p; print }' \
+                          ~/.ssh/known_hosts > ~/.ssh/known_hosts.port
+                      cat ~/.ssh/known_hosts.port >> ~/.ssh/known_hosts
+                  fi
+
+            - name: Point the stack at this commit and restart web
+              env:
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+              run: |
+                  # This host answers ssh over IPv4 only on a non-default port; 22
+                  # is IPv6-only, so a runner that assumes 22 gets "Connection
+                  # refused".
+                  ssh -i ~/.ssh/deploy -p "${SSH_PORT:-49152}" "$SSH_USER@$SSH_HOST" \
+                      "bash -s -- staging web ${{ github.sha }}" < scripts/deploy.sh
