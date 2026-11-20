@@ -38,6 +38,18 @@ describe('QuizConstructor', () => {
         window.localStorage.clear();
     });
 
+    it('titles the page on the page, not inside a card', async () => {
+        renderConstructor();
+
+        const heading = screen.getByRole('heading', {
+            name: 'Quiz constructor',
+        });
+
+        // The last page still framed in a card; the constructor is an editor, not
+        // a thing being edited.
+        expect(heading.closest('[data-slot="card"]')).toBeNull();
+    });
+
     it('starts with a single blank question card', () => {
         renderConstructor();
 
