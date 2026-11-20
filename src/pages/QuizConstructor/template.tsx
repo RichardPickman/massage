@@ -9,6 +9,8 @@ import type { ConstructorQuestion } from './helpers';
 
 interface QuestionTemplateProps {
     questionData: ConstructorQuestion;
+    questionNumber: number;
+    problems?: string[];
     updateQuestion: (id: string, data: Partial<ConstructorQuestion>) => void;
     removeQuestion: (id: string) => void;
 }
@@ -16,6 +18,8 @@ interface QuestionTemplateProps {
 export const QuestionTemplate = memo(
     ({
         questionData,
+        questionNumber,
+        problems,
         updateQuestion,
         removeQuestion,
     }: QuestionTemplateProps) => {
@@ -23,9 +27,25 @@ export const QuestionTemplate = memo(
 
         const togglePreview = (isPreview: boolean) =>
             updateQuestion(questionData.id, { isPreview });
+        const hasProblems = Boolean(problems?.length);
 
         return (
-            <Card className="w-full">
+            <Card
+                className={
+                    hasProblems ? 'w-full border-destructive/60' : 'w-full'
+                }
+                aria-invalid={hasProblems ? true : undefined}
+            >
+                <div className="flex items-center justify-between border-b px-6 py-3">
+                    <p className="text-sm font-medium">
+                        Question {questionNumber}
+                    </p>
+                    {hasProblems ? (
+                        <span className="text-xs font-medium text-destructive">
+                            Needs attention
+                        </span>
+                    ) : null}
+                </div>
                 <div ref={listRef} className="flex flex-col gap-4">
                     {questionData.isPreview ? (
                         <div className="px-6">
@@ -48,6 +68,13 @@ export const QuestionTemplate = memo(
                         />
                     )}
                 </div>
+                {hasProblems ? (
+                    <ul className="flex flex-col gap-1 px-6 text-xs text-destructive">
+                        {problems?.map((problem) => (
+                            <li key={problem}>• {problem}</li>
+                        ))}
+                    </ul>
+                ) : null}
                 <div className="flex justify-end gap-2 px-6">
                     {questionData.isPreview ? (
                         <Button

@@ -38,11 +38,21 @@ export interface QuestionResult {
     questionId: string;
     correct: boolean;
     correctAnswers: string[];
+    // Snapshot of the question at submission time. Optional because attempts
+    // made before the field existed carry no snapshot.
+    questionText?: string;
+    answers?: { id: string; text: string }[];
 }
 
 export interface StoredAnswer {
     question: string;
     selected: string[];
+    // Snapshot fields, written by the server on submit. Absent on attempts made
+    // before snapshots existed.
+    questionText?: string;
+    answers?: { id: string; text: string }[];
+    correctAnswers?: string[];
+    correct?: boolean;
 }
 
 export interface Attempt {
@@ -64,6 +74,10 @@ export interface SubmitResult {
     correctCount: number;
     questionCount: number;
     percent: number;
+    // null when the quiz was created before thresholds existed: the attempt is
+    // shown without a pass/fail verdict rather than being failed retroactively.
+    threshold: number | null;
+    passed: boolean | null;
     results: QuestionResult[];
 }
 
