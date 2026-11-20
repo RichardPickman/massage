@@ -33,9 +33,13 @@ describe('Question', () => {
 
         // jsdom lays nothing out, so the classes are the guard: a fixed pixel
         // cap pushed the answers off a phone screen once the figure loaded.
-        const figure = screen.getByRole('img', { name: 'Question' });
+        // The alt now names the question, and the image is wrapped in the zoom
+        // trigger, so it is found by its own accessible name.
+        const figure = screen.getByRole('img', {
+            name: 'Which muscle flexes the elbow?',
+        });
 
-        expect(figure).toHaveClass('max-h-[45dvh]', 'object-contain');
+        expect(figure).toHaveClass('max-h-[40dvh]', 'object-contain');
         expect(figure).not.toHaveClass('max-h-96');
     });
 

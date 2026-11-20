@@ -86,7 +86,7 @@ export const Quiz = () => {
                     className="mt-2 h-1"
                 />
             </CardHeader>
-            <CardContent className="flex-1">
+            <CardContent className="flex flex-1 flex-col">
                 <Question
                     currentQuestion={currentQuestion}
                     currentState={{ ...quiz, showAnswers: false }}
