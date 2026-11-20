@@ -18,11 +18,15 @@ export interface Quiz {
     _id: string;
     title: string;
     questions: Question[];
+    // Percentage needed to pass. Absent on quizzes created before the field
+    // existed, which is why the result view treats "no threshold" as "no verdict".
+    threshold?: number;
 }
 
 export interface QuizPayload {
     title: string;
     questions: string[];
+    threshold?: number;
 }
 
 export interface QuizSummary {

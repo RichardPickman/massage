@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { QuestionResult } from '../../services/types';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { buildAnswers, type AnswerHistory } from '../../store/reducers/helpers';
+import { buildAnswers } from '../../store/reducers/helpers';
 import {
     fetchQuizStats,
     restart,
@@ -14,6 +14,15 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
+
+interface ReviewItem {
+    id: string;
+    currentAnswers: string[];
+    questionText?: string;
+    answers?: { id: string; text: string }[];
+    correctAnswers?: string[];
+    correct?: boolean;
+}
 
 interface ResultProps {
     quizId: string;
@@ -56,26 +65,56 @@ export const Result = ({ quizId }: ResultProps) => {
     const resultFor = (questionId: string): QuestionResult | undefined =>
         submission?.results.find((result) => result.questionId === questionId);
 
-    const renderQuestion = (snap: AnswerHistory) => {
-        const currentQuestion = quiz.questions.find(
-            (item) => item._id === snap.id
+    const renderQuestion = (item: ReviewItem) => {
+        const snapshot = resultFor(item.id);
+        const liveQuestion = quiz.questions.find(
+            (question) => question._id === item.id
         );
+
+        // A question deleted from the quiz must not make the review vanish: the
+        // snapshot is the only remaining record of what was asked.
+        const currentQuestion = liveQuestion
+            ? {
+                  ...liveQuestion,
+                  // Prefer the snapshot even while the question exists, so an
+                  // edit made after the attempt cannot rewrite the review.
+                  question:
+                      item.questionText ||
+                      snapshot?.questionText ||
+                      liveQuestion.question,
+                  answers: item.answers?.length
+                      ? item.answers
+                      : snapshot?.answers?.length
+                      ? snapshot.answers
+                      : liveQuestion.answers,
+              }
+            : item.questionText || snapshot?.questionText
+            ? {
+                  _id: item.id,
+                  question: item.questionText ?? snapshot?.questionText ?? '',
+                  answers: item.answers ?? snapshot?.answers ?? [],
+                  correctAnswers: snapshot?.correctAnswers ?? [],
+                  img: null,
+              }
+            : null;
 
         if (!currentQuestion) {
             return null;
         }
 
-        // The key comes from the server's verdict, never from the loaded quiz:
-        // the play view is handed questions with no answers on them.
-        const correctAnswers = resultFor(snap.id)?.correctAnswers ?? [];
+        const correctAnswers =
+            item.correctAnswers ??
+            snapshot?.correctAnswers ??
+            currentQuestion.correctAnswers ??
+            [];
 
         return (
             <Question
-                key={snap.id}
+                key={item.id}
                 currentQuestion={currentQuestion}
                 currentState={{
                     correctAnswers,
-                    currentAnswers: snap.currentAnswers,
+                    currentAnswers: item.currentAnswers,
                     isFinished: true,
                     showAnswers: false,
                 }}
@@ -84,21 +123,45 @@ export const Result = ({ quizId }: ResultProps) => {
         );
     };
 
-    const wrongAnswers = quiz.history.filter((snap) => {
-        const result = resultFor(snap.id);
+    // The attempt is the source of truth for the review: quiz.history only
+    // exists while the tab stays open, and the server snapshot survives edits,
+    // deletions and reloads.
+    const attemptAnswers = submission?.attempt.answers ?? [];
 
-        return Boolean(result && !result.correct && snap.currentAnswers.length);
+    const reviewItems: ReviewItem[] = attemptAnswers.length
+        ? attemptAnswers.map((answer) => ({
+              id: String(answer.question),
+              currentAnswers: Array.isArray(answer.selected)
+                  ? answer.selected
+                  : [],
+              questionText: answer.questionText,
+              answers: answer.answers,
+              correct: answer.correct,
+          }))
+        : quiz.history.map((snap) => ({
+              id: snap.id,
+              currentAnswers: snap.currentAnswers,
+          }));
+
+    const wrongAnswers = reviewItems.filter((item) => {
+        const result = resultFor(item.id);
+        const isWrong =
+            typeof item.correct === 'boolean'
+                ? !item.correct
+                : Boolean(result && !result.correct);
+
+        return isWrong && item.currentAnswers.length > 0;
     });
 
-    const unanswered = quiz.history.filter(
-        (snap) => snap.currentAnswers.length === 0
+    const unanswered = reviewItems.filter(
+        (item) => item.currentAnswers.length === 0
     );
 
     const visibleHistory = showWrong
         ? wrongAnswers
         : showUnanswered
         ? unanswered
-        : quiz.history;
+        : reviewItems;
 
     const handleShowWrong = () => {
         setShowWrong(!showWrong);
@@ -142,14 +205,37 @@ export const Result = ({ quizId }: ResultProps) => {
     return (
         <Card className="mx-auto w-full max-w-3xl">
             <CardContent className="flex flex-col items-center gap-4 py-6">
-                <p className="text-lg">
-                    You&apos;ve got {submission.correctCount} of{' '}
-                    {submission.questionCount} right
-                    <span className="text-muted-foreground">
-                        {' '}
-                        ({submission.percent}%)
-                    </span>
-                </p>
+                <div className="flex flex-col items-center gap-1">
+                    <p className="text-lg">
+                        You&apos;ve got {submission.correctCount} of{' '}
+                        {submission.questionCount} right
+                        <span className="text-muted-foreground">
+                            {' '}
+                            ({submission.percent}%)
+                        </span>
+                    </p>
+                    {submission.threshold === null ||
+                    submission.threshold === undefined ? (
+                        <p className="text-sm text-muted-foreground">
+                            This quiz has no pass mark.
+                        </p>
+                    ) : (
+                        <div className="flex flex-col items-center gap-1">
+                            <span
+                                className={
+                                    submission.passed
+                                        ? 'rounded-full bg-emerald-100 px-3 py-0.5 text-sm font-medium text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-100'
+                                        : 'rounded-full bg-destructive/10 px-3 py-0.5 text-sm font-medium text-destructive'
+                                }
+                            >
+                                {submission.passed ? 'Passed' : 'Not passed'}
+                            </span>
+                            <p className="text-xs text-muted-foreground">
+                                Pass mark {submission.threshold}%
+                            </p>
+                        </div>
+                    )}
+                </div>
                 {!isAuth && !isRestoringSession ? (
                     <Alert className="w-full max-w-md">
                         <div className="flex flex-col gap-2">

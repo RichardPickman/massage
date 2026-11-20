@@ -5,7 +5,12 @@ import { FileUpload } from '../../../components/FileUpload';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import type { Answer } from '../../../services/models';
-import { getObjectWithId, type ConstructorQuestion } from '../helpers';
+import {
+    getObjectWithId,
+    MAX_ANSWERS,
+    MAX_CORRECT,
+    type ConstructorQuestion,
+} from '../helpers';
 
 interface QuestionConstructorProps {
     questionId: string;
@@ -24,6 +29,8 @@ export const QuestionConstructor = ({
     const [correctAnswers, setCorrectAnswers] = useState(
         questionData.correctAnswers
     );
+
+    const [limitNotice, setLimitNotice] = useState<string | null>(null);
 
     const [listRef] = useAutoAnimate();
 
@@ -48,7 +55,9 @@ export const QuestionConstructor = ({
 
         const lastAnswer = answersCopy[answersCopy.length - 1];
 
-        if (lastAnswer && lastAnswer.text) {
+        // Stop growing at the limit instead of silently ignoring keystrokes: a
+        // row that never appears reads like a broken input.
+        if (lastAnswer && lastAnswer.text && answersCopy.length < MAX_ANSWERS) {
             answersCopy.push(getObjectWithId({ text: '' }));
         }
 
@@ -57,7 +66,18 @@ export const QuestionConstructor = ({
     };
 
     const handleCorrectAnswer = (id: string) => {
-        const correctAnswersCopy = correctAnswers.includes(id)
+        const alreadyCorrect = correctAnswers.includes(id);
+
+        if (!alreadyCorrect && correctAnswers.length >= MAX_CORRECT) {
+            setLimitNotice(
+                `At most ${MAX_CORRECT} correct answers per question`
+            );
+            return;
+        }
+
+        setLimitNotice(null);
+
+        const correctAnswersCopy = alreadyCorrect
             ? correctAnswers.filter((item) => item !== id)
             : [...correctAnswers, id];
 
@@ -113,6 +133,11 @@ export const QuestionConstructor = ({
                 handleImage={handleImage}
                 removeImage={handleImageRemove}
             />
+            {limitNotice ? (
+                <p role="alert" className="text-xs text-destructive">
+                    {limitNotice}
+                </p>
+            ) : null}
             <div className="grid gap-2 sm:grid-cols-2">
                 {answers.map((answer) => (
                     <AnswerWithCheckbox
@@ -126,6 +151,9 @@ export const QuestionConstructor = ({
                     />
                 ))}
             </div>
+            <p className="text-xs text-muted-foreground">
+                Two to {MAX_ANSWERS} answers, at least one marked correct.
+            </p>
         </div>
     );
 };
