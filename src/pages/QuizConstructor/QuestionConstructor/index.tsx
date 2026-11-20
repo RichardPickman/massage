@@ -15,12 +15,16 @@ import {
 interface QuestionConstructorProps {
     questionId: string;
     questionData: ConstructorQuestion;
+    // The card's own problem list, so each message can sit next to the field
+    // that caused it instead of only in a banner at the top of the page.
+    problems?: string[];
     updateQuestion: (id: string, data: Partial<ConstructorQuestion>) => void;
 }
 
 export const QuestionConstructor = ({
     questionData,
     questionId,
+    problems,
     updateQuestion,
 }: QuestionConstructorProps) => {
     const [question, setQuestion] = useState(questionData.question);
@@ -31,6 +35,18 @@ export const QuestionConstructor = ({
     );
 
     const [limitNotice, setLimitNotice] = useState<string | null>(null);
+
+    const textProblem = problems?.includes('Add the question text')
+        ? 'Add the question text'
+        : null;
+    const answersProblem =
+        problems?.find((problem) => problem.startsWith('Fill at least')) ??
+        null;
+    const correctProblem = problems?.includes(
+        'Mark at least one correct answer'
+    )
+        ? 'Mark at least one correct answer'
+        : null;
 
     const [listRef] = useAutoAnimate();
 
@@ -116,14 +132,27 @@ export const QuestionConstructor = ({
     };
 
     return (
-        <div ref={listRef} className="flex flex-col gap-4 px-6">
+        <div ref={listRef} className="flex flex-col gap-4 px-4 md:px-6">
             <div className="flex flex-col gap-1">
                 <Label htmlFor={`question-${questionId}`}>Question</Label>
                 <Input
                     id={`question-${questionId}`}
                     value={question}
                     onChange={handleQuestion}
+                    placeholder="What should the student be asked?"
+                    aria-invalid={textProblem ? true : undefined}
+                    aria-describedby={
+                        textProblem ? `question-${questionId}-error` : undefined
+                    }
                 />
+                {textProblem ? (
+                    <p
+                        id={`question-${questionId}-error`}
+                        className="text-xs text-destructive"
+                    >
+                        {textProblem}
+                    </p>
+                ) : null}
             </div>
             <FileUpload
                 image={imagePreview}
@@ -136,21 +165,33 @@ export const QuestionConstructor = ({
                     {limitNotice}
                 </p>
             ) : null}
-            <div className="grid gap-2 sm:grid-cols-2">
-                {answers.map((answer) => (
+            <div className="flex flex-col gap-2">
+                {answers.map((answer, index) => (
                     <AnswerWithCheckbox
                         key={answer.id}
                         id={answer.id}
+                        number={index + 1}
                         removeEmpty={removeEmpty}
                         addAnswer={addAnswer}
                         handleCorrectAnswer={handleCorrectAnswer}
                         predefinedText={answer.text}
                         predefinedCheckbox={correctAnswers.includes(answer.id)}
+                        invalid={Boolean(answersProblem) && !answer.text.trim()}
                     />
                 ))}
             </div>
-            <p className="text-xs text-muted-foreground">
-                Two to {MAX_ANSWERS} answers, at least one marked correct.
+            {correctProblem ? (
+                <p className="text-xs text-destructive">{correctProblem}</p>
+            ) : null}
+            <p
+                className={
+                    answersProblem
+                        ? 'text-xs text-destructive'
+                        : 'text-xs text-muted-foreground'
+                }
+            >
+                {answersProblem ??
+                    `Two to ${MAX_ANSWERS} answers, at least one marked correct.`}
             </p>
         </div>
     );

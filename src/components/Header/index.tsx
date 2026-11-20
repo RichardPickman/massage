@@ -34,7 +34,7 @@ export const Header = () => {
                 </Link>
                 <nav
                     aria-label="Main"
-                    className="flex items-center gap-4 sm:gap-6"
+                    className="hidden items-center gap-6 md:flex"
                 >
                     {paths.map((item) => {
                         if (item.authRequired && !isAuth) {
@@ -47,10 +47,7 @@ export const Header = () => {
                                 to={item.path}
                                 end={item.path === '/'}
                                 className={({ isActive }) =>
-                                    cn(
-                                        navLinkClass({ isActive }),
-                                        item.path === '/' && 'hidden sm:inline'
-                                    )
+                                    navLinkClass({ isActive })
                                 }
                             >
                                 {item.name}
@@ -58,7 +55,7 @@ export const Header = () => {
                         );
                     })}
                 </nav>
-                <div className="ml-auto flex items-center gap-1 sm:gap-2">
+                <div className="ml-auto hidden items-center gap-2 md:flex">
                     {isRestoringSession ? (
                         <Skeleton className="h-9 w-20" />
                     ) : isAuth ? (

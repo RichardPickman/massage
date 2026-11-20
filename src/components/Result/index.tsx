@@ -10,6 +10,7 @@ import {
     restart,
     submitAttempt,
 } from '../../store/reducers/quiz';
+import { BackLink } from '../BackLink';
 import { Question } from '../Question';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
@@ -211,6 +212,7 @@ export const Result = ({ quizId }: ResultProps) => {
     return (
         <Card className="mx-auto w-full max-w-3xl">
             <CardContent className="flex flex-col items-center gap-4 py-6">
+                <BackLink to="/quiz" label="All tests" className="self-start" />
                 <div className="flex flex-col items-center gap-1">
                     <p className="text-lg">
                         You&apos;ve got {submission.correctCount} of{' '}

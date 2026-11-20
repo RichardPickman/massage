@@ -1,9 +1,8 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { PencilIcon, TrashIcon } from '@phosphor-icons/react';
+import { EyeIcon, PencilIcon, TrashIcon } from '@phosphor-icons/react';
 import { memo } from 'react';
 import { Question } from '../../components/Question';
 import { Button } from '../../components/ui/button';
-import { Card } from '../../components/ui/card';
 import { QuestionConstructor } from './QuestionConstructor';
 import type { ConstructorQuestion } from './helpers';
 
@@ -30,25 +29,66 @@ export const QuestionTemplate = memo(
         const hasProblems = Boolean(problems?.length);
 
         return (
-            <Card
+            // A bordered block, not another Card: the constructor page is a Card
+            // already, and a second frame costs 32px of width per side plus the
+            // gap that goes with it - on a phone that was most of the card.
+            <div
                 className={
-                    hasProblems ? 'w-full border-destructive/60' : 'w-full'
+                    hasProblems
+                        ? 'flex w-full flex-col gap-3 rounded-lg border border-destructive/60 py-3'
+                        : 'flex w-full flex-col gap-3 rounded-lg border py-3'
                 }
                 aria-invalid={hasProblems ? true : undefined}
             >
-                <div className="flex items-center justify-between border-b px-6 py-3">
-                    <p className="text-sm font-medium">
-                        Question {questionNumber}
-                    </p>
-                    {hasProblems ? (
-                        <span className="text-xs font-medium text-destructive">
-                            Needs attention
+                <div className="flex items-center justify-between gap-2 border-b px-4 py-2 md:px-6 md:py-3">
+                    <div className="flex min-w-0 items-center gap-2">
+                        <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-semibold tabular-nums">
+                            {questionNumber}
                         </span>
-                    ) : null}
+                        <p className="truncate text-sm font-medium">
+                            Question {questionNumber}
+                        </p>
+                        {hasProblems ? (
+                            <span className="text-xs font-medium text-destructive">
+                                Needs attention
+                            </span>
+                        ) : null}
+                    </div>
+                    {questionData.isPreview ? (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => togglePreview(false)}
+                        >
+                            <PencilIcon />
+                            Edit
+                        </Button>
+                    ) : (
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                className="size-9 text-muted-foreground md:size-8"
+                                aria-label={`Preview question ${questionNumber}`}
+                                onClick={() => togglePreview(true)}
+                            >
+                                <EyeIcon />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                className="size-9 text-muted-foreground hover:text-destructive md:size-8"
+                                aria-label={`Delete question ${questionNumber}`}
+                                onClick={() => removeQuestion(questionData.id)}
+                            >
+                                <TrashIcon />
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <div ref={listRef} className="flex flex-col gap-4">
                     {questionData.isPreview ? (
-                        <div className="px-6">
+                        <div className="px-4 md:px-6">
                             <Question
                                 currentQuestion={questionData}
                                 currentState={{
@@ -64,45 +104,12 @@ export const QuestionTemplate = memo(
                         <QuestionConstructor
                             questionId={questionData.id}
                             questionData={questionData}
+                            problems={problems}
                             updateQuestion={updateQuestion}
                         />
                     )}
                 </div>
-                {hasProblems ? (
-                    <ul className="flex flex-col gap-1 px-6 text-xs text-destructive">
-                        {problems?.map((problem) => (
-                            <li key={problem}>• {problem}</li>
-                        ))}
-                    </ul>
-                ) : null}
-                <div className="flex justify-end gap-2 px-6">
-                    {questionData.isPreview ? (
-                        <Button
-                            variant="outline"
-                            onClick={() => togglePreview(false)}
-                        >
-                            <PencilIcon />
-                            Edit
-                        </Button>
-                    ) : (
-                        <>
-                            <Button
-                                variant="secondary"
-                                onClick={() => togglePreview(true)}
-                            >
-                                Preview
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={() => removeQuestion(questionData.id)}
-                            >
-                                <TrashIcon />
-                                Delete
-                            </Button>
-                        </>
-                    )}
-                </div>
-            </Card>
+            </div>
         );
     }
 );

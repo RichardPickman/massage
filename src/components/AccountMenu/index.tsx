@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,13 +7,12 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { fetchLogout } from '../../store/reducers/auth/fetch';
+import { useAppSelector } from '../../store';
+import { AccountActions } from './actions';
 
 export const AccountMenu = () => {
     const { user } = useAppSelector((state) => state.auth);
     const [isOpen, setIsOpen] = useState(false);
-    const dispatch = useAppDispatch();
 
     if (!user) {
         return null;
@@ -22,18 +20,13 @@ export const AccountMenu = () => {
 
     const initial = user.email.slice(0, 1).toUpperCase();
 
-    const handleLogout = () => {
-        setIsOpen(false);
-        dispatch(fetchLogout());
-    };
-
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-2 pr-3 pl-1"
+                    className="min-h-11 gap-2 pr-3 pl-1"
                     aria-label={`Account menu for ${user.email}`}
                 >
                     <Avatar className="size-7">
@@ -45,45 +38,7 @@ export const AccountMenu = () => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-60 gap-1 p-2">
-                <div className="flex flex-col px-2 py-1.5">
-                    <span className="text-[0.625rem] tracking-widest text-muted-foreground uppercase">
-                        Signed in as
-                    </span>
-                    <span className="truncate">{user.email}</span>
-                </div>
-                <div className="h-px bg-foreground/10" />
-                {/* Only an admin has anything to do here, so everyone else's
-                    menu stays exactly as it was. */}
-                {user.role === 'admin' ? (
-                    <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start"
-                    >
-                        <Link to="/admin" onClick={() => setIsOpen(false)}>
-                            Invite codes
-                        </Link>
-                    </Button>
-                ) : null}
-                <Button
-                    asChild
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start"
-                >
-                    <Link to="/" onClick={() => setIsOpen(false)}>
-                        Stats overview
-                    </Link>
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="justify-start"
-                    onClick={handleLogout}
-                >
-                    Log out
-                </Button>
+                <AccountActions onNavigate={() => setIsOpen(false)} />
             </PopoverContent>
         </Popover>
     );

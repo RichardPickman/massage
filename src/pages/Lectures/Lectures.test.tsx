@@ -53,6 +53,9 @@ const renderLectures = (
     renderWithDataRouter(appRoutes, { store, route });
 };
 
+// Card list and table both render each lecture; jsdom applies no media
+// queries, so take the first match.
+
 describe('Lectures page', () => {
     afterEach(() => {
         vi.restoreAllMocks();
@@ -66,7 +69,7 @@ describe('Lectures page', () => {
         renderLectures('/lectures?page=2');
 
         expect(
-            await screen.findByRole('link', { name: 'Lecture page-2' })
+            (await screen.findAllByRole('link', { name: 'Lecture page-2' }))[0]
         ).toBeInTheDocument();
         expect(screen.getByText('Page 2 of 2')).toBeInTheDocument();
     });
@@ -79,7 +82,9 @@ describe('Lectures page', () => {
         renderLectures('/lectures?page=2', routesWithViewer);
 
         await userEvent.click(
-            await screen.findByRole('link', { name: 'Lecture page-2' })
+            (
+                await screen.findAllByRole('link', { name: 'Lecture page-2' })
+            )[0]
         );
 
         expect(await screen.findByText('/lectures?page=2')).toBeInTheDocument();
@@ -108,7 +113,7 @@ describe('Lectures page', () => {
         renderLectures();
 
         expect(
-            await screen.findByRole('link', { name: 'Lecture only' })
+            (await screen.findAllByRole('link', { name: 'Lecture only' }))[0]
         ).toBeInTheDocument();
         expect(
             screen.queryByRole('navigation', { name: 'pagination' })
@@ -142,12 +147,18 @@ describe('Lectures page', () => {
         renderLectures('/lectures?page=2');
 
         await userEvent.click(
-            await screen.findByRole('button', { name: 'Remove Lecture page-2' })
+            (
+                await screen.findAllByRole('button', {
+                    name: 'Remove Lecture page-2',
+                })
+            )[0]
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+        await userEvent.click(
+            screen.getAllByRole('button', { name: 'Remove' })[0]
+        );
 
         expect(
-            await screen.findByRole('link', { name: 'Lecture page-1' })
+            (await screen.findAllByRole('link', { name: 'Lecture page-1' }))[0]
         ).toBeInTheDocument();
         expect(screen.queryByText('Page 2 of 2')).not.toBeInTheDocument();
         expect(getPage).toHaveBeenLastCalledWith(1, 10);

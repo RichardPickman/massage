@@ -52,6 +52,14 @@ describe('Quiz attempt', () => {
         expect(screen.getByText('Question 1 / 1')).toBeInTheDocument();
     });
 
+    it('offers a visible way back to the list of tests', async () => {
+        renderAttempt();
+
+        const back = await screen.findByRole('link', { name: 'All tests' });
+
+        expect(back).toHaveAttribute('href', '/quiz');
+    });
+
     it('claims the height the layout hands it, without a cap of its own', async () => {
         renderAttempt();
 

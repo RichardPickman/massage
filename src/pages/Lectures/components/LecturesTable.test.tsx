@@ -33,12 +33,14 @@ describe('LecturesTable', () => {
             { store: makeStore() }
         );
 
-        expect(screen.getByRole('link', { name: 'Anatomy' })).toHaveAttribute(
-            'href',
-            '/lectures/lecture-1'
-        );
-        expect(screen.getByText('Ortodoncja')).toBeInTheDocument();
-        expect(screen.getByText('Czerwińska')).toBeInTheDocument();
+        // Card list and table both live in the DOM; a browser shows one of
+        // them, jsdom applies no media queries.
+        expect(
+            screen.getAllByRole('link', { name: 'Anatomy' })[0]
+        ).toHaveAttribute('href', '/lectures/lecture-1');
+        expect(screen.getAllByText('Ortodoncja')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Czerwińska')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('19/10/2026')[0]).toBeInTheDocument();
     });
 
     it('reports a removal without knowing where the rows came from', async () => {
@@ -67,9 +69,11 @@ describe('LecturesTable', () => {
         );
 
         await userEvent.click(
-            screen.getByRole('button', { name: 'Remove Anatomy' })
+            screen.getAllByRole('button', { name: 'Remove Anatomy' })[0]
         );
-        await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+        await userEvent.click(
+            screen.getAllByRole('button', { name: 'Remove' })[0]
+        );
 
         expect(LectureService.removeLecture).toHaveBeenCalledWith('lecture-1');
         expect(onRemoved).toHaveBeenCalled();

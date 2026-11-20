@@ -65,13 +65,14 @@ describe('StatsPage', () => {
         expect(
             await screen.findByRole('heading', { name: 'Your test record' })
         ).toBeInTheDocument();
-        expect(screen.getByText('72')).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Anatomy' })).toHaveAttribute(
-            'href',
-            '/quiz/quiz-1'
-        );
+        // The table and the mobile card list both live in the DOM; a browser
+        // shows one of them, jsdom applies no media queries.
+        expect(screen.getAllByText('72')[0]).toBeInTheDocument();
         expect(
-            screen.getByRole('img', { name: 'Anatomy score trend' })
+            screen.getAllByRole('link', { name: 'Anatomy' })[0]
+        ).toHaveAttribute('href', '/quiz/quiz-1');
+        expect(
+            screen.getAllByRole('img', { name: 'Anatomy score trend' })[0]
         ).toBeInTheDocument();
         expect(
             screen.getByText('Last attempt 10 Oct 2026')

@@ -35,7 +35,7 @@ export const ButtonHandler = ({ state }: ButtonHandlerProps) => {
     return (
         <Button
             variant={isSelected ? 'default' : 'outline'}
-            className="w-full justify-start"
+            className="h-auto min-h-14 w-full justify-start py-3 text-left text-base leading-snug whitespace-normal"
             onClick={() => onSelect(answer.id)}
         >
             {answer.text}

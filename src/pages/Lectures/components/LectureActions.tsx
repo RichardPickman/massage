@@ -78,6 +78,7 @@ export const LectureActions = ({
                 asChild
                 variant="ghost"
                 size="icon-sm"
+                className="size-11 md:size-8"
                 aria-label={`Edit ${topic}`}
             >
                 <Link to={`/lectures/${id}/edit`} state={listState}>
@@ -89,6 +90,7 @@ export const LectureActions = ({
                     <Button
                         variant="ghost"
                         size="icon-sm"
+                        className="size-11 md:size-8"
                         disabled={isRemoving}
                         aria-label={`Remove ${topic}`}
                     >
