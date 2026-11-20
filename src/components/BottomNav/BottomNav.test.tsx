@@ -40,6 +40,18 @@ describe('BottomNav', () => {
         ).toBeInTheDocument();
     });
 
+    it('marks the tab of the page you are on', () => {
+        renderNav({ route: '/lectures' });
+
+        expect(screen.getByRole('link', { name: 'Lectures' })).toHaveAttribute(
+            'aria-current',
+            'page'
+        );
+        expect(
+            screen.getByRole('link', { name: 'Overview' })
+        ).not.toHaveAttribute('aria-current');
+    });
+
     it('offers sign in instead of account when signed out', () => {
         renderNav({ signedIn: false });
 

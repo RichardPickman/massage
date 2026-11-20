@@ -8,6 +8,7 @@ import { cn } from 'cn';
 import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -41,11 +42,12 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
         return null;
     }
 
-    const tabClass = ({ isActive }: { isActive: boolean }) =>
-        cn(
-            'flex min-h-14 flex-1 flex-col items-center justify-center gap-1 px-2 text-[0.6875rem] tracking-[0.08em] uppercase transition-colors',
-            isActive ? 'text-foreground' : 'text-muted-foreground'
-        );
+    // Shared by the router links and the account button: a tab must look the
+    // same whichever element carries it.
+    const tabButtonClass = cn(
+        'h-auto min-h-14 flex-1 flex-col gap-1 rounded-none px-2 py-2 text-[0.6875rem] tracking-[0.08em] uppercase',
+        'text-muted-foreground hover:text-foreground [&[aria-current=page]]:text-foreground'
+    );
 
     return (
         <nav
@@ -54,16 +56,17 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
         >
             <div className="mx-auto flex w-full max-w-6xl items-stretch px-2">
                 {tabs.map(({ to, label, icon: Icon, end }) => (
-                    <NavLink
+                    <Button
                         key={to}
-                        to={to}
-                        end={end}
-                        className={tabClass}
-                        aria-label={label}
+                        asChild
+                        variant="ghost"
+                        className={tabButtonClass}
                     >
-                        <Icon className="size-5" aria-hidden />
-                        <span>{label}</span>
-                    </NavLink>
+                        <NavLink to={to} end={end} aria-label={label}>
+                            <Icon className="size-5" aria-hidden />
+                            <span>{label}</span>
+                        </NavLink>
+                    </Button>
                 ))}
                 {user ? (
                     <Dialog
@@ -71,9 +74,9 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
                         onOpenChange={setIsAccountOpen}
                     >
                         <DialogTrigger asChild>
-                            <button
-                                type="button"
-                                className="flex min-h-14 flex-1 flex-col items-center justify-center gap-1 px-2 text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase transition-colors"
+                            <Button
+                                variant="ghost"
+                                className={tabButtonClass}
                                 aria-label="Account"
                             >
                                 <UserCircleIcon
@@ -81,7 +84,7 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
                                     aria-hidden
                                 />
                                 <span>Account</span>
-                            </button>
+                            </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-sm">
                             <DialogTitle>Account</DialogTitle>
@@ -91,14 +94,12 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
                         </DialogContent>
                     </Dialog>
                 ) : (
-                    <NavLink
-                        to="/auth/login"
-                        className={tabClass}
-                        aria-label="Sign in"
-                    >
-                        <UserCircleIcon className="size-5" aria-hidden />
-                        <span>Sign in</span>
-                    </NavLink>
+                    <Button asChild variant="ghost" className={tabButtonClass}>
+                        <NavLink to="/auth/login" aria-label="Sign in">
+                            <UserCircleIcon className="size-5" aria-hidden />
+                            <span>Sign in</span>
+                        </NavLink>
+                    </Button>
                 )}
             </div>
         </nav>
