@@ -51,7 +51,7 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                     {quizzes.map((quiz) => {
                         const isRemoved = quiz.title === removedQuizTitle;
                         const body = (
-                            <div className="flex flex-col gap-3 rounded-lg border p-4">
+                            <div className="flex flex-col gap-3 rounded-lg border p-3 md:p-4">
                                 <div className="flex items-start justify-between gap-2">
                                     <span className="min-w-0 truncate font-medium">
                                         {quiz.title}

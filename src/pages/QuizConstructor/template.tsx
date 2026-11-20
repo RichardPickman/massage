@@ -3,7 +3,6 @@ import { PencilIcon, TrashIcon } from '@phosphor-icons/react';
 import { memo } from 'react';
 import { Question } from '../../components/Question';
 import { Button } from '../../components/ui/button';
-import { Card } from '../../components/ui/card';
 import { QuestionConstructor } from './QuestionConstructor';
 import type { ConstructorQuestion } from './helpers';
 
@@ -30,13 +29,18 @@ export const QuestionTemplate = memo(
         const hasProblems = Boolean(problems?.length);
 
         return (
-            <Card
+            // A bordered block, not another Card: the constructor page is a Card
+            // already, and a second frame costs 32px of width per side plus the
+            // gap that goes with it - on a phone that was most of the card.
+            <div
                 className={
-                    hasProblems ? 'w-full border-destructive/60' : 'w-full'
+                    hasProblems
+                        ? 'flex w-full flex-col gap-3 rounded-lg border border-destructive/60 py-3'
+                        : 'flex w-full flex-col gap-3 rounded-lg border py-3'
                 }
                 aria-invalid={hasProblems ? true : undefined}
             >
-                <div className="flex items-center justify-between border-b px-6 py-3">
+                <div className="flex items-center justify-between border-b px-4 py-2 md:px-4 md:px-6 md:py-3">
                     <p className="text-sm font-medium">
                         Question {questionNumber}
                     </p>
@@ -48,7 +52,7 @@ export const QuestionTemplate = memo(
                 </div>
                 <div ref={listRef} className="flex flex-col gap-4">
                     {questionData.isPreview ? (
-                        <div className="px-6">
+                        <div className="px-4 md:px-6">
                             <Question
                                 currentQuestion={questionData}
                                 currentState={{
@@ -69,13 +73,13 @@ export const QuestionTemplate = memo(
                     )}
                 </div>
                 {hasProblems ? (
-                    <ul className="flex flex-col gap-1 px-6 text-xs text-destructive">
+                    <ul className="flex flex-col gap-1 px-4 md:px-6 text-xs text-destructive">
                         {problems?.map((problem) => (
                             <li key={problem}>• {problem}</li>
                         ))}
                     </ul>
                 ) : null}
-                <div className="flex justify-end gap-2 px-6">
+                <div className="flex justify-end gap-2 px-4 md:px-6">
                     {questionData.isPreview ? (
                         <Button
                             variant="outline"
@@ -102,7 +106,7 @@ export const QuestionTemplate = memo(
                         </>
                     )}
                 </div>
-            </Card>
+            </div>
         );
     }
 );

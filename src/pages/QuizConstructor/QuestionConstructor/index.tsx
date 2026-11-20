@@ -116,7 +116,7 @@ export const QuestionConstructor = ({
     };
 
     return (
-        <div ref={listRef} className="flex flex-col gap-4 px-6">
+        <div ref={listRef} className="flex flex-col gap-4 px-4 md:px-6">
             <div className="flex flex-col gap-1">
                 <Label htmlFor={`question-${questionId}`}>Question</Label>
                 <Input

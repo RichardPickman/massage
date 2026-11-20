@@ -33,7 +33,7 @@ export const LecturesTable = ({
             {rows.map((lecture) => (
                 <div
                     key={lecture.id}
-                    className="flex flex-col gap-2 rounded-lg border p-4"
+                    className="flex flex-col gap-2 rounded-lg border p-3 md:p-4"
                 >
                     <div className="flex items-start justify-between gap-2">
                         <Link
