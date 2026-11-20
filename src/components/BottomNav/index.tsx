@@ -52,7 +52,7 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
     return (
         <nav
             aria-label="Primary"
-            className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+            className="shrink-0 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         >
             <div className="mx-auto flex w-full max-w-6xl items-stretch px-2">
                 {tabs.map(({ to, label, icon: Icon, end }) => (
