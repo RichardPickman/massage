@@ -42,6 +42,38 @@ describe('Layout', () => {
         expect(main).toHaveClass('flex-1', 'flex-col');
     });
 
+    it('keeps the tab bar on screen as a row, not as an overlay on the document', async () => {
+        renderLayout();
+
+        const nav = await screen.findByRole('navigation', {
+            name: 'Primary',
+        });
+
+        // A fixed bar over a scrolling document is what let the bar drift out of
+        // the viewport; the shell owns the height and the bar is one of its rows.
+        expect(nav).not.toHaveClass('fixed');
+        expect(nav).toHaveClass('shrink-0');
+        expect(nav.parentElement).toHaveClass('h-dvh', 'overflow-hidden');
+    });
+
+    it('scrolls the middle column instead of the document', async () => {
+        renderLayout();
+
+        const main = (await screen.findByText('page')).closest('main');
+
+        expect(main).toHaveClass('overflow-y-auto');
+    });
+
+    it('drops the header on a phone, where the tabs already lead to the same pages', async () => {
+        renderLayout();
+
+        const header = (await screen.findByText('page'))
+            .closest('main')
+            ?.parentElement?.querySelector('header');
+
+        expect(header?.parentElement).toHaveClass('hidden', 'md:block');
+    });
+
     it('tightens the padding so a full-screen page starts higher up', async () => {
         renderLayout({ fullBleed: true });
 

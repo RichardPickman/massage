@@ -137,7 +137,11 @@
        switches on and off with the viewer, and nothing has to be remembered or
        restored. */
     html:has([data-page-scroll-lock]),
-    body:has([data-page-scroll-lock]) {
+    body:has([data-page-scroll-lock]),
+    /* The shell's middle column is what scrolls now, so the lock has to reach
+       it as well: the viewer is fixed, but a gesture that lands outside it
+       would otherwise still drag the page behind. */
+    main:has([data-page-scroll-lock]) {
         overflow: hidden;
     }
 
