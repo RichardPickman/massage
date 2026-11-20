@@ -10,11 +10,11 @@ import {
     restart,
     submitAttempt,
 } from '../../store/reducers/quiz';
-import { BackLink } from '../BackLink';
 import { Question } from '../Question';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
+import { PageHeader } from '../PageHeader';
 import { Skeleton } from '../ui/skeleton';
 
 interface ReviewItem {
@@ -210,25 +210,20 @@ export const Result = ({ quizId }: ResultProps) => {
     }
 
     return (
-        <Card className="mx-auto w-full max-w-3xl">
-            <CardContent className="flex flex-col items-center gap-4 py-6">
-                <BackLink to="/quiz" label="All tests" className="self-start" />
-                <div className="flex flex-col items-center gap-1">
-                    <p className="text-lg">
-                        You&apos;ve got {submission.correctCount} of{' '}
-                        {submission.questionCount} right
-                        <span className="text-muted-foreground">
-                            {' '}
-                            ({submission.percent}%)
-                        </span>
-                    </p>
-                    {submission.threshold === null ||
+        <div className="flex flex-1 flex-col gap-6">
+            <PageHeader
+                back={{ to: '/quiz', label: 'All tests' }}
+                kicker="Result"
+                title={quiz.title || 'Result'}
+                description={`You've got ${submission.correctCount} of ${submission.questionCount} right (${submission.percent}%)`}
+                meta={
+                    submission.threshold === null ||
                     submission.threshold === undefined ? (
                         <p className="text-sm text-muted-foreground">
                             This quiz has no pass mark.
                         </p>
                     ) : (
-                        <div className="flex flex-col items-center gap-1">
+                        <div className="flex flex-col items-end gap-1">
                             <span
                                 className={
                                     submission.passed
@@ -242,59 +237,70 @@ export const Result = ({ quizId }: ResultProps) => {
                                 Pass mark {submission.threshold}%
                             </p>
                         </div>
-                    )}
-                </div>
-                {!isAuth && !isRestoringSession ? (
-                    <Alert className="w-full max-w-md">
-                        <div className="flex flex-col gap-2">
-                            <AlertTitle>
-                                Your stats are behind sign-in
-                            </AlertTitle>
-                            <AlertDescription>
-                                Sign in to see how many attempts you have made
-                                and what your best score is.
-                            </AlertDescription>
-                            <Button
-                                asChild
-                                size="sm"
-                                variant="outline"
-                                className="self-start"
-                            >
-                                <Link to="/auth/login">Sign in</Link>
-                            </Button>
-                        </div>
-                    </Alert>
-                ) : isStatsLoading ? (
-                    <div
-                        role="status"
-                        className="flex w-full max-w-md flex-col items-center gap-2 py-1"
-                    >
-                        <Skeleton className="h-4 w-64" />
-                        <span className="sr-only">Loading your stats...</span>
+                    )
+                }
+            />
+
+            {!isAuth && !isRestoringSession ? (
+                <Alert className="w-full max-w-md">
+                    <div className="flex flex-col gap-2">
+                        <AlertTitle>Your stats are behind sign-in</AlertTitle>
+                        <AlertDescription>
+                            Sign in to see how many attempts you have made and
+                            what your best score is.
+                        </AlertDescription>
+                        <Button
+                            asChild
+                            size="sm"
+                            variant="outline"
+                            className="self-start"
+                        >
+                            <Link to="/auth/login">Sign in</Link>
+                        </Button>
                     </div>
-                ) : statsError ? (
-                    <Alert variant="destructive" className="w-full max-w-md">
-                        <div className="flex flex-col gap-2">
-                            <AlertTitle>Could not load your stats</AlertTitle>
-                            <AlertDescription className="text-destructive">
-                                {statsError}
-                            </AlertDescription>
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                className="self-start"
-                                onClick={handleStatsRetry}
-                            >
-                                Try again
-                            </Button>
-                        </div>
-                    </Alert>
-                ) : stats ? (
-                    <p className="text-sm text-muted-foreground">
-                        Attempt {stats.count} · best {stats.best}% · average{' '}
-                        {stats.average}%
-                    </p>
-                ) : null}
+                </Alert>
+            ) : isStatsLoading ? (
+                <div
+                    role="status"
+                    className="flex w-full max-w-md flex-col items-center gap-2 py-1"
+                >
+                    <Skeleton className="h-4 w-64" />
+                    <span className="sr-only">Loading your stats...</span>
+                </div>
+            ) : statsError ? (
+                <Alert variant="destructive" className="w-full max-w-md">
+                    <div className="flex flex-col gap-2">
+                        <AlertTitle>Could not load your stats</AlertTitle>
+                        <AlertDescription className="text-destructive">
+                            {statsError}
+                        </AlertDescription>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="self-start"
+                            onClick={handleStatsRetry}
+                        >
+                            Try again
+                        </Button>
+                    </div>
+                </Alert>
+            ) : stats ? (
+                <p className="text-sm text-muted-foreground">
+                    Attempt {stats.count} · best {stats.best}% · average{' '}
+                    {stats.average}%
+                </p>
+            ) : null}
+
+            {/* One action row, right aligned: the toggle sits with the button it
+                belongs to instead of alone on the left edge. */}
+            <div className="flex flex-wrap items-center justify-end gap-2">
+                <Button
+                    variant="outline"
+                    onClick={() => setShowResults(!showResults)}
+                >
+                    {showResults ? 'Fold' : 'Unfold'}
+                    {showResults ? <CaretUpIcon /> : <CaretDownIcon />}
+                </Button>
                 <Button
                     onClick={() =>
                         dispatch(
@@ -307,44 +313,35 @@ export const Result = ({ quizId }: ResultProps) => {
                 >
                     Restart
                 </Button>
-            </CardContent>
-            <CardContent className="flex flex-col gap-4">
-                <Button
-                    variant="outline"
-                    className="self-start"
-                    onClick={() => setShowResults(!showResults)}
-                >
-                    {showResults ? 'Fold' : 'Unfold'}
-                    {showResults ? <CaretUpIcon /> : <CaretDownIcon />}
-                </Button>
-                {showResults ? (
-                    <>
-                        <div className="flex flex-wrap gap-2">
-                            <Button
-                                variant={showWrong ? 'default' : 'outline'}
-                                onClick={handleShowWrong}
-                            >
-                                Show wrong answers
-                            </Button>
-                            <Button
-                                variant={showUnanswered ? 'default' : 'outline'}
-                                onClick={handleShowUnanswered}
-                            >
-                                Show unanswered
-                            </Button>
-                        </div>
-                        <div className="flex flex-col gap-6">
-                            {visibleHistory.length === 0 ? (
-                                <p className="text-muted-foreground">
-                                    Nothing to show here.
-                                </p>
-                            ) : (
-                                visibleHistory.map(renderQuestion)
-                            )}
-                        </div>
-                    </>
-                ) : null}
-            </CardContent>
-        </Card>
+            </div>
+
+            {showResults ? (
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-wrap gap-2">
+                        <Button
+                            variant={showWrong ? 'default' : 'outline'}
+                            onClick={handleShowWrong}
+                        >
+                            Show wrong answers
+                        </Button>
+                        <Button
+                            variant={showUnanswered ? 'default' : 'outline'}
+                            onClick={handleShowUnanswered}
+                        >
+                            Show unanswered
+                        </Button>
+                    </div>
+                    <div className="flex flex-col gap-6">
+                        {visibleHistory.length === 0 ? (
+                            <p className="text-muted-foreground">
+                                Nothing to show here.
+                            </p>
+                        ) : (
+                            visibleHistory.map(renderQuestion)
+                        )}
+                    </div>
+                </div>
+            ) : null}
+        </div>
     );
 };

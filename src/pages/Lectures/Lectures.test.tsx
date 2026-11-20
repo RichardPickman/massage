@@ -61,6 +61,22 @@ describe('Lectures page', () => {
         vi.restoreAllMocks();
     });
 
+    it('titles the page on the page, not inside a card', async () => {
+        vi.spyOn(LectureService, 'getLecturesPage').mockResolvedValue(
+            pageOf([lecture('one')], 1, 1)
+        );
+
+        renderLectures();
+
+        const heading = await screen.findByRole('heading', {
+            name: 'Lectures',
+        });
+
+        // A page framed in a card is what made this screen look different from
+        // the overview and the quizzes list.
+        expect(heading.closest('[data-slot="card"]')).toBeNull();
+    });
+
     it('renders the rows of the page in the address', async () => {
         vi.spyOn(LectureService, 'getLecturesPage').mockResolvedValue(
             pageOf([lecture('page-2')], 2, 2)

@@ -49,7 +49,8 @@ describe('Quiz attempt', () => {
         expect(
             screen.getByRole('button', { name: 'Biceps brachii' })
         ).toBeInTheDocument();
-        expect(screen.getByText('Question 1 / 1')).toBeInTheDocument();
+        // The counter is the header's kicker now: "Question 1 of 1".
+        expect(screen.getByText('Question 1 of 1')).toBeInTheDocument();
     });
 
     it('offers a visible way back to the list of tests', async () => {
@@ -63,12 +64,13 @@ describe('Quiz attempt', () => {
     it('claims the height the layout hands it, without a cap of its own', async () => {
         renderAttempt();
 
-        const card = (await screen.findByText('Anatomy')).closest(
-            '[data-slot="card"]'
-        );
+        const card = (
+            await screen.findByText('Which muscle flexes the elbow?')
+        ).closest('[data-slot="card"]');
 
         // jsdom lays nothing out, so the classes stand in for the geometry: the
-        // card grows into the page column and no viewport height is hardcoded.
+        // question card grows into the page column and no viewport height is
+        // hardcoded.
         expect(card).toHaveClass('flex-1', 'flex-col');
         expect(card?.className ?? '').not.toMatch(
             /(^|\s)(h-dvh|h-screen|max-h-)/
@@ -78,15 +80,21 @@ describe('Quiz attempt', () => {
     it('grows the question area so the controls land at the bottom', async () => {
         renderAttempt();
 
-        const card = (await screen.findByText('Anatomy')).closest(
-            '[data-slot="card"]'
-        );
+        const card = (
+            await screen.findByText('Which muscle flexes the elbow?')
+        ).closest('[data-slot="card"]');
 
         expect(card?.querySelector('[data-slot="card-content"]')).toHaveClass(
             'flex-1'
         );
-        expect(card?.lastElementChild).toBe(
-            card?.querySelector('[data-slot="card-footer"]')
-        );
+        // The controls left the card: they are a row of the page, after it.
+        expect(card?.querySelector('[data-slot="card-footer"]')).toBeNull();
+        expect(
+            screen.getByRole('button', { name: 'Previous' })
+        ).toBeInTheDocument();
+        // One question, so the forward button is the one that finishes the test.
+        expect(
+            screen.getByRole('button', { name: 'Finish test' })
+        ).toBeInTheDocument();
     });
 });

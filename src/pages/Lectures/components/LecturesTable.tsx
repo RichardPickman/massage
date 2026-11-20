@@ -74,7 +74,7 @@ export const LecturesTable = ({
                 </div>
             ))}
         </div>
-        <div className="hidden md:block">
+        <div className="hidden overflow-hidden rounded-lg border md:block">
             <Table>
                 <TableHeader>
                     <TableRow>

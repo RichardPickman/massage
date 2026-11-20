@@ -145,6 +145,22 @@ describe('Result verdict', () => {
         vi.restoreAllMocks();
     });
 
+    it('pairs the unfold toggle with the restart button in one row', async () => {
+        vi.spyOn(QuizService, 'getQuizStats').mockResolvedValue({
+            message: 'ok',
+            payload: stats,
+        });
+
+        renderResult();
+
+        const unfold = screen.getByRole('button', { name: /Unfold/ });
+        const restart = screen.getByRole('button', { name: 'Restart' });
+
+        // A toggle alone on the left edge looked accidental; the two actions are
+        // one row now.
+        expect(unfold.parentElement).toBe(restart.parentElement);
+    });
+
     it('offers a visible way back to the list of tests', () => {
         vi.spyOn(QuizService, 'getQuizStats').mockResolvedValue({
             message: 'ok',
@@ -169,7 +185,7 @@ describe('Result verdict', () => {
 
         expect(screen.getByText('Passed')).toBeInTheDocument();
         expect(screen.getByText('Pass mark 50%')).toBeInTheDocument();
-        expect(screen.getByText("You've got 2 of 2 right")).toBeInTheDocument();
+        expect(screen.getByText(/You've got 2 of 2 right/)).toBeInTheDocument();
     });
 
     it('shows a failure badge when the threshold was missed', () => {

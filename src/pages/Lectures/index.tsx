@@ -8,13 +8,7 @@ import {
 } from 'react-router-dom';
 import { Paginator } from '../../components/Paginator';
 import { Button } from '../../components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '../../components/ui/card';
+import { PageHeader } from '../../components/PageHeader';
 import LectureService from '../../services/Lecture';
 import { useAppSelector } from '../../store';
 import { lectureListState } from '../../utils/lectureList';
@@ -45,36 +39,32 @@ export const Lectures = () => {
     const listState = lectureListState(location.pathname, location.search);
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-4">
-                <div className="flex flex-col gap-1">
-                    <CardTitle>Lectures</CardTitle>
-                    <CardDescription>
-                        Image slides, grouped by session.
-                    </CardDescription>
-                </div>
-                {isAuth ? (
-                    <Button asChild size="sm">
-                        <Link to="create">Add lecture</Link>
-                    </Button>
-                ) : null}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                {rows.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                        There are no lectures yet.
-                    </p>
-                ) : (
-                    <LecturesTable
-                        rows={rows}
-                        canManage={canManage}
-                        listState={listState}
-                        onRemoved={() => revalidator.revalidate()}
-                    />
-                )}
-                <Paginator page={page} pages={pages} />
-            </CardContent>
-        </Card>
+        <div className="flex flex-col gap-6">
+            <PageHeader
+                title="Lectures"
+                description="Image slides, grouped by session."
+                meta={
+                    isAuth ? (
+                        <Button asChild size="sm">
+                            <Link to="create">Add lecture</Link>
+                        </Button>
+                    ) : undefined
+                }
+            />
+            {rows.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                    There are no lectures yet.
+                </p>
+            ) : (
+                <LecturesTable
+                    rows={rows}
+                    canManage={canManage}
+                    listState={listState}
+                    onRemoved={() => revalidator.revalidate()}
+                />
+            )}
+            <Paginator page={page} pages={pages} />
+        </div>
     );
 };
 

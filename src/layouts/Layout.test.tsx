@@ -64,6 +64,17 @@ describe('Layout', () => {
         expect(main).toHaveClass('overflow-y-auto');
     });
 
+    it('never squeezes a tall page into the viewport', async () => {
+        renderLayout();
+
+        const main = (await screen.findByText('page')).closest('main');
+
+        // A flex column shrinks its children by default, so an unfolded result
+        // was compressed to the height of the screen and clipped instead of
+        // making the column scroll.
+        expect(main).toHaveClass('[&>*]:shrink-0');
+    });
+
     it('drops the header on a phone, where the tabs already lead to the same pages', async () => {
         renderLayout();
 

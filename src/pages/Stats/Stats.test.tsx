@@ -62,9 +62,14 @@ describe('StatsPage', () => {
 
         renderWithProviders(<StatsPage />, { store });
 
-        expect(
-            await screen.findByRole('heading', { name: 'Your test record' })
-        ).toBeInTheDocument();
+        const heading = await screen.findByRole('heading', {
+            name: 'Your test record',
+        });
+
+        expect(heading).toBeInTheDocument();
+        // The page title sits on the page, not inside a card: that framing is
+        // what made the lectures screen look like a different application.
+        expect(heading.closest('[data-slot="card"]')).toBeNull();
         // The table and the mobile card list both live in the DOM; a browser
         // shows one of them, jsdom applies no media queries.
         expect(screen.getAllByText('72')[0]).toBeInTheDocument();
@@ -114,9 +119,14 @@ describe('StatsPage', () => {
             screen.getByRole('button', { name: 'Try again' })
         );
 
-        expect(
-            await screen.findByRole('heading', { name: 'Your test record' })
-        ).toBeInTheDocument();
+        const heading = await screen.findByRole('heading', {
+            name: 'Your test record',
+        });
+
+        expect(heading).toBeInTheDocument();
+        // The page title sits on the page, not inside a card: that framing is
+        // what made the lectures screen look like a different application.
+        expect(heading.closest('[data-slot="card"]')).toBeNull();
         expect(getMine).toHaveBeenCalledTimes(2);
     });
 });
