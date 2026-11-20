@@ -1,16 +1,10 @@
 import { useLayoutEffect } from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
-import { BackLink } from '../../components/BackLink';
+import { PageHeader } from '../../components/PageHeader';
 import { Question } from '../../components/Question';
 import { Result } from '../../components/Result';
 import { Button } from '../../components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '../../components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 import { Progress } from '../../components/ui/progress';
 import QuizService from '../../services/Quiz';
 import type { Quiz as QuizModel } from '../../services/models';
@@ -37,20 +31,13 @@ export const Quiz = () => {
 
     if (quiz.questions.length === 0) {
         return (
-            <Card className="mx-auto w-full max-w-3xl">
-                {/* A dead end is still a screen: the sentence alone leaves only
-                    the system back gesture. */}
-                <CardContent className="flex flex-col gap-4 py-8 text-muted-foreground">
-                    <BackLink
-                        to="/quiz"
-                        label="All tests"
-                        className="self-start"
-                    />
-                    <p className="text-center">
-                        This quiz has no questions yet.
-                    </p>
-                </CardContent>
-            </Card>
+            <div className="flex flex-1 flex-col gap-6">
+                <PageHeader
+                    back={{ to: '/quiz', label: 'All tests' }}
+                    title={quiz.title}
+                    description="This quiz has no questions yet."
+                />
+            </div>
         );
     }
 
@@ -78,45 +65,51 @@ export const Quiz = () => {
     };
 
     return (
-        <Card className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
-            <CardHeader className="border-b">
-                <div className="flex items-center justify-between gap-2">
-                    <BackLink to="/quiz" label="All tests" />
-                    <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                        Question {quiz.currentQuestionIndex + 1} /{' '}
-                        {quiz.questions.length}
-                    </p>
-                </div>
-                <CardTitle>{quiz.title}</CardTitle>
+        <div className="flex flex-1 flex-col gap-4">
+            <PageHeader
+                back={{ to: '/quiz', label: 'All tests' }}
+                kicker={`Question ${quiz.currentQuestionIndex + 1} of ${
+                    quiz.questions.length
+                }`}
+                title={quiz.title}
+            >
                 <Progress
                     value={
                         ((quiz.currentQuestionIndex + 1) /
                             quiz.questions.length) *
                         100
                     }
-                    className="mt-2 h-1"
+                    className="h-1"
                 />
-            </CardHeader>
-            <CardContent className="flex flex-1 flex-col">
-                <Question
-                    currentQuestion={currentQuestion}
-                    currentState={{ ...quiz, showAnswers: false }}
-                    onSelect={(id) => dispatch(selectQuestion({ id }))}
-                />
-            </CardContent>
-            <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+            </PageHeader>
+
+            {/* The card is the question, not the page: the header and the controls
+                sit on the page itself, as on every other screen. */}
+            <Card className="flex flex-1 flex-col">
+                <CardContent className="flex flex-1 flex-col">
+                    <Question
+                        currentQuestion={currentQuestion}
+                        currentState={{ ...quiz, showAnswers: false }}
+                        onSelect={(id) => dispatch(selectQuestion({ id }))}
+                    />
+                </CardContent>
+            </Card>
+
+            {/* Two words, one line: "Previous question / Next question" made the
+                two buttons different widths and set them at different heights. */}
+            <div className="flex items-center justify-between gap-2">
                 <Button
                     variant="outline"
                     disabled={quiz.currentQuestionIndex === 0}
                     onClick={() => dispatch(prevQuestion())}
                 >
-                    Previous question
+                    Previous
                 </Button>
                 <Button onClick={handleNext}>
-                    {isLastQuestion ? 'Finish test' : 'Next question'}
+                    {isLastQuestion ? 'Finish test' : 'Next'}
                 </Button>
-            </CardFooter>
-        </Card>
+            </div>
+        </div>
     );
 };
 

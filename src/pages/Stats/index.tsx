@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { PageHeader } from '../../components/PageHeader';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -57,21 +58,17 @@ export const StatsPage = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            <header className="flex flex-col gap-2 border-b pb-6">
-                <p className="text-[0.625rem] tracking-[0.3em] text-muted-foreground uppercase">
-                    Overview
-                </p>
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                    <h1 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
-                        Your test record
-                    </h1>
-                    {latestAttempt ? (
+            <PageHeader
+                kicker="Overview"
+                title="Your test record"
+                meta={
+                    latestAttempt ? (
                         <p className="text-sm text-muted-foreground">
                             Last attempt {formatDate(latestAttempt)}
                         </p>
-                    ) : null}
-                </div>
-            </header>
+                    ) : undefined
+                }
+            />
             {error ? (
                 <Alert variant="destructive">
                     <div className="flex flex-1 flex-col gap-2">

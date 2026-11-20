@@ -11,17 +11,29 @@
 		reverse_proxy {$API_UPSTREAM:api:8280}
 	}
 
+	# Vite fingerprints everything under /assets, so those can never go stale -
+	# and a miss has to stay a miss. Answering a missing module with the app shell
+	# is what turns a stale index.html into "blocked because of a disallowed MIME
+	# type (text/html)": the browser asked for a module and was handed HTML.
+	handle /assets/* {
+		root * /srv
+		file_server
+		header Cache-Control "public, max-age=31536000, immutable"
+	}
+
 	# SPA: any path that is not a file on disk is the app's own route, which is
 	# what createBrowserRouter needs for a deep link into /lectures/:id.
+	#
+	# The shell is revalidated on every load. Without that a browser caches it
+	# heuristically, keeps yesterday's script names after a deploy, asks for
+	# assets the new build no longer has, and shows a white page - a deploy that
+	# looks like it never happened.
 	handle {
 		root * /srv
 		try_files {path} /index.html
 		file_server
+		header Cache-Control "no-cache"
 	}
-
-	# Vite fingerprints everything under /assets, so those can never go stale.
-	@assets path /assets/*
-	header @assets Cache-Control "public, max-age=31536000, immutable"
 
 	header {
 		X-Content-Type-Options nosniff

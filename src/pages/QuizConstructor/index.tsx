@@ -2,13 +2,8 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { FloppyDiskIcon, PlusIcon } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import { AlertWithLink } from '../../components/AlertWithLink';
+import { PageHeader } from '../../components/PageHeader';
 import { Button } from '../../components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import QuestionService from '../../services/Question';
@@ -282,26 +277,19 @@ export const QuizConstructor = () => {
     };
 
     return (
-        <Card>
-            <CardHeader className="flex flex-wrap items-start justify-between gap-3">
-                <div className="flex flex-col gap-1">
-                    <CardTitle>Quiz constructor</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                        Write the questions, tick the correct answers and set
-                        the pass mark. Students only see the answers after they
-                        submit.
-                    </p>
-                </div>
-                <Button
-                    className="shrink-0"
-                    disabled={isSaving}
-                    onClick={saveQuiz}
-                >
-                    <FloppyDiskIcon />
-                    {isSaving ? 'Saving...' : 'Save quiz'}
-                </Button>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
+            <PageHeader
+                kicker="Editor"
+                title="Quiz constructor"
+                description="Write the questions, tick the correct answers and set the pass mark. Students only see the answers after they submit."
+                meta={
+                    <Button disabled={isSaving} onClick={saveQuiz}>
+                        <FloppyDiskIcon />
+                        {isSaving ? 'Saving...' : 'Save quiz'}
+                    </Button>
+                }
+            />
+            <div className="flex flex-col gap-4">
                 {draftOffer ? (
                     <div
                         role="status"
@@ -441,7 +429,7 @@ export const QuizConstructor = () => {
                     <PlusIcon />
                     Add question
                 </Button>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 };
