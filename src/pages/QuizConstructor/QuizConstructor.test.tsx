@@ -78,12 +78,48 @@ describe('QuizConstructor', () => {
             screen.getByRole('button', { name: /Save quiz/ })
         );
 
-        // One message per card, not a single banner: the author has to know
-        // which card is wrong.
-        expect(screen.getAllByText('• Add the question text')).toHaveLength(2);
+        // The message sits under the field that caused it, one per card, and
+        // the field itself is marked - a banner at the top is not feedback when
+        // the author is looking at question two.
+        expect(screen.getAllByText('Add the question text')).toHaveLength(2);
         expect(screen.getAllByText('Needs attention')).toHaveLength(2);
+        expect(screen.getAllByLabelText('Question')).toHaveLength(2);
+        screen
+            .getAllByLabelText('Question')
+            .forEach((field) =>
+                expect(field).toHaveAttribute('aria-invalid', 'true')
+            );
+        expect(screen.getByLabelText('Quiz title')).toHaveAttribute(
+            'aria-invalid',
+            'true'
+        );
+        expect(
+            screen.getByText('Quiz title cannot be empty')
+        ).toBeInTheDocument();
         expect(QuizService.createQuiz).not.toHaveBeenCalled();
         expect(QuestionService.createQuestion).not.toHaveBeenCalled();
+    });
+
+    it('clears a field error as soon as the author starts fixing it', async () => {
+        renderConstructor();
+
+        await userEvent.click(
+            screen.getByRole('button', { name: /Save quiz/ })
+        );
+
+        expect(screen.getByLabelText('Quiz title')).toHaveAttribute(
+            'aria-invalid',
+            'true'
+        );
+
+        await userEvent.type(screen.getByLabelText('Quiz title'), 'Anatomy');
+
+        expect(screen.getByLabelText('Quiz title')).not.toHaveAttribute(
+            'aria-invalid'
+        );
+        expect(
+            screen.queryByText('Quiz title cannot be empty')
+        ).not.toBeInTheDocument();
     });
 
     it('rejects a threshold outside 0-100 instead of clamping it', async () => {

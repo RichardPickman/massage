@@ -66,11 +66,13 @@ export const QuizConstructor = () => {
     ]);
     const [problems, setProblems] = useState<Record<string, string[]>>({});
     const [thresholdError, setThresholdError] = useState<string | null>(null);
+    const [titleError, setTitleError] = useState<string | null>(null);
     const [alert, setAlert] = useState<ConstructorAlert | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [draftOffer, setDraftOffer] = useState<ConstructorDraft | null>(null);
 
     const restoredRef = useRef(false);
+    const alertRef = useRef<HTMLDivElement>(null);
     const [listRef] = useAutoAnimate();
 
     // Offered, never applied silently: restoring without asking would put the
@@ -173,23 +175,36 @@ export const QuizConstructor = () => {
 
         setProblems(nextProblems);
 
+        const titleIssue = title.trim() ? null : 'Quiz title cannot be empty';
+        setTitleError(titleIssue);
+
         const thresholdIssue = thresholdProblem(threshold);
         setThresholdError(thresholdIssue);
 
         const hasCardProblems = Object.keys(nextProblems).length > 0;
 
         if (hasCardProblems || !title.trim() || thresholdIssue) {
-            // One message, chosen by an explicit ladder: chained ternaries here
-            // read as a puzzle rather than as a rule.
-            let message = 'Fix the highlighted questions before saving';
+            // The banner says what happened, the field says what to fix. Naming
+            // the field twice - once under the input, once up here - teaches the
+            // author to stop reading both.
+            setAlert({
+                status: alertStatuses.FAIL,
+                text: 'Check the highlighted fields before saving',
+            });
 
-            if (!title.trim()) {
-                message = 'Quiz title cannot be empty';
-            } else if (thresholdIssue) {
-                message = thresholdIssue;
-            }
+            // A banner at the top is not feedback if the author is looking at
+            // question four: take them to the first field that actually blocks.
+            requestAnimationFrame(() => {
+                const firstInvalid = document.querySelector<HTMLElement>(
+                    '[aria-invalid="true"]'
+                );
 
-            setAlert({ status: alertStatuses.FAIL, text: message });
+                firstInvalid?.scrollIntoView?.({
+                    block: 'center',
+                    behavior: 'smooth',
+                });
+                firstInvalid?.focus?.({ preventScroll: true });
+            });
 
             return;
         }
@@ -233,6 +248,15 @@ export const QuizConstructor = () => {
                 text: response.message,
                 path: `/quiz/${response.payload._id}`,
             });
+
+            // Save lives in the header: if the author pressed it from the bottom
+            // of a long form, the confirmation has to come to them.
+            requestAnimationFrame(() =>
+                alertRef.current?.scrollIntoView?.({
+                    block: 'nearest',
+                    behavior: 'smooth',
+                })
+            );
         } catch (error) {
             const cleanupResults = await Promise.allSettled(
                 savedQuestionIds.map((id) => QuestionService.removeQuestion(id))
@@ -259,8 +283,23 @@ export const QuizConstructor = () => {
 
     return (
         <Card>
-            <CardHeader>
-                <CardTitle>Quiz constructor</CardTitle>
+            <CardHeader className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                    <CardTitle>Quiz constructor</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                        Write the questions, tick the correct answers and set
+                        the pass mark. Students only see the answers after they
+                        submit.
+                    </p>
+                </div>
+                <Button
+                    className="shrink-0"
+                    disabled={isSaving}
+                    onClick={saveQuiz}
+                >
+                    <FloppyDiskIcon />
+                    {isSaving ? 'Saving...' : 'Save quiz'}
+                </Button>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 {draftOffer ? (
@@ -294,56 +333,90 @@ export const QuizConstructor = () => {
                     </div>
                 ) : null}
 
-                {alert ? (
-                    <AlertWithLink
-                        status={alert.status}
-                        text={alert.text}
-                        path={alert.path}
-                        title="Open quiz"
-                        onClose={() => setAlert(null)}
-                    />
-                ) : null}
-
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="quiz-title">Quiz title</Label>
-                    <Input
-                        id="quiz-title"
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
-                    />
+                <div ref={alertRef}>
+                    {alert ? (
+                        <AlertWithLink
+                            status={alert.status}
+                            text={alert.text}
+                            path={alert.path}
+                            title="Open quiz"
+                            onClose={() => setAlert(null)}
+                        />
+                    ) : null}
                 </div>
 
-                <div className="flex w-full max-w-40 flex-col gap-1">
-                    <Label htmlFor="quiz-threshold">Pass threshold, %</Label>
-                    <Input
-                        id="quiz-threshold"
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        max={100}
-                        step={1}
-                        value={threshold}
-                        aria-invalid={thresholdError ? true : undefined}
-                        aria-describedby={
-                            thresholdError ? 'quiz-threshold-error' : undefined
-                        }
-                        onChange={(event) => {
-                            setThreshold(event.target.value);
-                            setThresholdError(null);
-                        }}
-                    />
-                    {thresholdError ? (
-                        <p
-                            id="quiz-threshold-error"
-                            className="text-xs text-destructive"
-                        >
-                            {thresholdError}
-                        </p>
-                    ) : (
-                        <p className="text-xs text-muted-foreground">
-                            Students need at least this score to pass.
-                        </p>
-                    )}
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem]">
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="quiz-title">Quiz title</Label>
+                        <Input
+                            id="quiz-title"
+                            value={title}
+                            aria-invalid={titleError ? true : undefined}
+                            aria-describedby={
+                                titleError ? 'quiz-title-error' : undefined
+                            }
+                            onChange={(event) => {
+                                setTitle(event.target.value);
+                                setTitleError(null);
+                            }}
+                            placeholder="e.g. Anatomy — week 3"
+                        />
+                        {titleError ? (
+                            <p
+                                id="quiz-title-error"
+                                className="text-xs text-destructive"
+                            >
+                                {titleError}
+                            </p>
+                        ) : null}
+                    </div>
+
+                    <div className="flex w-full flex-col gap-1">
+                        <Label htmlFor="quiz-threshold">
+                            Pass threshold, %
+                        </Label>
+                        <Input
+                            id="quiz-threshold"
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={threshold}
+                            aria-invalid={thresholdError ? true : undefined}
+                            aria-describedby={
+                                thresholdError
+                                    ? 'quiz-threshold-error'
+                                    : undefined
+                            }
+                            onChange={(event) => {
+                                setThreshold(event.target.value);
+                                setThresholdError(null);
+                            }}
+                        />
+                        {thresholdError ? (
+                            <p
+                                id="quiz-threshold-error"
+                                className="text-xs text-destructive"
+                            >
+                                {thresholdError}
+                            </p>
+                        ) : (
+                            <p className="text-xs text-muted-foreground">
+                                Students need at least this score to pass.
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 pt-2">
+                    <h2 className="text-[0.6875rem] font-medium tracking-[0.08em] text-muted-foreground uppercase">
+                        Questions
+                    </h2>
+                    <span className="text-xs text-muted-foreground">
+                        {questions.length} question
+                        {questions.length === 1 ? '' : 's'} in this quiz
+                    </span>
                 </div>
 
                 <div ref={listRef} className="flex flex-col gap-4">
@@ -359,25 +432,15 @@ export const QuizConstructor = () => {
                     ))}
                 </div>
 
-                <p className="text-sm text-muted-foreground">
-                    {questions.length} question
-                    {questions.length === 1 ? '' : 's'} in this quiz
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                    <Button
-                        variant="secondary"
-                        onClick={addQuestion}
-                        disabled={isSaving}
-                    >
-                        <PlusIcon />
-                        Add question
-                    </Button>
-                    <Button disabled={isSaving} onClick={saveQuiz}>
-                        <FloppyDiskIcon />
-                        {isSaving ? 'Saving...' : 'Save quiz'}
-                    </Button>
-                </div>
+                <Button
+                    variant="outline"
+                    className="min-h-12 w-full border-dashed"
+                    onClick={addQuestion}
+                    disabled={isSaving}
+                >
+                    <PlusIcon />
+                    Add question
+                </Button>
             </CardContent>
         </Card>
     );
