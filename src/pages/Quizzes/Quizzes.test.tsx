@@ -37,6 +37,20 @@ describe('Quizzes page', () => {
         vi.restoreAllMocks();
     });
 
+    it('titles the page on the page, not inside a card', async () => {
+        vi.spyOn(QuizService, 'getQuizzesPage').mockResolvedValue(
+            pageOf([quiz('one')], 1, 1)
+        );
+
+        renderQuizzes();
+
+        const heading = await screen.findByRole('heading', {
+            name: 'Quizzes',
+        });
+
+        expect(heading.closest('[data-slot="card"]')).toBeNull();
+    });
+
     it('renders the cards of the page in the address', async () => {
         vi.spyOn(QuizService, 'getQuizzesPage').mockResolvedValue(
             pageOf([quiz('page-2')], 2, 2)

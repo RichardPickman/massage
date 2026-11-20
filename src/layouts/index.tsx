@@ -45,7 +45,7 @@ export const Layout = () => {
             <main
                 ref={scrollArea}
                 className={cn(
-                    'mx-auto flex w-full max-w-6xl flex-1 flex-col overflow-y-auto overscroll-contain px-4 sm:px-6 lg:px-8',
+                    'mx-auto flex w-full max-w-6xl flex-1 flex-col overflow-y-auto overscroll-contain px-4 [&>*]:shrink-0 sm:px-6 lg:px-8',
                     fullBleed ? 'py-4 sm:py-10' : 'py-6 sm:py-10'
                 )}
             >

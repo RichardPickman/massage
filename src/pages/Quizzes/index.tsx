@@ -6,14 +6,9 @@ import {
     useRevalidator,
     type LoaderFunctionArgs,
 } from 'react-router-dom';
+import { PageHeader } from '../../components/PageHeader';
 import { Paginator } from '../../components/Paginator';
 import { Button } from '../../components/ui/button';
-import {
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '../../components/ui/card';
 import QuizService from '../../services/Quiz';
 import type { QuizSummary } from '../../services/models';
 import type { Page } from '../../services/types';
@@ -53,34 +48,30 @@ export const Quizzes = () => {
     }, [revalidator, revision]);
 
     return (
-        <div>
-            <CardHeader className="flex flex-row items-start justify-between gap-4">
-                <div className="flex flex-col gap-1">
-                    <CardTitle>Quizzes</CardTitle>
-                    <CardDescription>
-                        Scored tests. Every attempt lands on your record.
-                    </CardDescription>
-                </div>
-                {isAuth ? (
-                    <Button asChild size="sm">
-                        <Link to="constructor">Add quiz</Link>
-                    </Button>
-                ) : null}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {quizzes.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                            There is no quiz yet.
-                        </p>
-                    ) : (
-                        quizzes.map((quiz) => (
-                            <QuizCard key={quiz._id} quiz={quiz} />
-                        ))
-                    )}
-                </div>
-                <Paginator page={envelope.page} pages={envelope.pages} />
-            </CardContent>
+        <div className="flex flex-col gap-6">
+            <PageHeader
+                title="Quizzes"
+                description="Scored tests. Every attempt lands on your record."
+                meta={
+                    isAuth ? (
+                        <Button asChild size="sm">
+                            <Link to="constructor">Add quiz</Link>
+                        </Button>
+                    ) : undefined
+                }
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {quizzes.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                        There is no quiz yet.
+                    </p>
+                ) : (
+                    quizzes.map((quiz) => (
+                        <QuizCard key={quiz._id} quiz={quiz} />
+                    ))
+                )}
+            </div>
+            <Paginator page={envelope.page} pages={envelope.pages} />
         </div>
     );
 };
