@@ -1,5 +1,5 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import { type ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { AnswerWithCheckbox } from '../../../components/AnswerWithCheckbox';
 import { FileUpload } from '../../../components/FileUpload';
 import { Input } from '../../../components/ui/input';
@@ -100,9 +100,7 @@ export const QuestionConstructor = ({
         });
     };
 
-    const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files ? event.target.files[0] : null;
-
+    const handleImageFile = (file: File | null) => {
         setImage(file);
         updateQuestion(questionId, { img: file });
     };
@@ -130,7 +128,7 @@ export const QuestionConstructor = ({
             <FileUpload
                 image={imagePreview}
                 text={image ? image.name : 'File unnamed'}
-                handleImage={handleImage}
+                onSelectFile={handleImageFile}
                 removeImage={handleImageRemove}
             />
             {limitNotice ? (
