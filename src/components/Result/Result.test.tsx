@@ -145,6 +145,20 @@ describe('Result verdict', () => {
         vi.restoreAllMocks();
     });
 
+    it('offers a visible way back to the list of tests', () => {
+        vi.spyOn(QuizService, 'getQuizStats').mockResolvedValue({
+            message: 'ok',
+            payload: stats,
+        });
+
+        renderResult();
+
+        expect(screen.getByRole('link', { name: 'All tests' })).toHaveAttribute(
+            'href',
+            '/quiz'
+        );
+    });
+
     it('shows a pass badge together with the pass mark', () => {
         vi.spyOn(QuizService, 'getQuizStats').mockResolvedValue({
             message: 'ok',

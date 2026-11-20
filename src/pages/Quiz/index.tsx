@@ -1,5 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
+import { BackLink } from '../../components/BackLink';
 import { Question } from '../../components/Question';
 import { Result } from '../../components/Result';
 import { Button } from '../../components/ui/button';
@@ -37,8 +38,17 @@ export const Quiz = () => {
     if (quiz.questions.length === 0) {
         return (
             <Card className="mx-auto w-full max-w-3xl">
-                <CardContent className="py-8 text-center text-muted-foreground">
-                    This quiz has no questions yet.
+                {/* A dead end is still a screen: the sentence alone leaves only
+                    the system back gesture. */}
+                <CardContent className="flex flex-col gap-4 py-8 text-muted-foreground">
+                    <BackLink
+                        to="/quiz"
+                        label="All tests"
+                        className="self-start"
+                    />
+                    <p className="text-center">
+                        This quiz has no questions yet.
+                    </p>
                 </CardContent>
             </Card>
         );
@@ -70,13 +80,14 @@ export const Quiz = () => {
     return (
         <Card className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
             <CardHeader className="border-b">
-                <div className="flex flex-wrap items-end justify-between gap-2">
-                    <CardTitle>{quiz.title}</CardTitle>
+                <div className="flex items-center justify-between gap-2">
+                    <BackLink to="/quiz" label="All tests" />
                     <p className="text-xs tracking-widest text-muted-foreground uppercase">
                         Question {quiz.currentQuestionIndex + 1} /{' '}
                         {quiz.questions.length}
                     </p>
                 </div>
+                <CardTitle>{quiz.title}</CardTitle>
                 <Progress
                     value={
                         ((quiz.currentQuestionIndex + 1) /
