@@ -179,14 +179,17 @@ export const QuizConstructor = () => {
         const hasCardProblems = Object.keys(nextProblems).length > 0;
 
         if (hasCardProblems || !title.trim() || thresholdIssue) {
-            setAlert({
-                status: alertStatuses.FAIL,
-                text: !title.trim()
-                    ? 'Quiz title cannot be empty'
-                    : thresholdIssue
-                    ? thresholdIssue
-                    : 'Fix the highlighted questions before saving',
-            });
+            // One message, chosen by an explicit ladder: chained ternaries here
+            // read as a puzzle rather than as a rule.
+            let message = 'Fix the highlighted questions before saving';
+
+            if (!title.trim()) {
+                message = 'Quiz title cannot be empty';
+            } else if (thresholdIssue) {
+                message = thresholdIssue;
+            }
+
+            setAlert({ status: alertStatuses.FAIL, text: message });
 
             return;
         }

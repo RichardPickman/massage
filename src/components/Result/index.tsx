@@ -1,6 +1,7 @@
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import type { Question as QuestionModel } from '../../services/models';
 import type { QuestionResult } from '../../services/types';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { buildAnswers } from '../../store/reducers/helpers';
@@ -71,32 +72,35 @@ export const Result = ({ quizId }: ResultProps) => {
             (question) => question._id === item.id
         );
 
-        // A question deleted from the quiz must not make the review vanish: the
-        // snapshot is the only remaining record of what was asked.
-        const currentQuestion = liveQuestion
-            ? {
-                  ...liveQuestion,
-                  // Prefer the snapshot even while the question exists, so an
-                  // edit made after the attempt cannot rewrite the review.
-                  question:
-                      item.questionText ||
-                      snapshot?.questionText ||
-                      liveQuestion.question,
-                  answers: item.answers?.length
-                      ? item.answers
-                      : snapshot?.answers?.length
-                      ? snapshot.answers
-                      : liveQuestion.answers,
-              }
-            : item.questionText || snapshot?.questionText
-            ? {
-                  _id: item.id,
-                  question: item.questionText ?? snapshot?.questionText ?? '',
-                  answers: item.answers ?? snapshot?.answers ?? [],
-                  correctAnswers: snapshot?.correctAnswers ?? [],
-                  img: null,
-              }
-            : null;
+        // Snapshot first: an edit made after the attempt must not rewrite the
+        // review, and a deleted question leaves the snapshot as the only record
+        // of what was asked.
+        const snapshotText = item.questionText || snapshot?.questionText || '';
+        const snapshotAnswers = item.answers?.length
+            ? item.answers
+            : snapshot?.answers ?? [];
+
+        let currentQuestion: QuestionModel | null = null;
+
+        if (liveQuestion) {
+            const answers = snapshotAnswers.length
+                ? snapshotAnswers
+                : liveQuestion.answers;
+
+            currentQuestion = {
+                ...liveQuestion,
+                question: snapshotText || liveQuestion.question,
+                answers,
+            };
+        } else if (snapshotText) {
+            currentQuestion = {
+                _id: item.id,
+                question: snapshotText,
+                answers: snapshotAnswers,
+                correctAnswers: snapshot?.correctAnswers ?? [],
+                img: null,
+            };
+        }
 
         if (!currentQuestion) {
             return null;
@@ -157,11 +161,13 @@ export const Result = ({ quizId }: ResultProps) => {
         (item) => item.currentAnswers.length === 0
     );
 
-    const visibleHistory = showWrong
-        ? wrongAnswers
-        : showUnanswered
-        ? unanswered
-        : reviewItems;
+    let visibleHistory = reviewItems;
+
+    if (showWrong) {
+        visibleHistory = wrongAnswers;
+    } else if (showUnanswered) {
+        visibleHistory = unanswered;
+    }
 
     const handleShowWrong = () => {
         setShowWrong(!showWrong);
