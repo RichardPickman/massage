@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import type { QuestionView } from '../../services/models';
 import { ButtonHandler, type QuestionViewState } from '../ButtonHandler';
+import { ImageLightbox } from '../ImageLightbox';
 
 interface QuestionProps {
     currentQuestion: QuestionView;
@@ -33,20 +34,24 @@ export const Question = ({
     );
 
     return (
-        <div className="flex w-full flex-col items-center gap-4">
+        // justify-center: a short question should sit in the middle of the
+        // screen, not cling to the top of a half-empty card. gap-6 separates the
+        // question from its answers; the answers themselves stay tight (gap-2)
+        // because they are one group of alternatives.
+        <div className="flex w-full flex-1 flex-col items-center justify-center gap-6">
             {imageSource ? (
-                <img
+                <ImageLightbox
                     src={imageSource}
-                    alt="Question"
-                    className="max-h-[45dvh] w-auto max-w-full object-contain"
+                    alt={currentQuestion.question || 'Question image'}
+                    className="max-h-[40dvh] w-auto max-w-full object-contain"
                 />
             ) : null}
             {currentQuestion.question ? (
-                <p className="text-center text-lg">
+                <p className="max-w-[65ch] text-center text-lg font-medium text-balance md:text-xl">
                     {currentQuestion.question}
                 </p>
             ) : null}
-            <div className="grid w-full gap-2 sm:grid-cols-2">
+            <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
                 {currentQuestion.answers.map((answer) =>
                     answer.text ? (
                         <ButtonHandler

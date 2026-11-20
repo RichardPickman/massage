@@ -1,6 +1,7 @@
 import { cn } from 'cn';
 import { Outlet, useMatches } from 'react-router-dom';
 
+import { BottomNav } from '../components/BottomNav';
 import { Header } from '../components/Header';
 
 // A route can claim the whole screen below the header. Such a page owns its own
@@ -21,7 +22,7 @@ export const Layout = () => {
     );
 
     return (
-        <div className="flex min-h-dvh flex-col bg-background">
+        <div className="flex min-h-dvh flex-col bg-background pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
             <Header />
             <main
                 className={cn(
@@ -39,6 +40,7 @@ export const Layout = () => {
                     </div>
                 </footer>
             )}
+            <BottomNav hidden={fullBleed} />
         </div>
     );
 };

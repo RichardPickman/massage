@@ -1,8 +1,8 @@
 import { ImageIcon, TrashIcon } from '@phosphor-icons/react';
 import { memo, useId, useRef, useState, type DragEvent } from 'react';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { ImageLightbox } from '../ImageLightbox';
 
 export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
@@ -31,7 +31,6 @@ interface FileUploadProps {
 
 export const FileUpload = memo(
     ({ image, removeImage, onSelectFile, text }: FileUploadProps) => {
-        const [isPreviewOpen, setIsPreviewOpen] = useState(false);
         const [isDragging, setIsDragging] = useState(false);
         const [problem, setProblem] = useState<string | null>(null);
         const inputId = useId();
@@ -108,13 +107,11 @@ export const FileUpload = memo(
                 />
                 {image ? (
                     <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            className="min-h-11"
-                            onClick={() => setIsPreviewOpen(true)}
-                        >
-                            {text}
-                        </Button>
+                        {/* Same viewer as the quiz question view, so one
+                            affordance covers both. */}
+                        <ImageLightbox src={image} alt={text}>
+                            <span className="truncate">{text}</span>
+                        </ImageLightbox>
                         <Button
                             variant="ghost"
                             size="icon-sm"
@@ -147,18 +144,6 @@ export const FileUpload = memo(
                         {problem}
                     </p>
                 ) : null}
-                <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-                    <DialogContent className="max-w-3xl">
-                        <DialogTitle className="sr-only">{text}</DialogTitle>
-                        {image ? (
-                            <img
-                                src={image}
-                                alt={text}
-                                className="w-full object-contain"
-                            />
-                        ) : null}
-                    </DialogContent>
-                </Dialog>
             </div>
         );
     }
