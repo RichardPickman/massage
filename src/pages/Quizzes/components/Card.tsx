@@ -7,13 +7,7 @@ import {
     AlertTitle,
 } from '../../../components/ui/alert';
 import { Button } from '../../../components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '../../../components/ui/card';
+import { Card } from '../../../components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -70,33 +64,23 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
 
     return (
         <Card className="w-full transition-colors hover:ring-foreground/10">
-            <CardHeader className="border-b">
-                <CardTitle className="text-base normal-case">
+            {/* One body, not three stacked strips: title, one meta line and the
+                action sit in a single row group, so the card reads as one item
+                rather than as a header band plus a footer band. */}
+            <div className="flex items-start justify-between gap-3 px-(--card-spacing)">
+                <div className="flex min-w-0 flex-col gap-1">
                     <Link
-                        className="underline underline-offset-4"
+                        className="truncate font-medium underline-offset-4 hover:underline"
                         to={`/quiz/${quiz._id}`}
                     >
                         {quiz.title}
                     </Link>
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-                {questionCount} {questionCount === 1 ? 'question' : 'questions'}
-            </CardContent>
-            {removeError ? (
-                <CardContent>
-                    <Alert variant="destructive">
-                        <div className="flex flex-col gap-1">
-                            <AlertTitle>Quiz was not removed</AlertTitle>
-                            <AlertDescription className="text-destructive">
-                                {removeError}
-                            </AlertDescription>
-                        </div>
-                    </Alert>
-                </CardContent>
-            ) : null}
-            {canRemove ? (
-                <CardFooter className="justify-end">
+                    <p className="text-xs text-muted-foreground">
+                        {questionCount}{' '}
+                        {questionCount === 1 ? 'question' : 'questions'}
+                    </p>
+                </div>
+                {canRemove ? (
                     <Dialog
                         open={isConfirming}
                         onOpenChange={handleConfirmOpenChange}
@@ -105,6 +89,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                             <Button
                                 variant="ghost"
                                 size="icon-sm"
+                                className="size-11 shrink-0 md:size-8"
                                 disabled={isRemoving}
                                 aria-label={`Remove ${quiz.title}`}
                             >
@@ -146,7 +131,17 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                </CardFooter>
+                ) : null}
+            </div>
+            {removeError ? (
+                <div className="px-(--card-spacing)">
+                    <Alert variant="destructive">
+                        <AlertTitle>Quiz was not removed</AlertTitle>
+                        <AlertDescription className="text-destructive">
+                            {removeError}
+                        </AlertDescription>
+                    </Alert>
+                </div>
             ) : null}
         </Card>
     );
