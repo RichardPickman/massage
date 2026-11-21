@@ -192,8 +192,11 @@ export const LectureForm = ({
                 />
             ) : null}
 
-            <div className="flex w-full max-w-2xl flex-col gap-6">
-                <div className="flex flex-col gap-4">
+            {/* Two blocks that both fill their side: the details on the left,
+                the uploader and its thumbnails on the right, stacked below lg
+                where a half-width column would be too cramped to type in. */}
+            <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+                <div className="flex min-w-0 flex-col gap-4">
                     <div className="flex flex-col gap-1">
                         <Label htmlFor="lecture-topic">Topic</Label>
                         <Input
@@ -276,7 +279,7 @@ export const LectureForm = ({
                     <Button
                         id="lecture-upload"
                         variant="outline"
-                        className="min-h-12 w-full border-dashed"
+                        className="min-h-44 w-full flex-col gap-2 border-dashed py-6"
                         aria-describedby={
                             imagesProblem ? 'lecture-images-error' : undefined
                         }
@@ -284,8 +287,11 @@ export const LectureForm = ({
                             document.getElementById('lecture-images')?.click()
                         }
                     >
-                        <ImageIcon />
+                        <ImageIcon className="size-6" />
                         Upload images
+                        <span className="text-xs font-normal tracking-normal normal-case">
+                            One or more, PNG or JPG
+                        </span>
                     </Button>
                     <Input
                         id="lecture-images"
@@ -314,21 +320,21 @@ export const LectureForm = ({
                         </p>
                     ) : null}
                 </div>
+            </div>
 
-                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                    <Button
-                        variant={initialImages ? 'outline' : 'destructive'}
-                        disabled={isSaving}
-                        onClick={clearForm}
-                    >
-                        <TrashIcon />
-                        {resetLabel}
-                    </Button>
-                    <Button disabled={isSaving} onClick={submitForm}>
-                        <FloppyDiskIcon />
-                        {isSaving ? 'Saving...' : submitLabel}
-                    </Button>
-                </div>
+            <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end">
+                <Button
+                    variant={initialImages ? 'outline' : 'destructive'}
+                    disabled={isSaving}
+                    onClick={clearForm}
+                >
+                    <TrashIcon />
+                    {resetLabel}
+                </Button>
+                <Button disabled={isSaving} onClick={submitForm}>
+                    <FloppyDiskIcon />
+                    {isSaving ? 'Saving...' : submitLabel}
+                </Button>
             </div>
         </div>
     );
