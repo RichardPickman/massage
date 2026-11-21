@@ -2,16 +2,10 @@ import { nanoid } from '@reduxjs/toolkit';
 import { FloppyDiskIcon, ImageIcon, TrashIcon } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
 import { type ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { AlertWithLink } from '../../components/AlertWithLink';
+import { PageHeader } from '../../components/PageHeader';
 import { Button } from '../../components/ui/button';
 import { Calendar } from '../../components/ui/calendar';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import {
@@ -45,6 +39,7 @@ interface LectureFormProps {
     // Provided by the edit page; its presence switches the form to edit mode.
     initialImages?: ExistingImage[];
     backTo?: string;
+    backLabel?: string;
     resetLabel?: string;
     onSubmit: (form: FormData) => Promise<LectureFormResult>;
     onSuccess?: (lectureId: string) => void;
@@ -56,6 +51,7 @@ export const LectureForm = ({
     initialValues,
     initialImages,
     backTo,
+    backLabel = 'All lectures',
     resetLabel = 'Clear',
     onSubmit,
     onSuccess,
@@ -70,6 +66,13 @@ export const LectureForm = ({
     );
     const [alert, setAlert] = useState<LectureAlert | null>(null);
     const [isSaving, setIsSaving] = useState(false);
+    // A pristine form is not invalid: the messages appear after the first save
+    // attempt, and go away as soon as the field is edited.
+    const [attempted, setAttempted] = useState(false);
+
+    const hasImages = images.length + existingImages.length > 0;
+    const topicProblem = attempted && topic.trim().length === 0;
+    const imagesProblem = attempted && !hasImages;
 
     const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files ?? []);
@@ -98,24 +101,34 @@ export const LectureForm = ({
         setDate(initialValues.date);
         setImages([]);
         setExistingImages(initialImages ?? []);
+        setAttempted(false);
+    };
+
+    // Clearing is an author action, so it also drops the message about the
+    // previous attempt - a successful save keeps its banner.
+    const clearForm = () => {
+        resetForm();
+        setAlert(null);
     };
 
     const submitForm = async () => {
-        if (!topic.trim()) {
+        setAttempted(true);
+
+        if (!topic.trim() || !hasImages) {
             setAlert({
                 status: alertStatuses.FAIL,
-                text: 'Topic cannot be empty',
+                text: 'Check the highlighted fields before saving.',
             });
 
-            return;
-        }
+            // The banner is off-screen on a phone and the reason lives next to
+            // the field, so bring the first problem into view.
+            window.requestAnimationFrame(() => {
+                const target = !topic.trim()
+                    ? document.getElementById('lecture-topic')
+                    : document.getElementById('lecture-upload');
 
-        // The API iterates the uploaded files, so an image is required. On the
-        // edit form a kept image counts as well.
-        if (images.length + existingImages.length === 0) {
-            setAlert({
-                status: alertStatuses.FAIL,
-                text: 'Attach at least one image',
+                target?.scrollIntoView?.({ block: 'center' });
+                target?.focus?.();
             });
 
             return;
@@ -162,86 +175,117 @@ export const LectureForm = ({
     };
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-start justify-between gap-4">
-                <CardTitle>{title}</CardTitle>
-                {backTo ? (
-                    <Button asChild size="sm" variant="ghost">
-                        <Link to={backTo}>Cancel</Link>
-                    </Button>
-                ) : null}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                {alert ? (
-                    <AlertWithLink
-                        status={alert.status}
-                        text={alert.text}
-                        path={alert.path}
-                        title={alert.title}
-                        onClose={() => setAlert(null)}
-                    />
-                ) : null}
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="lecture-topic">Topic</Label>
-                    <Input
-                        id="lecture-topic"
-                        value={topic}
-                        aria-invalid={topic.length === 0}
-                        onChange={(event) => setTopic(event.target.value)}
-                    />
-                    {topic.length === 0 ? (
-                        <p className="text-xs text-muted-foreground">
-                            Topic cannot be empty
-                        </p>
-                    ) : null}
-                </div>
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="lecture-teacher">Teacher</Label>
-                    <Input
-                        id="lecture-teacher"
-                        placeholder="Optional"
-                        value={teacher}
-                        onChange={(event) => setTeacher(event.target.value)}
-                    />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <Label htmlFor="lecture-lesson">Lesson</Label>
-                    <Input
-                        id="lecture-lesson"
-                        placeholder="Optional"
-                        value={lesson}
-                        onChange={(event) => setLesson(event.target.value)}
-                    />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <Label>Lecture day</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="justify-start font-normal"
+        <div className="flex flex-1 flex-col gap-6">
+            <PageHeader
+                back={backTo ? { to: backTo, label: backLabel } : undefined}
+                title={title}
+                description="Topic and at least one image are required."
+            />
+
+            {alert ? (
+                <AlertWithLink
+                    status={alert.status}
+                    text={alert.text}
+                    path={alert.path}
+                    title={alert.title}
+                    onClose={() => setAlert(null)}
+                />
+            ) : null}
+
+            <div className="flex w-full max-w-2xl flex-col gap-6">
+                <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="lecture-topic">Topic</Label>
+                        <Input
+                            id="lecture-topic"
+                            value={topic}
+                            aria-invalid={topicProblem}
+                            aria-describedby={
+                                topicProblem ? 'lecture-topic-error' : undefined
+                            }
+                            onChange={(event) => setTopic(event.target.value)}
+                        />
+                        {topicProblem ? (
+                            <p
+                                id="lecture-topic-error"
+                                className="text-xs text-destructive"
                             >
-                                {date
-                                    ? dayjs(date).format('MM/DD/YYYY')
-                                    : 'Pick a lecture day'}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="start" className="w-auto p-0">
-                            <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={setDate}
+                                Topic cannot be empty
+                            </p>
+                        ) : null}
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="flex flex-col gap-1">
+                            <Label htmlFor="lecture-teacher">Teacher</Label>
+                            <Input
+                                id="lecture-teacher"
+                                placeholder="Optional"
+                                value={teacher}
+                                onChange={(event) =>
+                                    setTeacher(event.target.value)
+                                }
                             />
-                        </PopoverContent>
-                    </Popover>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <Label htmlFor="lecture-lesson">Lesson</Label>
+                            <Input
+                                id="lecture-lesson"
+                                placeholder="Optional"
+                                value={lesson}
+                                onChange={(event) =>
+                                    setLesson(event.target.value)
+                                }
+                            />
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <Label htmlFor="lecture-date">Lecture day</Label>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id="lecture-date"
+                                    variant="outline"
+                                    className="w-full justify-start text-base font-normal tracking-normal normal-case md:text-sm"
+                                >
+                                    {date
+                                        ? dayjs(date).format('MM/DD/YYYY')
+                                        : 'Pick a lecture day'}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                align="start"
+                                className="w-auto p-0"
+                            >
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <Label>Images</Label>
-                    <Button asChild variant="outline" className="self-start">
-                        <label htmlFor="lecture-images">
-                            <ImageIcon />
-                            Upload images
-                        </label>
+
+                <div className="flex flex-col gap-3">
+                    <p className="text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
+                        Images
+                    </p>
+                    {/* The obvious next action gets the width, not a place in a row
+                    of buttons. A real button, so the error below can put focus
+                    on it. */}
+                    <Button
+                        id="lecture-upload"
+                        variant="outline"
+                        className="min-h-12 w-full border-dashed"
+                        aria-describedby={
+                            imagesProblem ? 'lecture-images-error' : undefined
+                        }
+                        onClick={() =>
+                            document.getElementById('lecture-images')?.click()
+                        }
+                    >
+                        <ImageIcon />
+                        Upload images
                     </Button>
                     <Input
                         id="lecture-images"
@@ -251,6 +295,14 @@ export const LectureForm = ({
                         hidden
                         onChange={handleImageUpload}
                     />
+                    {imagesProblem ? (
+                        <p
+                            id="lecture-images-error"
+                            className="text-xs text-destructive"
+                        >
+                            Attach at least one image
+                        </p>
+                    ) : null}
                     <ExistingImageList
                         images={existingImages}
                         remove={removeExistingImage}
@@ -262,26 +314,22 @@ export const LectureForm = ({
                         </p>
                     ) : null}
                 </div>
-                <div className="flex gap-2">
-                    <Button
-                        className="flex-1"
-                        disabled={isSaving}
-                        onClick={submitForm}
-                    >
-                        <FloppyDiskIcon />
-                        {isSaving ? 'Saving...' : submitLabel}
-                    </Button>
+
+                <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                     <Button
                         variant={initialImages ? 'outline' : 'destructive'}
-                        className="flex-1"
                         disabled={isSaving}
-                        onClick={resetForm}
+                        onClick={clearForm}
                     >
                         <TrashIcon />
                         {resetLabel}
                     </Button>
+                    <Button disabled={isSaving} onClick={submitForm}>
+                        <FloppyDiskIcon />
+                        {isSaving ? 'Saving...' : submitLabel}
+                    </Button>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 };
