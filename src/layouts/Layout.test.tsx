@@ -45,8 +45,10 @@ describe('Layout', () => {
     it('keeps the tab bar on screen as a row, not as an overlay on the document', async () => {
         renderLayout();
 
+        // The label comes from the dictionary now, and it says what it is:
+        // "Primary navigation" instead of the bare "Primary".
         const nav = await screen.findByRole('navigation', {
-            name: 'Primary',
+            name: 'Primary navigation',
         });
 
         // A fixed bar over a scrolling document is what let the bar drift out of

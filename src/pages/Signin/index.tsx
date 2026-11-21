@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { readSignInReturnPath } from '@/components/RequireAuth/helpers';
+import { LanguageSwitch } from '../../components/LanguageSwitch';
 import { Auth, type AuthFormData } from '../../forms/Auth';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchLogin } from '../../store/reducers/auth/fetch';
@@ -28,12 +29,15 @@ const SignIn = () => {
     }, [dispatch]);
 
     return (
-        <Auth
-            submitting={status === fetchStatuses.PENDING}
-            errorData={status === fetchStatuses.FAILED ? error : null}
-            onSubmit={onSubmit}
-            header={'Sign In'}
-        />
+        <div className="flex flex-col gap-4">
+            <Auth
+                submitting={status === fetchStatuses.PENDING}
+                errorData={status === fetchStatuses.FAILED ? error : null}
+                onSubmit={onSubmit}
+                header={'Sign In'}
+            />
+            <LanguageSwitch className="mx-auto" />
+        </div>
     );
 };
 

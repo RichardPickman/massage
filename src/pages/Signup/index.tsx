@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { LanguageSwitch } from '../../components/LanguageSwitch';
 import { Auth, type AuthFormData } from '../../forms/Auth';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchRegister } from '../../store/reducers/auth/fetch';
@@ -25,12 +26,15 @@ const SignUp = () => {
     }, [dispatch]);
 
     return (
-        <Auth
-            submitting={status === fetchStatuses.PENDING}
-            errorData={status === fetchStatuses.FAILED ? error : null}
-            onSubmit={onSubmit}
-            header={'Sign Up'}
-        />
+        <div className="flex flex-col gap-4">
+            <Auth
+                submitting={status === fetchStatuses.PENDING}
+                errorData={status === fetchStatuses.FAILED ? error : null}
+                onSubmit={onSubmit}
+                header={'Sign Up'}
+            />
+            <LanguageSwitch className="mx-auto" />
+        </div>
     );
 };
 
