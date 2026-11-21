@@ -69,8 +69,11 @@ describe('EditLecture page', () => {
             state: { listUrl: '/lectures?page=3' },
         });
 
+        // The card header carried a "Cancel" button; the page now opens with
+        // the shared back link, named for where it goes, and keeps the list
+        // page the lecture was opened from.
         expect(
-            await screen.findByRole('link', { name: 'Cancel' })
+            await screen.findByRole('link', { name: 'All lectures' })
         ).toHaveAttribute('href', '/lectures?page=3');
     });
 

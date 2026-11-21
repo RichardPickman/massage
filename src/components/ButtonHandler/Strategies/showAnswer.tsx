@@ -1,4 +1,5 @@
 import { Button } from '../../ui/button';
+import { answerRowClass } from '../answerRow';
 import type { AnswerButtonState } from '../index';
 
 interface ShowAnswerProps {
@@ -10,14 +11,14 @@ export const ShowAnswer = ({ state }: ShowAnswerProps) => {
 
     if (isCorrect) {
         return (
-            <Button variant="secondary" className="w-full justify-start">
+            <Button variant="secondary" className={answerRowClass}>
                 {state.answer.text}
             </Button>
         );
     }
 
     return (
-        <Button variant="outline" className="w-full justify-start" disabled>
+        <Button variant="outline" className={answerRowClass} disabled>
             {state.answer.text}
         </Button>
     );
