@@ -1,4 +1,5 @@
 import { Button } from '../../ui/button';
+import { answerRowClass } from '../answerRow';
 import type { AnswerButtonState } from '../index';
 
 interface IsFinishedProps {
@@ -14,7 +15,7 @@ export const IsFinished = ({ state }: IsFinishedProps) => {
         return (
             <Button
                 variant={isSelected ? 'default' : 'secondary'}
-                className="w-full justify-start"
+                className={answerRowClass}
             >
                 {answer.text}
             </Button>
@@ -23,14 +24,14 @@ export const IsFinished = ({ state }: IsFinishedProps) => {
 
     if (isSelected) {
         return (
-            <Button variant="destructive" className="w-full justify-start">
+            <Button variant="destructive" className={answerRowClass}>
                 {answer.text}
             </Button>
         );
     }
 
     return (
-        <Button variant="outline" className="w-full justify-start" disabled>
+        <Button variant="outline" className={answerRowClass} disabled>
             {answer.text}
         </Button>
     );
