@@ -228,4 +228,53 @@ describe('Result verdict', () => {
 
         expect(screen.getByText('Question q2')).toBeInTheDocument();
     });
+
+    it('wraps long answers in the review instead of running off the screen', async () => {
+        vi.spyOn(QuizService, 'getQuizStats').mockResolvedValue({
+            message: 'ok',
+            payload: stats,
+        });
+
+        const longAnswer =
+            'Nawiercenie zęba do momentu uzyskania dostępu do miazgi komorowej, z zachowaniem twardych tkanek na obwodzie ubytku';
+
+        renderResult({
+            attempt: {
+                ...submission.attempt,
+                answers: [
+                    {
+                        question: 'q1',
+                        selected: ['q1-a'],
+                        questionText: 'Question q1',
+                        answers: [
+                            { id: 'q1-a', text: 'Answer A' },
+                            { id: 'q1-b', text: longAnswer },
+                        ],
+                        correct: true,
+                    },
+                ],
+            },
+            results: [
+                {
+                    questionId: 'q1',
+                    correct: true,
+                    correctAnswers: ['q1-a'],
+                    questionText: 'Question q1',
+                    answers: [
+                        { id: 'q1-a', text: 'Answer A' },
+                        { id: 'q1-b', text: longAnswer },
+                    ],
+                },
+            ],
+        });
+
+        await userEvent.click(screen.getByRole('button', { name: /Unfold/ }));
+
+        // jsdom measures nothing, so the classes are the guard: the review rows
+        // were rendered by the finished-mode strategy with shadcn's nowrap,
+        // fixed-height base, and the row grew wider than the page.
+        const row = screen.getByRole('button', { name: longAnswer });
+
+        expect(row).toHaveClass('whitespace-normal', 'h-auto', 'min-w-0');
+    });
 });
