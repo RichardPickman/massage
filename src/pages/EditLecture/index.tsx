@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import {
     Navigate,
     useLoaderData,
@@ -13,6 +14,7 @@ import { LectureForm } from '../LectureForm';
 import type { ExistingImage, LectureFormValues } from '../LectureForm/helpers';
 
 export const EditLecture = () => {
+    const { t } = useTranslation();
     const lecture = useLoaderData() as LectureDetails;
     const navigate = useNavigate();
     const { state } = useLocation();
@@ -55,12 +57,13 @@ export const EditLecture = () => {
 
     return (
         <LectureForm
-            title={`Edit ${lecture.topic}`}
-            submitLabel="Save changes"
-            resetLabel="Reset"
+            title={t('lectures.edit', { topic: lecture.topic })}
+            submitLabel={t('common.saveChanges')}
+            resetLabel={t('common.reset')}
             initialValues={initialValues}
             initialImages={initialImages}
             backTo={listUrl}
+            backLabel={t('lectures.backAll')}
             onSubmit={handleSubmit}
             onSuccess={(lectureId) =>
                 navigate(`/lectures/${lectureId}`, { state: { listUrl } })

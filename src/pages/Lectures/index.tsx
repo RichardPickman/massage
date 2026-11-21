@@ -6,6 +6,7 @@ import {
     useRevalidator,
     type LoaderFunctionArgs,
 } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Paginator } from '../../components/Paginator';
 import { Button } from '../../components/ui/button';
 import { PageHeader } from '../../components/PageHeader';
@@ -27,6 +28,7 @@ interface LecturesLoaderData {
 }
 
 export const Lectures = () => {
+    const { t } = useTranslation();
     const { rows, page, pages } = useLoaderData() as LecturesLoaderData;
     const { isAuth, user } = useAppSelector((state) => state.auth);
     const revalidator = useRevalidator();
@@ -41,19 +43,19 @@ export const Lectures = () => {
     return (
         <div className="flex flex-col gap-6">
             <PageHeader
-                title="Lectures"
-                description="Image slides, grouped by session."
+                title={t('lectures.title')}
+                description={t('lectures.description')}
                 meta={
                     isAuth ? (
                         <Button asChild size="sm">
-                            <Link to="create">Add lecture</Link>
+                            <Link to="create">{t('lectures.add')}</Link>
                         </Button>
                     ) : undefined
                 }
             />
             {rows.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                    There are no lectures yet.
+                    {t('lectures.empty')}
                 </p>
             ) : (
                 <LecturesTable

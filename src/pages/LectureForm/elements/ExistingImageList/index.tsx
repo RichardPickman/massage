@@ -1,5 +1,6 @@
 import { TrashIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../../components/ui/button';
 import { Card } from '../../../../components/ui/card';
 import {
@@ -18,6 +19,7 @@ export const ExistingImageList = ({
     images,
     remove,
 }: ExistingImageListProps) => {
+    const { t } = useTranslation();
     const [preview, setPreview] = useState<ExistingImage | null>(null);
 
     if (images.length === 0) {
@@ -35,11 +37,15 @@ export const ExistingImageList = ({
                         className="h-24 w-full cursor-zoom-in object-cover"
                     />
                     <div className="flex items-center justify-between gap-1 px-1">
-                        <p className="text-xs text-muted-foreground">Saved</p>
+                        <p className="text-xs text-muted-foreground">
+                            {t('lectures.form.saved')}
+                        </p>
                         <Button
                             size="icon-xs"
                             variant="ghost"
-                            aria-label={`Remove saved image ${index + 1}`}
+                            aria-label={t('lectures.form.removeSaved', {
+                                number: index + 1,
+                            })}
                             onClick={() => remove(image.key)}
                         >
                             <TrashIcon />

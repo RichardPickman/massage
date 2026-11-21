@@ -1,6 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { FloppyDiskIcon, ImageIcon, TrashIcon } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import { type ChangeEvent, useState } from 'react';
 import { AlertWithLink } from '../../components/AlertWithLink';
 import { PageHeader } from '../../components/PageHeader';
@@ -56,6 +57,7 @@ export const LectureForm = ({
     onSubmit,
     onSuccess,
 }: LectureFormProps) => {
+    const { t } = useTranslation();
     const [topic, setTopic] = useState(initialValues.topic);
     const [teacher, setTeacher] = useState(initialValues.teacher);
     const [lesson, setLesson] = useState(initialValues.lesson);
@@ -117,7 +119,7 @@ export const LectureForm = ({
         if (!topic.trim() || !hasImages) {
             setAlert({
                 status: alertStatuses.FAIL,
-                text: 'Check the highlighted fields before saving.',
+                text: t('lectures.form.checkFields'),
             });
 
             // The banner is off-screen on a phone and the reason lives next to
@@ -179,7 +181,7 @@ export const LectureForm = ({
             <PageHeader
                 back={backTo ? { to: backTo, label: backLabel } : undefined}
                 title={title}
-                description="Topic and at least one image are required."
+                description={t('lectures.form.required')}
             />
 
             {alert ? (
@@ -198,7 +200,9 @@ export const LectureForm = ({
             <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
                 <div className="flex min-w-0 flex-col gap-4">
                     <div className="flex flex-col gap-1">
-                        <Label htmlFor="lecture-topic">Topic</Label>
+                        <Label htmlFor="lecture-topic">
+                            {t('lectures.form.topic')}
+                        </Label>
                         <Input
                             id="lecture-topic"
                             value={topic}
@@ -213,16 +217,18 @@ export const LectureForm = ({
                                 id="lecture-topic-error"
                                 className="text-xs text-destructive"
                             >
-                                Topic cannot be empty
+                                {t('lectures.form.topicRequired')}
                             </p>
                         ) : null}
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="flex flex-col gap-1">
-                            <Label htmlFor="lecture-teacher">Teacher</Label>
+                            <Label htmlFor="lecture-teacher">
+                                {t('lectures.form.teacher')}
+                            </Label>
                             <Input
                                 id="lecture-teacher"
-                                placeholder="Optional"
+                                placeholder={t('lectures.form.optional')}
                                 value={teacher}
                                 onChange={(event) =>
                                     setTeacher(event.target.value)
@@ -230,10 +236,12 @@ export const LectureForm = ({
                             />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <Label htmlFor="lecture-lesson">Lesson</Label>
+                            <Label htmlFor="lecture-lesson">
+                                {t('lectures.form.lesson')}
+                            </Label>
                             <Input
                                 id="lecture-lesson"
-                                placeholder="Optional"
+                                placeholder={t('lectures.form.optional')}
                                 value={lesson}
                                 onChange={(event) =>
                                     setLesson(event.target.value)
@@ -242,7 +250,9 @@ export const LectureForm = ({
                         </div>
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Label htmlFor="lecture-date">Lecture day</Label>
+                        <Label htmlFor="lecture-date">
+                            {t('lectures.form.date')}
+                        </Label>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
@@ -251,8 +261,8 @@ export const LectureForm = ({
                                     className="w-full justify-start text-base font-normal tracking-normal normal-case md:text-sm"
                                 >
                                     {date
-                                        ? dayjs(date).format('MM/DD/YYYY')
-                                        : 'Pick a lecture day'}
+                                        ? dayjs(date).format('L')
+                                        : t('lectures.form.pickDay')}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent
@@ -271,7 +281,7 @@ export const LectureForm = ({
 
                 <div className="flex flex-col gap-3">
                     <p className="text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
-                        Images
+                        {t('lectures.form.images')}
                     </p>
                     {/* The obvious next action gets the width, not a place in a row
                     of buttons. A real button, so the error below can put focus
@@ -288,9 +298,9 @@ export const LectureForm = ({
                         }
                     >
                         <ImageIcon className="size-6" />
-                        Upload images
+                        {t('lectures.form.upload')}
                         <span className="text-xs font-normal tracking-normal normal-case">
-                            One or more, PNG or JPG
+                            {t('lectures.form.uploadHint')}
                         </span>
                     </Button>
                     <Input
@@ -306,7 +316,7 @@ export const LectureForm = ({
                             id="lecture-images-error"
                             className="text-xs text-destructive"
                         >
-                            Attach at least one image
+                            {t('lectures.form.imagesRequired')}
                         </p>
                     ) : null}
                     <ExistingImageList
@@ -316,7 +326,7 @@ export const LectureForm = ({
                     <ImageList images={images} setImages={setImages} />
                     {initialImages ? (
                         <p className="text-xs text-muted-foreground">
-                            Removed saved images are deleted when you save.
+                            {t('lectures.form.savedNote')}
                         </p>
                     ) : null}
                 </div>

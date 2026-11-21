@@ -27,3 +27,21 @@ describe('getTableRows', () => {
         ]);
     });
 });
+
+describe('formatLectureDate', () => {
+    it('shows the stored day in the language of the interface', async () => {
+        const { default: i18n, setLanguage } = await import('../../i18n');
+        const { formatLectureDate } = await import('./helpers');
+
+        // The API stores MM/DD/YYYY and the form keeps submitting it that way;
+        // only the display follows the language.
+        await setLanguage('en');
+        expect(formatLectureDate('10/19/2026')).toBe('10/19/2026');
+
+        await setLanguage('pl');
+        expect(formatLectureDate('10/19/2026')).toBe('19.10.2026');
+        expect(i18n.language).toBe('pl');
+
+        await setLanguage('en');
+    });
+});

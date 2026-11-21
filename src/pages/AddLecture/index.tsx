@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import LectureService from '../../services/Lecture';
 import { LectureForm } from '../LectureForm';
 import type { LectureFormValues } from '../LectureForm/helpers';
@@ -14,11 +16,16 @@ const handleSubmit = (form: FormData) =>
         lectureId: response.payload._id,
     }));
 
-export const AddLecture = () => (
-    <LectureForm
-        title="Add lecture"
-        submitLabel="Save"
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-    />
-);
+export const AddLecture = () => {
+    const { t } = useTranslation();
+
+    return (
+        <LectureForm
+            title={t('lectures.add')}
+            submitLabel={t('common.save')}
+            resetLabel={t('common.clear')}
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+        />
+    );
+};

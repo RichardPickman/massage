@@ -1,9 +1,11 @@
 import { cn } from 'cn';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { jumpToSlide } from '../../../store/reducers/images';
 
 export const ImageFooter = memo(() => {
+    const { t } = useTranslation();
     const images = useAppSelector((state) => state.images);
     const dispatch = useAppDispatch();
 
@@ -17,7 +19,7 @@ export const ImageFooter = memo(() => {
                 <img
                     key={`${index}-${slide}`}
                     src={slide}
-                    alt={`Slide ${index + 1}`}
+                    alt={t('lectures.viewer.slideAlt', { number: index + 1 })}
                     loading="lazy"
                     onClick={() => dispatch(jumpToSlide(index))}
                     className={cn(

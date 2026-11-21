@@ -1,8 +1,7 @@
-import dayjs from 'dayjs';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import 'dayjs/locale/pl';
 
+import dayjs from './dayjs';
 import en from './locales/en';
 import pl from './locales/pl';
 

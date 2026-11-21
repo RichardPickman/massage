@@ -65,14 +65,16 @@ export const Header = () => {
                     ) : (
                         <>
                             <Button asChild variant="ghost" size="sm">
-                                <Link to="/auth/login">Sign in</Link>
+                                <Link to="/auth/login">{t('auth.signIn')}</Link>
                             </Button>
                             <Button
                                 asChild
                                 size="sm"
                                 className="hidden sm:inline-flex"
                             >
-                                <Link to="/auth/register">Sign up</Link>
+                                <Link to="/auth/register">
+                                    {t('auth.signUp')}
+                                </Link>
                             </Button>
                         </>
                     )}
