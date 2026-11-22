@@ -200,32 +200,15 @@
         "skeleton": {
             "loading": "Loading your stats..."
         },
-        "hero": {
-            "titleLead": "Learn the body.",
-            "titleAccent": "Prove you know it.",
-            "lead": "Lecture notes, image slides and scored tests in one place. Sign in to keep a running record of every attempt, your best score and where you are slipping.",
+        "portal": {
+            "title": "Testing portal",
+            "description": "Lectures and tests for dental assistants.",
+            "tests": "Tests",
+            "lectures": "Lectures",
+            "signInNote": "Results are kept for signed-in accounts.",
             "signIn": "Sign in",
-            "takeTest": "Take a test",
-            "browseLectures": "Browse lectures",
-            "noAccount": "No account?",
-            "createOne": "Create one",
-            "takesMinute": "— it takes a minute.",
-            "cardTitle": "How the record works",
-            "cardDescription": "Three steps, repeated. The numbers do the rest.",
-            "steps": {
-                "read": {
-                    "title": "Read the lecture",
-                    "text": "Work through the image slides at your own pace."
-                },
-                "test": {
-                    "title": "Take the test",
-                    "text": "Every answer is scored by the server, not the browser."
-                },
-                "trend": {
-                    "title": "Watch the line",
-                    "text": "Best, average and every attempt stay on your record."
-                }
-            }
+            "or": "or",
+            "createAccount": "create an account"
         }
     },
     "admin": {
