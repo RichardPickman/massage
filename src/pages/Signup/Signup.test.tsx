@@ -16,6 +16,9 @@ const routes = (
 );
 
 const submitRegistration = async (code: string) => {
+    // Registration carries a nickname: the address is never verified, so it is
+    // not what the app shows next to a result.
+    await userEvent.type(screen.getByLabelText('Nickname'), 'Ania');
     await userEvent.type(screen.getByLabelText('Email'), 'friend@example.com');
     await userEvent.type(screen.getByLabelText('Password'), 'a-long-password');
     await userEvent.type(screen.getByLabelText('Invite code'), code);
@@ -43,6 +46,7 @@ describe('SignUp', () => {
         await submitRegistration('ABCD-1234-EF56-7890');
 
         expect(registration).toHaveBeenCalledWith({
+            user: 'Ania',
             email: 'friend@example.com',
             password: 'a-long-password',
             code: 'ABCD-1234-EF56-7890',

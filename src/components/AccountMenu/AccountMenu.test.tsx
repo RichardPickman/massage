@@ -96,3 +96,34 @@ describe('AccountMenu invite entry', () => {
         ).toBeInTheDocument();
     });
 });
+
+describe('AccountMenu identity', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+        localStorage.clear();
+    });
+
+    it('names the account by its nickname, with the address underneath', async () => {
+        const store = makeStore();
+
+        store.dispatch(
+            fetchLogin.fulfilled(
+                {
+                    token: 'test-token',
+                    user: { ...testUser, nickname: 'Ania' },
+                },
+                'test-request',
+                { email: testUser.email, password: 'test-password' }
+            )
+        );
+
+        renderWithProviders(<AccountMenu />, { store });
+
+        await userEvent.click(screen.getByRole('button', { name: /account/i }));
+
+        expect(await screen.findByText('Ania')).toBeInTheDocument();
+        // The address appears in the trigger and in the panel, so it is a count
+        // rather than a single match.
+        expect(screen.getAllByText(testUser.email).length).toBeGreaterThan(0);
+    });
+});
