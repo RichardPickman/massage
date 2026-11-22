@@ -29,7 +29,7 @@ describe('questionProblems', () => {
     it('asks for the question text', () => {
         const problems = questionProblems(makeQuestion({ question: '   ' }));
 
-        expect(problems).toContain('Add the question text');
+        expect(problems).toContain('text');
     });
 
     it('requires two filled answers', () => {
@@ -42,13 +42,13 @@ describe('questionProblems', () => {
             })
         );
 
-        expect(problems).toContain('Fill at least 2 answers');
+        expect(problems).toContain('minAnswers');
     });
 
     it('requires a correct answer', () => {
         const problems = questionProblems(makeQuestion({ correctAnswers: [] }));
 
-        expect(problems).toContain('Mark at least one correct answer');
+        expect(problems).toContain('minCorrect');
     });
 
     it('does not count a correct answer pointing at a dropped row', () => {
@@ -56,7 +56,7 @@ describe('questionProblems', () => {
             makeQuestion({ correctAnswers: ['ghost'] })
         );
 
-        expect(problems).toContain('Mark at least one correct answer');
+        expect(problems).toContain('minCorrect');
     });
 
     it('rejects more answers than the limit', () => {
@@ -69,7 +69,7 @@ describe('questionProblems', () => {
             makeQuestion({ answers, correctAnswers: ['a0'] })
         );
 
-        expect(problems).toContain(`No more than ${MAX_ANSWERS} answers`);
+        expect(problems).toContain('maxAnswers');
     });
 
     it('reports every problem at once, not just the first', () => {
@@ -89,22 +89,16 @@ describe('thresholdProblem', () => {
     });
 
     it('rejects an empty or non-numeric value', () => {
-        expect(thresholdProblem('')).toBe('Threshold must be a number');
-        expect(thresholdProblem('abc')).toBe('Threshold must be a number');
+        expect(thresholdProblem('')).toBe('number');
+        expect(thresholdProblem('abc')).toBe('number');
     });
 
     it('rejects fractions', () => {
-        expect(thresholdProblem('50.5')).toBe(
-            'Threshold must be a whole number'
-        );
+        expect(thresholdProblem('50.5')).toBe('whole');
     });
 
     it('rejects out-of-range values instead of clamping', () => {
-        expect(thresholdProblem('-1')).toBe(
-            'Threshold must be between 0 and 100'
-        );
-        expect(thresholdProblem('101')).toBe(
-            'Threshold must be between 0 and 100'
-        );
+        expect(thresholdProblem('-1')).toBe('range');
+        expect(thresholdProblem('101')).toBe('range');
     });
 });

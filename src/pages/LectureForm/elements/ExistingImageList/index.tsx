@@ -32,7 +32,9 @@ export const ExistingImageList = ({
                 <Card key={image.key} className="w-40 gap-1 p-1">
                     <img
                         src={image.url}
-                        alt={`Saved lecture image ${index + 1}`}
+                        alt={t('lectures.viewer.savedAlt', {
+                            number: index + 1,
+                        })}
                         onClick={() => setPreview(image)}
                         className="h-24 w-full cursor-zoom-in object-cover"
                     />
@@ -63,12 +65,12 @@ export const ExistingImageList = ({
             >
                 <DialogContent className="max-w-3xl">
                     <DialogTitle className="sr-only">
-                        Saved lecture image
+                        {t('lectures.viewer.savedDialog')}
                     </DialogTitle>
                     {preview ? (
                         <img
                             src={preview.url}
-                            alt="Saved lecture"
+                            alt={t('lectures.viewer.savedImageAlt')}
                             className="w-full object-contain"
                         />
                     ) : null}

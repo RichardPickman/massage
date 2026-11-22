@@ -163,7 +163,7 @@ export const LectureForm = ({
                 status: alertStatuses.SUCCESS,
                 text: result.message,
                 path: `/lectures/${result.lectureId}`,
-                title: 'Open lecture',
+                title: t('lectures.openLecture'),
             });
             resetForm();
         } catch (error) {

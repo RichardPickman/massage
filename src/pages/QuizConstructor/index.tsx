@@ -1,6 +1,7 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { FloppyDiskIcon, PlusIcon } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AlertWithLink } from '../../components/AlertWithLink';
 import { PageHeader } from '../../components/PageHeader';
 import { Button } from '../../components/ui/button';
@@ -8,6 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import QuestionService from '../../services/Question';
 import QuizService from '../../services/Quiz';
+import { describeServerMessage } from '../../i18n/serverMessages';
 import { getErrorMessage } from '../../services/errors';
 import { alertStatuses, type AlertStatus } from '../../utils/consts';
 import {
@@ -25,6 +27,8 @@ import {
     questionTemp,
     thresholdProblem,
     type ConstructorQuestion,
+    type QuestionProblem,
+    type ThresholdProblem,
 } from './helpers';
 
 interface ConstructorAlert {
@@ -52,6 +56,7 @@ const toDraftQuestions = (questions: ConstructorQuestion[]) =>
     }));
 
 export const QuizConstructor = () => {
+    const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [threshold, setThreshold] = useState(String(DEFAULT_THRESHOLD));
     // The first card exists from the start: the author should see what a
@@ -59,9 +64,12 @@ export const QuizConstructor = () => {
     const [questions, setQuestions] = useState<ConstructorQuestion[]>([
         getBlankQuestion(),
     ]);
-    const [problems, setProblems] = useState<Record<string, string[]>>({});
-    const [thresholdError, setThresholdError] = useState<string | null>(null);
-    const [titleError, setTitleError] = useState<string | null>(null);
+    const [problems, setProblems] = useState<Record<string, QuestionProblem[]>>(
+        {}
+    );
+    const [thresholdError, setThresholdError] =
+        useState<ThresholdProblem | null>(null);
+    const [titleError, setTitleError] = useState<'required' | null>(null);
     const [alert, setAlert] = useState<ConstructorAlert | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [draftOffer, setDraftOffer] = useState<ConstructorDraft | null>(null);
@@ -91,6 +99,18 @@ export const QuizConstructor = () => {
 
         return () => clearTimeout(timer);
     }, [title, threshold, questions, draftOffer]);
+
+    const thresholdMessage = (problem: ThresholdProblem) => {
+        if (problem === 'number') {
+            return t('constructor.threshold.number');
+        }
+
+        if (problem === 'whole') {
+            return t('constructor.threshold.whole');
+        }
+
+        return t('constructor.threshold.range');
+    };
 
     const updateQuestion = (id: string, data: Partial<ConstructorQuestion>) => {
         setQuestions((prevQuestions) =>
@@ -158,7 +178,7 @@ export const QuizConstructor = () => {
 
         // Everything is evaluated before anything is reported: a form that shows
         // one problem at a time makes the author save, fix, save, fix.
-        const nextProblems: Record<string, string[]> = {};
+        const nextProblems: Record<string, QuestionProblem[]> = {};
 
         questions.forEach((question) => {
             const found = questionProblems(question);
@@ -170,7 +190,7 @@ export const QuizConstructor = () => {
 
         setProblems(nextProblems);
 
-        const titleIssue = title.trim() ? null : 'Quiz title cannot be empty';
+        const titleIssue: 'required' | null = title.trim() ? null : 'required';
         setTitleError(titleIssue);
 
         const thresholdIssue = thresholdProblem(threshold);
@@ -184,7 +204,7 @@ export const QuizConstructor = () => {
             // author to stop reading both.
             setAlert({
                 status: alertStatuses.FAIL,
-                text: 'Check the highlighted fields before saving',
+                text: t('constructor.checkFields'),
             });
 
             // A banner at the top is not feedback if the author is looking at
@@ -207,7 +227,7 @@ export const QuizConstructor = () => {
         if (questions.length === 0) {
             setAlert({
                 status: alertStatuses.FAIL,
-                text: 'Add at least one question',
+                text: t('constructor.addQuestionRequired'),
             });
 
             return;
@@ -240,7 +260,7 @@ export const QuizConstructor = () => {
 
             setAlert({
                 status: alertStatuses.SUCCESS,
-                text: response.message,
+                text: describeServerMessage(response.code, response.message),
                 path: `/quiz/${response.payload._id}`,
             });
 
@@ -265,9 +285,10 @@ export const QuizConstructor = () => {
                 status: alertStatuses.FAIL,
                 text:
                     failedCleanups > 0
-                        ? `${getErrorMessage(
-                              error
-                          )} ${failedCleanups} created question(s) could not be removed and may still exist on the server.`
+                        ? `${getErrorMessage(error)} ${t(
+                              'constructor.cleanupFailed',
+                              { count: failedCleanups }
+                          )}`
                         : getErrorMessage(error),
             });
         } finally {
@@ -279,13 +300,13 @@ export const QuizConstructor = () => {
     return (
         <div className="flex flex-col gap-6">
             <PageHeader
-                kicker="Editor"
-                title="Quiz constructor"
-                description="Write the questions, tick the correct answers and set the pass mark. Students only see the answers after they submit."
+                kicker={t('constructor.kicker')}
+                title={t('constructor.title')}
+                description={t('constructor.description')}
                 meta={
                     <Button disabled={isSaving} onClick={saveQuiz}>
                         <FloppyDiskIcon />
-                        {isSaving ? 'Saving...' : 'Save quiz'}
+                        {isSaving ? t('common.saving') : t('constructor.save')}
                     </Button>
                 }
             />
@@ -296,26 +317,34 @@ export const QuizConstructor = () => {
                         className="flex flex-col gap-2 rounded-md border border-amber-500/40 bg-amber-50 p-3 text-sm dark:bg-amber-950/30"
                     >
                         <p className="font-medium">
-                            Unsaved draft from{' '}
-                            {new Date(draftOffer.savedAt).toLocaleDateString()}
+                            {t('constructor.draft.title', {
+                                date: new Date(
+                                    draftOffer.savedAt
+                                ).toLocaleDateString(),
+                            })}
                         </p>
                         <p className="text-muted-foreground">
-                            {draftOffer.questions.length} question(s),{' '}
+                            {t('constructor.draft.questions', {
+                                count: draftOffer.questions.length,
+                            })}
+                            ,{' '}
                             {draftOffer.title.trim()
-                                ? `title “${draftOffer.title}”`
-                                : 'no title yet'}
-                            . Images are not kept in a draft.
+                                ? t('constructor.draft.titled', {
+                                      title: draftOffer.title,
+                                  })
+                                : t('constructor.draft.untitled')}
+                            . {t('constructor.draft.noImages')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                             <Button size="sm" onClick={restoreDraft}>
-                                Restore draft
+                                {t('constructor.draft.restore')}
                             </Button>
                             <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={discardDraft}
                             >
-                                Start fresh
+                                {t('constructor.draft.fresh')}
                             </Button>
                         </div>
                     </div>
@@ -327,7 +356,7 @@ export const QuizConstructor = () => {
                             status={alert.status}
                             text={alert.text}
                             path={alert.path}
-                            title="Open quiz"
+                            title={t('constructor.openQuiz')}
                             onClose={() => setAlert(null)}
                         />
                     ) : null}
@@ -335,7 +364,9 @@ export const QuizConstructor = () => {
 
                 <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_11rem]">
                     <div className="flex flex-col gap-1">
-                        <Label htmlFor="quiz-title">Quiz title</Label>
+                        <Label htmlFor="quiz-title">
+                            {t('constructor.field.title')}
+                        </Label>
                         <Input
                             id="quiz-title"
                             value={title}
@@ -347,21 +378,23 @@ export const QuizConstructor = () => {
                                 setTitle(event.target.value);
                                 setTitleError(null);
                             }}
-                            placeholder="e.g. Anatomy — week 3"
+                            placeholder={t(
+                                'constructor.field.titlePlaceholder'
+                            )}
                         />
                         {titleError ? (
                             <p
                                 id="quiz-title-error"
                                 className="text-xs text-destructive"
                             >
-                                {titleError}
+                                {t('constructor.field.titleRequired')}
                             </p>
                         ) : null}
                     </div>
 
                     <div className="flex w-full flex-col gap-1">
                         <Label htmlFor="quiz-threshold">
-                            Pass threshold, %
+                            {t('constructor.field.threshold')}
                         </Label>
                         <Input
                             id="quiz-threshold"
@@ -387,11 +420,11 @@ export const QuizConstructor = () => {
                                 id="quiz-threshold-error"
                                 className="text-xs text-destructive"
                             >
-                                {thresholdError}
+                                {thresholdMessage(thresholdError)}
                             </p>
                         ) : (
                             <p className="text-xs text-muted-foreground">
-                                Students need at least this score to pass.
+                                {t('constructor.field.thresholdHint')}
                             </p>
                         )}
                     </div>
@@ -399,11 +432,12 @@ export const QuizConstructor = () => {
 
                 <div className="flex items-center justify-between gap-2 pt-2">
                     <h2 className="text-[0.6875rem] font-medium tracking-[0.08em] text-muted-foreground uppercase">
-                        Questions
+                        {t('constructor.questions.heading')}
                     </h2>
                     <span className="text-xs text-muted-foreground">
-                        {questions.length} question
-                        {questions.length === 1 ? '' : 's'} in this quiz
+                        {t('constructor.questions.count', {
+                            count: questions.length,
+                        })}
                     </span>
                 </div>
 
@@ -427,7 +461,7 @@ export const QuizConstructor = () => {
                     disabled={isSaving}
                 >
                     <PlusIcon />
-                    Add question
+                    {t('constructor.addQuestion')}
                 </Button>
             </div>
         </div>

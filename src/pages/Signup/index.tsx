@@ -31,7 +31,7 @@ const SignUp = () => {
                 submitting={status === fetchStatuses.PENDING}
                 errorData={status === fetchStatuses.FAILED ? error : null}
                 onSubmit={onSubmit}
-                header={'Sign Up'}
+                mode="signUp"
             />
             <LanguageSwitch className="mx-auto" />
         </div>

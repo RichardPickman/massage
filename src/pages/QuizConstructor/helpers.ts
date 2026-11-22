@@ -41,8 +41,20 @@ export const questionTemp: Omit<ConstructorQuestion, 'id'> = {
 
 // Problems are reported per card, and the same list is what the save button
 // blocks on: one rule set, so a card can never look fine and still be rejected.
-export const questionProblems = (question: ConstructorQuestion): string[] => {
-    const problems: string[] = [];
+// They travel as codes, not sentences: the card renders them in the reader's
+// language, and a string held in state would stay in the language it was built
+// in after a switch.
+export type QuestionProblem =
+    | 'text'
+    | 'minAnswers'
+    | 'maxAnswers'
+    | 'minCorrect'
+    | 'maxCorrect';
+
+export const questionProblems = (
+    question: ConstructorQuestion
+): QuestionProblem[] => {
+    const problems: QuestionProblem[] = [];
     const filledAnswers = question.answers.filter((answer) =>
         answer.text.trim()
     );
@@ -51,41 +63,43 @@ export const questionProblems = (question: ConstructorQuestion): string[] => {
     );
 
     if (!question.question.trim()) {
-        problems.push('Add the question text');
+        problems.push('text');
     }
 
     if (filledAnswers.length < MIN_ANSWERS) {
-        problems.push(`Fill at least ${MIN_ANSWERS} answers`);
+        problems.push('minAnswers');
     }
 
     if (filledAnswers.length > MAX_ANSWERS) {
-        problems.push(`No more than ${MAX_ANSWERS} answers`);
+        problems.push('maxAnswers');
     }
 
     if (correct.length < MIN_CORRECT) {
-        problems.push('Mark at least one correct answer');
+        problems.push('minCorrect');
     }
 
     if (correct.length > MAX_CORRECT) {
-        problems.push(`No more than ${MAX_CORRECT} correct answers`);
+        problems.push('maxCorrect');
     }
 
     return problems;
 };
 
-export const thresholdProblem = (raw: string): string | null => {
+export type ThresholdProblem = 'number' | 'whole' | 'range';
+
+export const thresholdProblem = (raw: string): ThresholdProblem | null => {
     const value = Number(raw.trim());
 
     if (!raw.trim() || !Number.isFinite(value)) {
-        return 'Threshold must be a number';
+        return 'number';
     }
 
     if (!Number.isInteger(value)) {
-        return 'Threshold must be a whole number';
+        return 'whole';
     }
 
     if (value < 0 || value > 100) {
-        return 'Threshold must be between 0 and 100';
+        return 'range';
     }
 
     return null;

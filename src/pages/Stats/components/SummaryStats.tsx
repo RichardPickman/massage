@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
     Card,
     CardContent,
@@ -14,19 +16,26 @@ interface SummaryStatsProps {
 }
 
 export const SummaryStats = ({ stats }: SummaryStatsProps) => {
+    const { t } = useTranslation();
     const items = [
-        { label: 'Best', value: formatPercent(stats.best) },
-        { label: 'Last', value: formatPercent(stats.last) },
-        { label: 'Attempts', value: String(stats.count) },
-        { label: 'Tests', value: String(stats.quizzes.length) },
+        { label: t('stats.summary.best'), value: formatPercent(stats.best) },
+        { label: t('stats.summary.last'), value: formatPercent(stats.last) },
+        {
+            label: t('stats.summary.attempts'),
+            value: String(stats.count),
+        },
+        {
+            label: t('stats.summary.tests'),
+            value: String(stats.quizzes.length),
+        },
     ];
 
     return (
         <Card>
             <CardHeader className="border-b">
-                <CardTitle>Average score</CardTitle>
+                <CardTitle>{t('stats.summary.title')}</CardTitle>
                 <CardDescription>
-                    Across every attempt on your record.
+                    {t('stats.summary.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-center">

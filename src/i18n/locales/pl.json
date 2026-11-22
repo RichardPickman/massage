@@ -13,7 +13,10 @@
         "remove": "Usuń",
         "removing": "Usuwanie...",
         "previousPage": "Przejdź do poprzedniej strony",
-        "nextPage": "Przejdź do następnej strony"
+        "nextPage": "Przejdź do następnej strony",
+        "open": "Otwórz",
+        "closeAlert": "Zamknij powiadomienie",
+        "questionImage": "Zdjęcie pytania"
     },
     "nav": {
         "primary": "Nawigacja główna",
@@ -25,7 +28,21 @@
     },
     "auth": {
         "signUp": "Zarejestruj się",
-        "signIn": "Zaloguj się"
+        "signIn": "Zaloguj się",
+        "signUpTitle": "Utwórz konto",
+        "signInTitle": "Zaloguj się",
+        "welcomeBack": "Witaj ponownie. Twój rejestr testów czeka.",
+        "createWithInvite": "Utwórz konto, używając kodu zaproszenia, który otrzymałeś.",
+        "couldNotSignIn": "Nie udało się zalogować",
+        "couldNotCreate": "Nie udało się utworzyć konta",
+        "email": "E-mail",
+        "password": "Hasło",
+        "inviteCode": "Kod zaproszenia",
+        "inviteHint": "Wydany na dokładnie ten adres e-mail, więc nie zadziała z innym.",
+        "submitting": "Wysyłanie...",
+        "createAccount": "Utwórz konto",
+        "needAccount": "Nie masz konta?",
+        "alreadyRegistered": "Masz już konto?"
     },
     "footer": {
         "brand": "RP · Massage",
@@ -44,6 +61,7 @@
         "description": "Slajdy z wykładów, pogrupowane według zajęć.",
         "add": "Dodaj wykład",
         "backAll": "Wszystkie wykłady",
+        "openLecture": "Otwórz wykład",
         "empty": "Nie ma jeszcze żadnych wykładów.",
         "columns": {
             "topic": "Temat",
@@ -68,7 +86,10 @@
             "exitFullscreen": "Wyjdź z pełnego ekranu",
             "close": "Zamknij przeglądarkę zdjęć",
             "previous": "Poprzednie zdjęcie",
-            "next": "Następne zdjęcie"
+            "next": "Następne zdjęcie",
+            "savedAlt": "Zapisane zdjęcie wykładu {{number}}",
+            "savedDialog": "Zapisane zdjęcie wykładu",
+            "savedImageAlt": "Zapisany wykład"
         },
         "form": {
             "topic": "Temat",
@@ -82,6 +103,7 @@
             "uploadHint": "Jedno lub więcej, PNG lub JPG",
             "saved": "Zapisane",
             "removeSaved": "Usuń zapisane zdjęcie {{number}}",
+            "removeImage": "Usuń {{name}}",
             "savedNote": "Usunięte zapisane zdjęcia zostaną skasowane po zapisaniu.",
             "topicRequired": "Temat nie może być pusty",
             "imagesRequired": "Dodaj co najmniej jedno zdjęcie",
@@ -132,5 +154,204 @@
         "showWrong": "Pokaż błędne odpowiedzi",
         "showUnanswered": "Pokaż bez odpowiedzi",
         "nothingToShow": "Nie ma tu nic do pokazania."
+    },
+    "stats": {
+        "kicker": "Przegląd",
+        "title": "Twój rejestr testów",
+        "lastAttempt": "Ostatnie podejście {{date}}",
+        "staleTitle": "Ten rejestr może być nieaktualny",
+        "refresh": "Odśwież",
+        "byTest": {
+            "title": "Według testów",
+            "description": "Najlepszy, średni i ostatni wynik dla każdego testu. Najnowsza aktywność na górze."
+        },
+        "columns": {
+            "test": "Test",
+            "attempts": "Podejścia",
+            "best": "Najlepszy",
+            "average": "Średni",
+            "last": "Ostatni",
+            "trend": "Trend"
+        },
+        "removed": "Usunięty",
+        "attempt_one": "{{count}} podejście",
+        "attempt_few": "{{count}} podejścia",
+        "attempt_many": "{{count}} podejść",
+        "openQuiz": "Otwórz: {{title}}",
+        "scoreTrend": "Trend wyników: {{title}}",
+        "summary": {
+            "title": "Średni wynik",
+            "description": "Ze wszystkich podejść w Twoim rejestrze.",
+            "best": "Najlepszy",
+            "last": "Ostatni",
+            "attempts": "Podejścia",
+            "tests": "Testy"
+        },
+        "empty": {
+            "title": "Brak podejść w rejestrze",
+            "body": "Rozwiąż test, a Twój wynik, najlepszy rezultat i trend pojawią się tutaj.",
+            "browseTests": "Przeglądaj testy",
+            "readLectures": "Czytaj wykłady"
+        },
+        "error": {
+            "title": "Statystyki niedostępne",
+            "description": "Twój rejestr jest na serwerze, a odpowiedź nie wróciła.",
+            "alertTitle": "Nie udało się wczytać statystyk",
+            "retry": "Spróbuj ponownie"
+        },
+        "skeleton": {
+            "loading": "Ładowanie statystyk..."
+        },
+        "hero": {
+            "titleLead": "Poznaj ciało.",
+            "titleAccent": "Udowodnij, że to umiesz.",
+            "lead": "Notatki z wykładów, slajdy i punktowane testy w jednym miejscu. Zaloguj się, aby prowadzić rejestr każdego podejścia, najlepszego wyniku i tego, co Ci umyka.",
+            "signIn": "Zaloguj się",
+            "takeTest": "Rozwiąż test",
+            "browseLectures": "Przeglądaj wykłady",
+            "noAccount": "Nie masz konta?",
+            "createOne": "Załóż je",
+            "takesMinute": "— zajmie to minutę.",
+            "cardTitle": "Jak działa rejestr",
+            "cardDescription": "Trzy kroki, w kółko. Resztę robią liczby.",
+            "steps": {
+                "read": {
+                    "title": "Przeczytaj wykład",
+                    "text": "Przejrzyj slajdy we własnym tempie."
+                },
+                "test": {
+                    "title": "Rozwiąż test",
+                    "text": "Każdą odpowiedź ocenia serwer, nie przeglądarka."
+                },
+                "trend": {
+                    "title": "Obserwuj linię",
+                    "text": "Najlepszy wynik, średnia i każde podejście zostają w Twoim rejestrze."
+                }
+            }
+        }
+    },
+    "admin": {
+        "title": "Kody zaproszeń",
+        "description": "Wygeneruj kod dla adresu jednej osoby i wyślij go jej. Kod działa tylko z tym adresem.",
+        "email": "E-mail osoby zapraszanej",
+        "submit": "Pobierz kod",
+        "minting": "Generowanie...",
+        "errorTitle": "Nie udało się wygenerować kodu",
+        "codeFor": "Kod dla {{email}}",
+        "copy": "Kopiuj kod",
+        "copied": "Skopiowano",
+        "noAccess": {
+            "title": "To nie Twoja część",
+            "description": "Kody zaproszeń generuje administrator strony. Twoje konto może czytać wykłady i rozwiązywać testy.",
+            "body": "Jeśli spodziewałeś się dostępu, zapytaj osobę, która Cię zaprosiła."
+        }
+    },
+    "constructor": {
+        "kicker": "Edytor",
+        "title": "Kreator testu",
+        "description": "Napisz pytania, zaznacz poprawne odpowiedzi i ustaw próg zaliczenia. Studenci widzą odpowiedzi dopiero po wysłaniu testu.",
+        "save": "Zapisz test",
+        "openQuiz": "Otwórz test",
+        "checkFields": "Popraw zaznaczone pola przed zapisaniem",
+        "addQuestionRequired": "Dodaj co najmniej jedno pytanie",
+        "cleanupFailed_one": "Nie udało się usunąć {{count}} utworzonego pytania — może nadal istnieć na serwerze.",
+        "cleanupFailed_few": "Nie udało się usunąć {{count}} utworzonych pytań — mogą nadal istnieć na serwerze.",
+        "cleanupFailed_many": "Nie udało się usunąć {{count}} utworzonych pytań — mogą nadal istnieć na serwerze.",
+        "draft": {
+            "title": "Niezapisany szkic z {{date}}",
+            "questions_one": "{{count}} pytanie",
+            "questions_few": "{{count}} pytania",
+            "questions_many": "{{count}} pytań",
+            "titled": "tytuł „{{title}}”",
+            "untitled": "bez tytułu",
+            "noImages": "Zdjęcia nie są zapisywane w szkicu.",
+            "restore": "Przywróć szkic",
+            "fresh": "Zacznij od nowa"
+        },
+        "field": {
+            "title": "Tytuł testu",
+            "titlePlaceholder": "np. Anatomia — tydzień 3",
+            "titleRequired": "Tytuł testu nie może być pusty",
+            "threshold": "Próg zaliczenia, %",
+            "thresholdHint": "Aby zdać, student musi mieć co najmniej tyle procent."
+        },
+        "questions": {
+            "heading": "Pytania",
+            "count_one": "{{count}} pytanie w tym teście",
+            "count_few": "{{count}} pytania w tym teście",
+            "count_many": "{{count}} pytań w tym teście"
+        },
+        "addQuestion": "Dodaj pytanie",
+        "card": {
+            "question": "Pytanie {{number}}",
+            "needsAttention": "Wymaga poprawy",
+            "edit": "Edytuj",
+            "preview": "Podejrzyj pytanie {{number}}",
+            "delete": "Usuń pytanie {{number}}"
+        },
+        "form": {
+            "question": "Pytanie",
+            "questionPlaceholder": "O co zapytać studenta?",
+            "answersHint": "Od dwóch do {{max}} odpowiedzi, co najmniej jedna poprawna.",
+            "answer": "Odpowiedź {{number}}",
+            "answerCorrect": "Odpowiedź {{number}} jest poprawna",
+            "answerRemove": "Usuń odpowiedź {{number}}",
+            "answerPlaceholder": "Treść odpowiedzi"
+        },
+        "limits": {
+            "correct_one": "Co najwyżej {{count}} poprawna odpowiedź na pytanie",
+            "correct_few": "Co najwyżej {{count}} poprawne odpowiedzi na pytanie",
+            "correct_many": "Co najwyżej {{count}} poprawnych odpowiedzi na pytanie"
+        },
+        "problems": {
+            "text": "Dodaj treść pytania",
+            "minAnswers_one": "Uzupełnij co najmniej {{count}} odpowiedź",
+            "minAnswers_few": "Uzupełnij co najmniej {{count}} odpowiedzi",
+            "minAnswers_many": "Uzupełnij co najmniej {{count}} odpowiedzi",
+            "maxAnswers_one": "Nie więcej niż {{count}} odpowiedź",
+            "maxAnswers_few": "Nie więcej niż {{count}} odpowiedzi",
+            "maxAnswers_many": "Nie więcej niż {{count}} odpowiedzi",
+            "minCorrect": "Zaznacz co najmniej jedną poprawną odpowiedź",
+            "maxCorrect_one": "Nie więcej niż {{count}} poprawna odpowiedź",
+            "maxCorrect_few": "Nie więcej niż {{count}} poprawne odpowiedzi",
+            "maxCorrect_many": "Nie więcej niż {{count}} poprawnych odpowiedzi"
+        },
+        "threshold": {
+            "number": "Próg musi być liczbą",
+            "whole": "Próg musi być liczbą całkowitą",
+            "range": "Próg musi mieścić się między 0 a 100"
+        }
+    },
+    "upload": {
+        "dropHint": "Przeciągnij zdjęcie tutaj lub wybierz plik",
+        "pick": "Dodaj zdjęcie",
+        "remove": "Usuń zdjęcie",
+        "notImage": "Do pytania można dołączyć tylko pliki graficzne",
+        "tooLarge": "Zdjęcie jest większe niż 10 MB",
+        "unnamedFile": "Plik bez nazwy"
+    },
+    "error": {
+        "title": "Coś poszło nie tak",
+        "description": "Nie udało się wyświetlić tej strony.",
+        "back": "Wróć do przeglądu",
+        "reload": "Odśwież"
+    },
+    "server": {
+        "lecture.created": "Wykład zapisany",
+        "lecture.updated": "Wykład zaktualizowany",
+        "lecture.notFound": "Ten wykład już nie istnieje",
+        "lecture.updateFailed": "Nie udało się zapisać wykładu",
+        "quiz.created": "Test zapisany",
+        "quiz.createFailed": "Nie udało się zapisać testu",
+        "quiz.notFound": "Ten test już nie istnieje",
+        "quiz.removed": "Test usunięty",
+        "quiz.invalidThreshold": "Próg zaliczenia musi być liczbą całkowitą od 0 do 100",
+        "attempt.saved": "Podejście zapisane",
+        "common.forbidden": "Nie możesz zmienić tego elementu",
+        "common.invalidInputs": "Sprawdź pola i spróbuj ponownie",
+        "common.imageUploadFailed": "Nie udało się wysłać zdjęcia",
+        "auth.notAuthorised": "Sesja wygasła, zaloguj się ponownie",
+        "auth.invalidEmail": "Podaj poprawny adres e-mail",
+        "user.removed": "Konto usunięte"
     }
 }

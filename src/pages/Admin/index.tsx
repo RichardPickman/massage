@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ import { getErrorMessage } from '../../services/errors';
 import type { Invite } from '../../services/types';
 
 export const Admin = () => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [invite, setInvite] = useState<Invite | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -56,16 +58,13 @@ export const Admin = () => {
     return (
         <Card className="mx-auto w-full max-w-xl">
             <CardHeader className="border-b">
-                <CardTitle>Invite codes</CardTitle>
-                <CardDescription>
-                    Mint the code for one person&apos;s address, then send it to
-                    them. The code only works for that address.
-                </CardDescription>
+                <CardTitle>{t('admin.title')}</CardTitle>
+                <CardDescription>{t('admin.description')}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="invite-email">Their email</Label>
+                        <Label htmlFor="invite-email">{t('admin.email')}</Label>
                         <Input
                             id="invite-email"
                             type="email"
@@ -76,13 +75,13 @@ export const Admin = () => {
                         />
                     </div>
                     <Button type="submit" disabled={isMinting}>
-                        {isMinting ? 'Minting...' : 'Get the code'}
+                        {isMinting ? t('admin.minting') : t('admin.submit')}
                     </Button>
                 </form>
                 {error ? (
                     <Alert variant="destructive">
                         <div className="flex flex-col gap-1">
-                            <AlertTitle>Could not mint a code</AlertTitle>
+                            <AlertTitle>{t('admin.errorTitle')}</AlertTitle>
                             <AlertDescription className="text-destructive">
                                 {error}
                             </AlertDescription>
@@ -92,7 +91,7 @@ export const Admin = () => {
                 {invite ? (
                     <div className="flex flex-col gap-2">
                         <p className="text-sm font-medium">
-                            Code for {invite.email}
+                            {t('admin.codeFor', { email: invite.email })}
                         </p>
                         <code className="rounded-md border bg-muted px-3 py-2 font-mono text-lg tracking-wider">
                             {invite.code}
@@ -103,7 +102,7 @@ export const Admin = () => {
             {invite ? (
                 <CardFooter className="border-t">
                     <Button variant="secondary" onClick={handleCopy}>
-                        {copied ? 'Copied' : 'Copy the code'}
+                        {copied ? t('admin.copied') : t('admin.copy')}
                     </Button>
                 </CardFooter>
             ) : null}

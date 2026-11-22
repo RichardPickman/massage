@@ -6,6 +6,7 @@ import {
     useLocation,
     useNavigate,
 } from 'react-router-dom';
+import { describeServerMessage } from '../../i18n/serverMessages';
 import LectureService from '../../services/Lecture';
 import type { LectureDetails } from '../../services/models';
 import { useAppSelector } from '../../store';
@@ -51,7 +52,7 @@ export const EditLecture = () => {
 
     const handleSubmit = (form: FormData) =>
         LectureService.updateLecture(lecture._id, form).then((response) => ({
-            message: response.message,
+            message: describeServerMessage(response.code, response.message),
             lectureId: response.payload._id,
         }));
 

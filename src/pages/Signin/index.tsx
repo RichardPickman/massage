@@ -34,7 +34,7 @@ const SignIn = () => {
                 submitting={status === fetchStatuses.PENDING}
                 errorData={status === fetchStatuses.FAILED ? error : null}
                 onSubmit={onSubmit}
-                header={'Sign In'}
+                mode="signIn"
             />
             <LanguageSwitch className="mx-auto" />
         </div>

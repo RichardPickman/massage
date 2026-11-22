@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -20,24 +21,25 @@ export type AuthFormData = {
     code?: string;
 };
 
+export type AuthMode = 'signIn' | 'signUp';
+
 interface AuthProps {
     submitting: boolean;
     errorData: string | null;
     onSubmit: (data: AuthFormData) => void;
-    header: string;
+    // The mode is explicit, not read off the heading: the heading is translated
+    // copy now, and a card that decides whether to ask for a code by comparing a
+    // label breaks the moment the label changes language.
+    mode: AuthMode;
 }
 
-export const Auth = ({
-    submitting,
-    errorData,
-    onSubmit,
-    header,
-}: AuthProps) => {
+export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
 
-    const isSignIn = header === 'Sign In';
+    const isSignIn = mode === 'signIn';
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -47,26 +49,40 @@ export const Auth = ({
         onSubmit(isSignIn ? { email, password } : { email, password, code });
     };
 
+    const heading = isSignIn ? t('auth.signInTitle') : t('auth.signUpTitle');
+
+    const description = isSignIn
+        ? t('auth.welcomeBack')
+        : t('auth.createWithInvite');
+
+    const alertTitle = isSignIn
+        ? t('auth.couldNotSignIn')
+        : t('auth.couldNotCreate');
+
+    const submitLabel = () => {
+        if (submitting) {
+            return t('auth.submitting');
+        }
+
+        if (isSignIn) {
+            return t('auth.signIn');
+        }
+
+        return t('auth.createAccount');
+    };
+
     return (
         <Card className="mx-auto w-full max-w-md">
             <CardHeader className="border-b">
-                <CardTitle>{header}</CardTitle>
-                <CardDescription>
-                    {isSignIn
-                        ? 'Welcome back. Your test record is waiting.'
-                        : 'Create an account with the invite code you were sent.'}
-                </CardDescription>
+                <CardTitle>{heading}</CardTitle>
+                <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent>
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
                     {errorData ? (
                         <Alert variant="destructive">
                             <div className="flex flex-col gap-1">
-                                <AlertTitle>
-                                    {isSignIn
-                                        ? 'Could not sign in'
-                                        : 'Could not create the account'}
-                                </AlertTitle>
+                                <AlertTitle>{alertTitle}</AlertTitle>
                                 <AlertDescription className="text-destructive">
                                     {errorData}
                                 </AlertDescription>
@@ -74,7 +90,7 @@ export const Auth = ({
                         </Alert>
                     ) : null}
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="auth-email">Email</Label>
+                        <Label htmlFor="auth-email">{t('auth.email')}</Label>
                         <Input
                             id="auth-email"
                             type="email"
@@ -87,7 +103,9 @@ export const Auth = ({
                         />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="auth-password">Password</Label>
+                        <Label htmlFor="auth-password">
+                            {t('auth.password')}
+                        </Label>
                         <Input
                             id="auth-password"
                             type="password"
@@ -104,7 +122,9 @@ export const Auth = ({
                     </div>
                     {isSignIn ? null : (
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="auth-code">Invite code</Label>
+                            <Label htmlFor="auth-code">
+                                {t('auth.inviteCode')}
+                            </Label>
                             <Input
                                 id="auth-code"
                                 required
@@ -117,39 +137,34 @@ export const Auth = ({
                                 }
                             />
                             <p className="text-sm text-muted-foreground">
-                                Issued for this exact email address, so it will
-                                not work with another one.
+                                {t('auth.inviteHint')}
                             </p>
                         </div>
                     )}
                     <Button type="submit" disabled={submitting}>
-                        {submitting
-                            ? 'Submitting...'
-                            : isSignIn
-                            ? 'Sign in'
-                            : 'Create account'}
+                        {submitLabel()}
                     </Button>
                 </form>
             </CardContent>
             <CardFooter className="border-t text-sm text-muted-foreground">
                 {isSignIn ? (
                     <p>
-                        Need an account?{' '}
+                        {t('auth.needAccount')}{' '}
                         <Link
                             to="/auth/register"
                             className="underline underline-offset-4 hover:text-foreground"
                         >
-                            Sign up
+                            {t('auth.signUp')}
                         </Link>
                     </p>
                 ) : (
                     <p>
-                        Already registered?{' '}
+                        {t('auth.alreadyRegistered')}{' '}
                         <Link
                             to="/auth/login"
                             className="underline underline-offset-4 hover:text-foreground"
                         >
-                            Sign in
+                            {t('auth.signIn')}
                         </Link>
                     </p>
                 )}

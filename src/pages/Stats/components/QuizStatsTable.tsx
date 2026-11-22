@@ -1,5 +1,6 @@
 import { ArrowUpRightIcon } from '@phosphor-icons/react';
 import { cn } from 'cn';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Badge } from '@/components/ui/badge';
@@ -34,13 +35,14 @@ interface QuizStatsTableProps {
 }
 
 export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
+    const { t } = useTranslation();
+
     return (
         <Card>
             <CardHeader className="border-b">
-                <CardTitle>By test</CardTitle>
+                <CardTitle>{t('stats.byTest.title')}</CardTitle>
                 <CardDescription>
-                    Best, average and latest score per test. Most recent
-                    activity first.
+                    {t('stats.byTest.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -57,13 +59,15 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                         {quiz.title}
                                     </span>
                                     {isRemoved ? (
-                                        <Badge variant="outline">Removed</Badge>
+                                        <Badge variant="outline">
+                                            {t('stats.removed')}
+                                        </Badge>
                                     ) : null}
                                 </div>
                                 <dl className="grid grid-cols-3 gap-2 text-sm">
                                     <div className="flex flex-col">
                                         <dt className="text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
-                                            Best
+                                            {t('stats.columns.best')}
                                         </dt>
                                         <dd
                                             className={cn(
@@ -78,7 +82,7 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                     </div>
                                     <div className="flex flex-col">
                                         <dt className="text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
-                                            Average
+                                            {t('stats.columns.average')}
                                         </dt>
                                         <dd className="tabular-nums">
                                             {formatPercent(quiz.average)}
@@ -86,7 +90,7 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                     </div>
                                     <div className="flex flex-col">
                                         <dt className="text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
-                                            Last
+                                            {t('stats.columns.last')}
                                         </dt>
                                         <dd
                                             className={cn(
@@ -103,13 +107,14 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                 <div className="flex items-center justify-between gap-2">
                                     <Sparkline
                                         history={quiz.history}
-                                        label={`${quiz.title} score trend`}
+                                        label={t('stats.scoreTrend', {
+                                            title: quiz.title,
+                                        })}
                                     />
                                     <span className="text-xs text-muted-foreground tabular-nums">
-                                        {quiz.count}{' '}
-                                        {quiz.count === 1
-                                            ? 'attempt'
-                                            : 'attempts'}
+                                        {t('stats.attempt', {
+                                            count: quiz.count,
+                                        })}
                                     </span>
                                 </div>
                             </div>
@@ -122,7 +127,9 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                 key={quiz.quizId}
                                 to={`/quiz/${quiz.quizId}`}
                                 className="block rounded-lg transition-colors hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                                aria-label={`Open ${quiz.title}`}
+                                aria-label={t('stats.openQuiz', {
+                                    title: quiz.title,
+                                })}
                             >
                                 {body}
                             </Link>
@@ -133,21 +140,21 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Test</TableHead>
+                                <TableHead>{t('stats.columns.test')}</TableHead>
                                 <TableHead className="text-right">
-                                    Attempts
+                                    {t('stats.columns.attempts')}
                                 </TableHead>
                                 <TableHead className="text-right">
-                                    Best
+                                    {t('stats.columns.best')}
                                 </TableHead>
                                 <TableHead className="hidden text-right sm:table-cell">
-                                    Average
+                                    {t('stats.columns.average')}
                                 </TableHead>
                                 <TableHead className="hidden text-right md:table-cell">
-                                    Last
+                                    {t('stats.columns.last')}
                                 </TableHead>
                                 <TableHead className="hidden lg:table-cell">
-                                    Trend
+                                    {t('stats.columns.trend')}
                                 </TableHead>
                                 <TableHead className="w-10" />
                             </TableRow>
@@ -175,7 +182,7 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                                 )}
                                                 {isRemoved ? (
                                                     <Badge variant="outline">
-                                                        Removed
+                                                        {t('stats.removed')}
                                                     </Badge>
                                                 ) : null}
                                             </div>
@@ -219,7 +226,9 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                         <TableCell className="hidden lg:table-cell">
                                             <Sparkline
                                                 history={quiz.history}
-                                                label={`${quiz.title} score trend`}
+                                                label={t('stats.scoreTrend', {
+                                                    title: quiz.title,
+                                                })}
                                             />
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -228,7 +237,12 @@ export const QuizStatsTable = ({ quizzes }: QuizStatsTableProps) => {
                                                     asChild
                                                     variant="ghost"
                                                     size="icon-sm"
-                                                    aria-label={`Open ${quiz.title}`}
+                                                    aria-label={t(
+                                                        'stats.openQuiz',
+                                                        {
+                                                            title: quiz.title,
+                                                        }
+                                                    )}
                                                 >
                                                     <Link
                                                         to={`/quiz/${quiz.quizId}`}

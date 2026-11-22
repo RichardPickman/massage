@@ -1,5 +1,6 @@
 import { ImageIcon, TrashIcon } from '@phosphor-icons/react';
 import { memo, useId, useRef, useState, type DragEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ImageLightbox } from '../ImageLightbox';
@@ -8,13 +9,17 @@ export const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 // Both entry points run through this, so a dropped file and a picked file can
 // never disagree about what is acceptable.
-export const imageProblem = (file: File): string | null => {
+// A code, not a sentence: the same rule is rendered in whichever language the
+// reader chose, and a message held in state would stay English after a switch.
+export type ImageProblem = 'notImage' | 'tooLarge';
+
+export const imageProblem = (file: File): ImageProblem | null => {
     if (!file.type.startsWith('image/')) {
-        return 'Only image files can be attached to a question';
+        return 'notImage';
     }
 
     if (file.size > MAX_IMAGE_BYTES) {
-        return 'Image is larger than 10 MB';
+        return 'tooLarge';
     }
 
     return null;
@@ -31,8 +36,9 @@ interface FileUploadProps {
 
 export const FileUpload = memo(
     ({ image, removeImage, onSelectFile, text }: FileUploadProps) => {
+        const { t } = useTranslation();
         const [isDragging, setIsDragging] = useState(false);
-        const [problem, setProblem] = useState<string | null>(null);
+        const [problem, setProblem] = useState<ImageProblem | null>(null);
         const inputId = useId();
         // dragenter/dragleave fire for every child element; counting keeps the
         // highlight from strobing while the cursor moves over inner nodes.
@@ -81,6 +87,14 @@ export const FileUpload = memo(
             accept(event.dataTransfer?.files?.[0]);
         };
 
+        const problemMessage = (code: ImageProblem) => {
+            if (code === 'notImage') {
+                return t('upload.notImage');
+            }
+
+            return t('upload.tooLarge');
+        };
+
         const dropZoneClass = isDragging
             ? 'flex flex-col gap-2 rounded-md border border-dashed border-primary bg-primary/5 p-3'
             : 'flex flex-col gap-2 rounded-md border border-dashed border-border p-3';
@@ -116,7 +130,7 @@ export const FileUpload = memo(
                             variant="ghost"
                             size="icon-sm"
                             className="size-11"
-                            aria-label="Remove image"
+                            aria-label={t('upload.remove')}
                             onClick={removeImage}
                         >
                             <TrashIcon />
@@ -125,7 +139,7 @@ export const FileUpload = memo(
                 ) : (
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm text-muted-foreground">
-                            Drop an image here, or choose a file
+                            {t('upload.dropHint')}
                         </p>
                         <Button
                             asChild
@@ -134,14 +148,14 @@ export const FileUpload = memo(
                         >
                             <label htmlFor={inputId}>
                                 <ImageIcon />
-                                Upload image
+                                {t('upload.pick')}
                             </label>
                         </Button>
                     </div>
                 )}
                 {problem ? (
                     <p role="alert" className="text-xs text-destructive">
-                        {problem}
+                        {problemMessage(problem)}
                     </p>
                 ) : null}
             </div>
