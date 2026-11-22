@@ -42,7 +42,10 @@
         "submitting": "Submitting...",
         "createAccount": "Create account",
         "needAccount": "Need an account?",
-        "alreadyRegistered": "Already registered?"
+        "alreadyRegistered": "Already registered?",
+        "nickname": "Nickname",
+        "nicknamePlaceholder": "How your teacher sees you",
+        "nicknameHint": "3–24 characters. Letters, digits, spaces, dots, dashes or underscores. Shown next to your results."
     },
     "footer": {
         "brand": "RP · Massage",

@@ -37,7 +37,16 @@ export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
                 <span className="text-[0.6875rem] tracking-[0.12em] text-muted-foreground uppercase">
                     {t('account.signedInAs')}
                 </span>
-                <span className="truncate">{user.email}</span>
+                {/* The nickname is the name; the address is what signing in uses,
+                    and an account made before nicknames existed shows only it. */}
+                <span className="truncate font-medium">
+                    {user.nickname || user.email}
+                </span>
+                {user.nickname ? (
+                    <span className="truncate text-xs text-muted-foreground">
+                        {user.email}
+                    </span>
+                ) : null}
             </div>
             <div className="h-px bg-foreground/10" />
             {user.role === 'admin' ? (

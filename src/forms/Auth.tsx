@@ -19,6 +19,9 @@ export type AuthFormData = {
     email: string;
     password: string;
     code?: string;
+    // The name the app shows; the address is what the code was issued for and
+    // what signing in uses.
+    user?: string;
 };
 
 export type AuthMode = 'signIn' | 'signUp';
@@ -35,6 +38,7 @@ interface AuthProps {
 
 export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
     const { t } = useTranslation();
+    const [user, setUser] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [code, setCode] = useState('');
@@ -46,7 +50,9 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
 
         // Signing in carries no code: the account already exists, and asking for
         // one would suggest the invite is still needed after registration.
-        onSubmit(isSignIn ? { email, password } : { email, password, code });
+        onSubmit(
+            isSignIn ? { email, password } : { user, email, password, code }
+        );
     };
 
     const heading = isSignIn ? t('auth.signInTitle') : t('auth.signUpTitle');
@@ -89,13 +95,39 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                             </div>
                         </Alert>
                     ) : null}
+                    {isSignIn ? null : (
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="auth-nickname">
+                                {t('auth.nickname')}
+                            </Label>
+                            <Input
+                                id="auth-nickname"
+                                required
+                                minLength={3}
+                                maxLength={24}
+                                autoFocus
+                                autoComplete="nickname"
+                                placeholder={t('auth.nicknamePlaceholder')}
+                                value={user}
+                                onChange={(event) =>
+                                    setUser(event.target.value)
+                                }
+                                aria-describedby="auth-nickname-hint"
+                            />
+                            <p
+                                id="auth-nickname-hint"
+                                className="text-xs text-muted-foreground"
+                            >
+                                {t('auth.nicknameHint')}
+                            </p>
+                        </div>
+                    )}
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="auth-email">{t('auth.email')}</Label>
                         <Input
                             id="auth-email"
                             type="email"
                             required
-                            autoFocus
                             autoComplete="email"
                             placeholder="you@example.com"
                             value={email}
