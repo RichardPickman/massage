@@ -18,19 +18,22 @@ describe('SignedOutHero', () => {
 
         renderHero();
 
-        // The screen says what the product is and offers what it has; the old
+        // The screen says what the product is and offers the way in; the old
         // headline and the three numbered steps are gone.
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
             'Portal testowy'
         );
-        expect(screen.getByRole('link', { name: 'Testy' })).toHaveAttribute(
-            'href',
-            '/quiz'
-        );
-        expect(screen.getByRole('link', { name: 'Wykłady' })).toHaveAttribute(
-            'href',
-            '/lectures'
-        );
+        // A guest gets this page and nothing else, so no link leads into the
+        // content - only to signing in or registering.
+        // The word appears twice now — on the button and in the note below it.
+        expect(
+            screen.getAllByRole('link', { name: 'Zaloguj się' })[0]
+        ).toHaveAttribute('href', '/auth/login');
+        expect(
+            screen.getAllByRole('link', { name: 'załóż konto' })[0]
+        ).toHaveAttribute('href', '/auth/register');
+        expect(screen.queryByRole('link', { name: 'Testy' })).toBeNull();
+        expect(screen.queryByRole('link', { name: 'Wykłady' })).toBeNull();
     });
 
     it('follows the interface language', async () => {
@@ -41,9 +44,9 @@ describe('SignedOutHero', () => {
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
             'Testing portal'
         );
-        expect(screen.getByRole('link', { name: 'Tests' })).toBeInTheDocument();
         expect(
-            screen.getByRole('link', { name: 'create an account' })
+            screen.getAllByRole('link', { name: /create an account/i })[0]
         ).toHaveAttribute('href', '/auth/register');
+        expect(screen.queryByRole('link', { name: 'Tests' })).toBeNull();
     });
 });
