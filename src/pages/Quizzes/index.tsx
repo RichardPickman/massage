@@ -7,6 +7,7 @@ import {
     type LoaderFunctionArgs,
 } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
+import { useTranslation } from 'react-i18next';
 import { Paginator } from '../../components/Paginator';
 import { Button } from '../../components/ui/button';
 import QuizService from '../../services/Quiz';
@@ -22,6 +23,7 @@ import { QuizCard } from './components/Card';
 const pageSize = 12;
 
 export const Quizzes = () => {
+    const { t } = useTranslation();
     const envelope = useLoaderData() as Page<QuizSummary>;
     const quizzes = useAppSelector((state) => state.quizzes.quizzes);
     const revision = useAppSelector((state) => state.quizzes.revision);
@@ -50,12 +52,12 @@ export const Quizzes = () => {
     return (
         <div className="flex flex-col gap-6">
             <PageHeader
-                title="Quizzes"
-                description="Scored tests. Every attempt lands on your record."
+                title={t('quizzes.title')}
+                description={t('quizzes.description')}
                 meta={
                     isAuth ? (
                         <Button asChild size="sm">
-                            <Link to="constructor">Add quiz</Link>
+                            <Link to="constructor">{t('quizzes.add')}</Link>
                         </Button>
                     ) : undefined
                 }
@@ -63,7 +65,7 @@ export const Quizzes = () => {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {quizzes.length === 0 ? (
                     <p className="text-sm text-muted-foreground">
-                        There is no quiz yet.
+                        {t('quizzes.empty')}
                     </p>
                 ) : (
                     quizzes.map((quiz) => (

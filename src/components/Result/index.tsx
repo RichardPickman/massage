@@ -1,4 +1,5 @@
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Question as QuestionModel } from '../../services/models';
@@ -31,6 +32,7 @@ interface ResultProps {
 }
 
 export const Result = ({ quizId }: ResultProps) => {
+    const { t } = useTranslation();
     const quiz = useAppSelector((state) => state.quiz);
     const { isAuth, isRestoringSession } = useAppSelector(
         (state) => state.auth
@@ -196,12 +198,12 @@ export const Result = ({ quizId }: ResultProps) => {
                                 {quiz.submitError}
                             </p>
                             <Button variant="outline" onClick={handleRetry}>
-                                Try again
+                                {t('result.tryAgain')}
                             </Button>
                         </>
                     ) : (
                         <p className="text-muted-foreground">
-                            Checking your answers...
+                            {t('result.checking')}
                         </p>
                     )}
                 </CardContent>
@@ -212,15 +214,19 @@ export const Result = ({ quizId }: ResultProps) => {
     return (
         <div className="flex flex-1 flex-col gap-6">
             <PageHeader
-                back={{ to: '/quiz', label: 'All tests' }}
-                kicker="Result"
+                back={{ to: '/quiz', label: t('quizzes.backAll') }}
+                kicker={t('result.kicker')}
                 title={quiz.title || 'Result'}
-                description={`You've got ${submission.correctCount} of ${submission.questionCount} right (${submission.percent}%)`}
+                description={t('result.score', {
+                    correct: submission.correctCount,
+                    total: submission.questionCount,
+                    percent: submission.percent,
+                })}
                 meta={
                     submission.threshold === null ||
                     submission.threshold === undefined ? (
                         <p className="text-sm text-muted-foreground">
-                            This quiz has no pass mark.
+                            {t('result.noPassMark')}
                         </p>
                     ) : (
                         <div className="flex flex-col items-end gap-1">
@@ -231,10 +237,14 @@ export const Result = ({ quizId }: ResultProps) => {
                                         : 'rounded-full bg-destructive/10 px-3 py-0.5 text-sm font-medium text-destructive'
                                 }
                             >
-                                {submission.passed ? 'Passed' : 'Not passed'}
+                                {submission.passed
+                                    ? t('result.passed')
+                                    : t('result.notPassed')}
                             </span>
                             <p className="text-xs text-muted-foreground">
-                                Pass mark {submission.threshold}%
+                                {t('result.passMark', {
+                                    threshold: submission.threshold,
+                                })}
                             </p>
                         </div>
                     )
@@ -244,10 +254,9 @@ export const Result = ({ quizId }: ResultProps) => {
             {!isAuth && !isRestoringSession ? (
                 <Alert className="w-full max-w-md">
                     <div className="flex flex-col gap-2">
-                        <AlertTitle>Your stats are behind sign-in</AlertTitle>
+                        <AlertTitle>{t('result.statsBehindSignIn')}</AlertTitle>
                         <AlertDescription>
-                            Sign in to see how many attempts you have made and
-                            what your best score is.
+                            {t('result.statsBehindSignInBody')}
                         </AlertDescription>
                         <Button
                             asChild
@@ -255,7 +264,7 @@ export const Result = ({ quizId }: ResultProps) => {
                             variant="outline"
                             className="self-start"
                         >
-                            <Link to="/auth/login">Sign in</Link>
+                            <Link to="/auth/login">{t('result.signIn')}</Link>
                         </Button>
                     </div>
                 </Alert>
@@ -265,12 +274,12 @@ export const Result = ({ quizId }: ResultProps) => {
                     className="flex w-full max-w-md flex-col items-center gap-2 py-1"
                 >
                     <Skeleton className="h-4 w-64" />
-                    <span className="sr-only">Loading your stats...</span>
+                    <span className="sr-only">{t('result.statsLoading')}</span>
                 </div>
             ) : statsError ? (
                 <Alert variant="destructive" className="w-full max-w-md">
                     <div className="flex flex-col gap-2">
-                        <AlertTitle>Could not load your stats</AlertTitle>
+                        <AlertTitle>{t('result.statsFailed')}</AlertTitle>
                         <AlertDescription className="text-destructive">
                             {statsError}
                         </AlertDescription>
@@ -280,14 +289,17 @@ export const Result = ({ quizId }: ResultProps) => {
                             className="self-start"
                             onClick={handleStatsRetry}
                         >
-                            Try again
+                            {t('result.tryAgain')}
                         </Button>
                     </div>
                 </Alert>
             ) : stats ? (
                 <p className="text-sm text-muted-foreground">
-                    Attempt {stats.count} · best {stats.best}% · average{' '}
-                    {stats.average}%
+                    {t('result.attempt', {
+                        count: stats.count,
+                        best: stats.best,
+                        average: stats.average,
+                    })}
                 </p>
             ) : null}
 
@@ -298,7 +310,7 @@ export const Result = ({ quizId }: ResultProps) => {
                     variant="outline"
                     onClick={() => setShowResults(!showResults)}
                 >
-                    {showResults ? 'Fold' : 'Unfold'}
+                    {showResults ? t('result.fold') : t('result.unfold')}
                     {showResults ? <CaretUpIcon /> : <CaretDownIcon />}
                 </Button>
                 <Button
@@ -311,7 +323,7 @@ export const Result = ({ quizId }: ResultProps) => {
                         )
                     }
                 >
-                    Restart
+                    {t('result.restart')}
                 </Button>
             </div>
 
@@ -322,19 +334,19 @@ export const Result = ({ quizId }: ResultProps) => {
                             variant={showWrong ? 'default' : 'outline'}
                             onClick={handleShowWrong}
                         >
-                            Show wrong answers
+                            {t('result.showWrong')}
                         </Button>
                         <Button
                             variant={showUnanswered ? 'default' : 'outline'}
                             onClick={handleShowUnanswered}
                         >
-                            Show unanswered
+                            {t('result.showUnanswered')}
                         </Button>
                     </div>
                     <div className="flex flex-col gap-6">
                         {visibleHistory.length === 0 ? (
                             <p className="text-muted-foreground">
-                                Nothing to show here.
+                                {t('result.nothingToShow')}
                             </p>
                         ) : (
                             visibleHistory.map(renderQuestion)

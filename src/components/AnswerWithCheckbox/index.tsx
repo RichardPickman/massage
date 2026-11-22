@@ -1,5 +1,6 @@
 import { XIcon } from '@phosphor-icons/react';
 import { type ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import { Input } from '../ui/input';
@@ -27,6 +28,7 @@ export const AnswerWithCheckbox = ({
     number,
     invalid,
 }: AnswerWithCheckboxProps) => {
+    const { t } = useTranslation();
     const [text, setText] = useState(predefinedText);
     const [checked, setChecked] = useState(predefinedCheckbox);
 
@@ -63,22 +65,26 @@ export const AnswerWithCheckbox = ({
                 id={`answer-correct-${id}`}
                 checked={checked}
                 onCheckedChange={handleCorrect}
-                aria-label={`Answer ${number} is correct`}
+                aria-label={t('constructor.form.answerCorrect', {
+                    number,
+                })}
                 className="ml-3 shrink-0"
             />
             <Input
                 value={text}
                 onChange={onChange}
-                aria-label={`Answer ${number}`}
+                aria-label={t('constructor.form.answer', { number })}
                 aria-invalid={invalid ? true : undefined}
-                placeholder="Answer text"
+                placeholder={t('constructor.form.answerPlaceholder')}
                 className="h-11 border-0 bg-transparent px-1 shadow-none focus-visible:ring-0 md:h-10 dark:bg-transparent"
             />
             <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                aria-label={`Remove answer ${number}`}
+                aria-label={t('constructor.form.answerRemove', {
+                    number,
+                })}
                 onClick={() => removeEmpty(id)}
                 className="shrink-0 text-muted-foreground hover:text-destructive"
             >

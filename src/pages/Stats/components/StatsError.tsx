@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,27 +15,30 @@ interface StatsErrorProps {
     onRetry: () => void;
 }
 
-export const StatsError = ({ message, onRetry }: StatsErrorProps) => (
-    <Card className="mx-auto w-full max-w-lg">
-        <CardHeader>
-            <CardTitle>Stats unavailable</CardTitle>
-            <CardDescription>
-                Your record lives on the server, and the request did not come
-                back.
-            </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-            <Alert variant="destructive">
-                <div className="flex flex-col gap-1">
-                    <AlertTitle>Could not load your stats</AlertTitle>
-                    <AlertDescription className="text-destructive">
-                        {message}
-                    </AlertDescription>
-                </div>
-            </Alert>
-            <Button className="self-start" onClick={onRetry}>
-                Try again
-            </Button>
-        </CardContent>
-    </Card>
-);
+export const StatsError = ({ message, onRetry }: StatsErrorProps) => {
+    const { t } = useTranslation();
+
+    return (
+        <Card className="mx-auto w-full max-w-lg">
+            <CardHeader>
+                <CardTitle>{t('stats.error.title')}</CardTitle>
+                <CardDescription>
+                    {t('stats.error.description')}
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+                <Alert variant="destructive">
+                    <div className="flex flex-col gap-1">
+                        <AlertTitle>{t('stats.error.alertTitle')}</AlertTitle>
+                        <AlertDescription className="text-destructive">
+                            {message}
+                        </AlertDescription>
+                    </div>
+                </Alert>
+                <Button className="self-start" onClick={onRetry}>
+                    {t('stats.error.retry')}
+                </Button>
+            </CardContent>
+        </Card>
+    );
+};

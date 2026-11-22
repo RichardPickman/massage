@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../store';
 import { finish, nextSlide, prevSlide } from '../../../store/reducers/images';
@@ -14,6 +15,7 @@ export const ImageSlider = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
     const listUrl = readLectureListUrl(state);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const handleFullscreenChange = () => {
@@ -85,7 +87,7 @@ export const ImageSlider = () => {
     return (
         <div
             ref={containerRef}
-            aria-label="Lecture images"
+            aria-label={t('lectures.viewer.label')}
             data-page-scroll-lock
             className="fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center overflow-hidden overscroll-none bg-black"
         >

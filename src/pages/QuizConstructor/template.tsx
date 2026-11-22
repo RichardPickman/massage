@@ -1,15 +1,16 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { EyeIcon, PencilIcon, TrashIcon } from '@phosphor-icons/react';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Question } from '../../components/Question';
 import { Button } from '../../components/ui/button';
 import { QuestionConstructor } from './QuestionConstructor';
-import type { ConstructorQuestion } from './helpers';
+import type { ConstructorQuestion, QuestionProblem } from './helpers';
 
 interface QuestionTemplateProps {
     questionData: ConstructorQuestion;
     questionNumber: number;
-    problems?: string[];
+    problems?: QuestionProblem[];
     updateQuestion: (id: string, data: Partial<ConstructorQuestion>) => void;
     removeQuestion: (id: string) => void;
 }
@@ -22,6 +23,7 @@ export const QuestionTemplate = memo(
         updateQuestion,
         removeQuestion,
     }: QuestionTemplateProps) => {
+        const { t } = useTranslation();
         const [listRef] = useAutoAnimate();
 
         const togglePreview = (isPreview: boolean) =>
@@ -46,11 +48,13 @@ export const QuestionTemplate = memo(
                             {questionNumber}
                         </span>
                         <p className="truncate text-sm font-medium">
-                            Question {questionNumber}
+                            {t('constructor.card.question', {
+                                number: questionNumber,
+                            })}
                         </p>
                         {hasProblems ? (
                             <span className="text-xs font-medium text-destructive">
-                                Needs attention
+                                {t('constructor.card.needsAttention')}
                             </span>
                         ) : null}
                     </div>
@@ -61,7 +65,7 @@ export const QuestionTemplate = memo(
                             onClick={() => togglePreview(false)}
                         >
                             <PencilIcon />
-                            Edit
+                            {t('constructor.card.edit')}
                         </Button>
                     ) : (
                         <div className="flex items-center gap-1">
@@ -69,7 +73,9 @@ export const QuestionTemplate = memo(
                                 variant="ghost"
                                 size="icon-sm"
                                 className="size-9 text-muted-foreground md:size-8"
-                                aria-label={`Preview question ${questionNumber}`}
+                                aria-label={t('constructor.card.preview', {
+                                    number: questionNumber,
+                                })}
                                 onClick={() => togglePreview(true)}
                             >
                                 <EyeIcon />
@@ -78,7 +84,9 @@ export const QuestionTemplate = memo(
                                 variant="ghost"
                                 size="icon-sm"
                                 className="size-9 text-muted-foreground hover:text-destructive md:size-8"
-                                aria-label={`Delete question ${questionNumber}`}
+                                aria-label={t('constructor.card.delete', {
+                                    number: questionNumber,
+                                })}
                                 onClick={() => removeQuestion(questionData.id)}
                             >
                                 <TrashIcon />

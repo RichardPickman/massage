@@ -1,4 +1,5 @@
 import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../components/ui/button';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import {
@@ -8,12 +9,15 @@ import {
 } from '../../../store/reducers/images';
 
 export const MainImage = () => {
+    const { t } = useTranslation();
     const images = useAppSelector((state) => state.images);
     const dispatch = useAppDispatch();
 
     if (images.slides.length === 0) {
         return (
-            <p className="text-muted-foreground">This lecture has no images.</p>
+            <p className="text-muted-foreground">
+                {t('lectures.viewer.empty')}
+            </p>
         );
     }
 
@@ -22,7 +26,7 @@ export const MainImage = () => {
             <Button
                 variant="ghost"
                 size="icon-lg"
-                aria-label="Previous image"
+                aria-label={t('lectures.viewer.previous')}
                 disabled={images.currentIndex === 0}
                 onClick={() => dispatch(prevSlide())}
                 className="absolute inset-y-0 left-3 z-20 my-auto rounded-full bg-black/40 text-white hover:bg-black/70! hover:text-white! active:translate-y-0!"
@@ -31,7 +35,9 @@ export const MainImage = () => {
             </Button>
             <img
                 src={images.currentImage}
-                alt={`Lecture image ${images.currentIndex + 1}`}
+                alt={t('lectures.viewer.imageAlt', {
+                    number: images.currentIndex + 1,
+                })}
                 draggable={false}
                 onClick={() => dispatch(handleMenus(!images.showMenus))}
                 className="h-full w-full object-contain select-none"
@@ -39,7 +45,7 @@ export const MainImage = () => {
             <Button
                 variant="ghost"
                 size="icon-lg"
-                aria-label="Next image"
+                aria-label={t('lectures.viewer.next')}
                 disabled={images.currentIndex === images.slides.length - 1}
                 onClick={() => dispatch(nextSlide())}
                 className="absolute inset-y-0 right-3 z-20 my-auto rounded-full bg-black/40 text-white hover:bg-black/70! hover:text-white! active:translate-y-0!"

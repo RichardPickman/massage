@@ -1,4 +1,5 @@
 import { cn } from 'cn';
+import { useTranslation } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 
 import { useAppSelector } from '../../store';
@@ -16,6 +17,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     );
 
 export const Header = () => {
+    const { t } = useTranslation();
     const { isAuth, isRestoringSession } = useAppSelector(
         (state) => state.auth
     );
@@ -25,7 +27,7 @@ export const Header = () => {
             <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-5 px-4 sm:gap-8 sm:px-6 lg:px-8">
                 <Link
                     to="/"
-                    aria-label="RP Massage home"
+                    aria-label={t('nav.home')}
                     className="flex items-center gap-3"
                 >
                     <span className="flex size-9 items-center justify-center bg-primary text-[0.625rem] font-semibold tracking-[0.2em] text-primary-foreground">
@@ -33,7 +35,7 @@ export const Header = () => {
                     </span>
                 </Link>
                 <nav
-                    aria-label="Main"
+                    aria-label={t('nav.main')}
                     className="hidden items-center gap-6 md:flex"
                 >
                     {paths.map((item) => {
@@ -50,7 +52,7 @@ export const Header = () => {
                                     navLinkClass({ isActive })
                                 }
                             >
-                                {item.name}
+                                {t(item.labelKey)}
                             </NavLink>
                         );
                     })}
@@ -63,14 +65,16 @@ export const Header = () => {
                     ) : (
                         <>
                             <Button asChild variant="ghost" size="sm">
-                                <Link to="/auth/login">Sign in</Link>
+                                <Link to="/auth/login">{t('auth.signIn')}</Link>
                             </Button>
                             <Button
                                 asChild
                                 size="sm"
                                 className="hidden sm:inline-flex"
                             >
-                                <Link to="/auth/register">Sign up</Link>
+                                <Link to="/auth/register">
+                                    {t('auth.signUp')}
+                                </Link>
                             </Button>
                         </>
                     )}

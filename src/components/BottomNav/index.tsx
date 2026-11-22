@@ -6,6 +6,7 @@ import {
 } from '@phosphor-icons/react';
 import { cn } from 'cn';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -19,10 +20,15 @@ import { useAppSelector } from '../../store';
 import { AccountActions } from '../AccountMenu/actions';
 
 const tabs = [
-    { to: '/', label: 'Overview', icon: HouseIcon, end: true },
-    { to: '/lectures', label: 'Lectures', icon: BookOpenIcon, end: false },
-    { to: '/quiz', label: 'Quizzes', icon: ExamIcon, end: false },
-];
+    { to: '/', labelKey: 'nav.overview', icon: HouseIcon, end: true },
+    {
+        to: '/lectures',
+        labelKey: 'nav.lectures',
+        icon: BookOpenIcon,
+        end: false,
+    },
+    { to: '/quiz', labelKey: 'nav.quizzes', icon: ExamIcon, end: false },
+] as const;
 
 interface BottomNavProps {
     // The lecture viewer claims the whole viewport for the slides, and auth
@@ -32,6 +38,7 @@ interface BottomNavProps {
 }
 
 export const BottomNav = ({ hidden = false }: BottomNavProps) => {
+    const { t } = useTranslation();
     const { user } = useAppSelector((state) => state.auth);
     const location = useLocation();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -51,20 +58,20 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
 
     return (
         <nav
-            aria-label="Primary"
+            aria-label={t('nav.primary')}
             className="shrink-0 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
         >
             <div className="mx-auto flex w-full max-w-6xl items-stretch px-2">
-                {tabs.map(({ to, label, icon: Icon, end }) => (
+                {tabs.map(({ to, labelKey, icon: Icon, end }) => (
                     <Button
                         key={to}
                         asChild
                         variant="ghost"
                         className={tabButtonClass}
                     >
-                        <NavLink to={to} end={end} aria-label={label}>
+                        <NavLink to={to} end={end} aria-label={t(labelKey)}>
                             <Icon className="size-5" aria-hidden />
-                            <span>{label}</span>
+                            <span>{t(labelKey)}</span>
                         </NavLink>
                     </Button>
                 ))}
@@ -74,20 +81,16 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
                         onOpenChange={setIsAccountOpen}
                     >
                         <DialogTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                className={tabButtonClass}
-                                aria-label="Account"
-                            >
+                            <Button variant="ghost" className={tabButtonClass}>
                                 <UserCircleIcon
                                     className="size-5"
                                     aria-hidden
                                 />
-                                <span>Account</span>
+                                <span>{t('account.menu')}</span>
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-sm">
-                            <DialogTitle>Account</DialogTitle>
+                            <DialogTitle>{t('account.menu')}</DialogTitle>
                             <AccountActions
                                 onNavigate={() => setIsAccountOpen(false)}
                             />
@@ -95,9 +98,9 @@ export const BottomNav = ({ hidden = false }: BottomNavProps) => {
                     </Dialog>
                 ) : (
                     <Button asChild variant="ghost" className={tabButtonClass}>
-                        <NavLink to="/auth/login" aria-label="Sign in">
+                        <NavLink to="/auth/login">
                             <UserCircleIcon className="size-5" aria-hidden />
-                            <span>Sign in</span>
+                            <span>{t('auth.signIn')}</span>
                         </NavLink>
                     </Button>
                 )}

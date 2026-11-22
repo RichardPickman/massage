@@ -4,6 +4,7 @@ import {
     TrashIcon,
 } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
     Alert,
@@ -39,6 +40,7 @@ export const LectureActions = ({
     listState,
     onRemoved,
 }: LectureActionsProps) => {
+    const { t } = useTranslation();
     const [isConfirming, setIsConfirming] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
     const [removeError, setRemoveError] = useState<string | null>(null);
@@ -79,7 +81,7 @@ export const LectureActions = ({
                 variant="ghost"
                 size="icon-sm"
                 className="size-11 md:size-8"
-                aria-label={`Edit ${topic}`}
+                aria-label={t('lectures.edit', { topic })}
             >
                 <Link to={`/lectures/${id}/edit`} state={listState}>
                     <PencilSimpleIcon />
@@ -92,23 +94,24 @@ export const LectureActions = ({
                         size="icon-sm"
                         className="size-11 md:size-8"
                         disabled={isRemoving}
-                        aria-label={`Remove ${topic}`}
+                        aria-label={t('lectures.remove', { topic })}
                     >
                         <TrashIcon />
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Remove lecture?</DialogTitle>
+                        <DialogTitle>{t('lectures.removeTitle')}</DialogTitle>
                         <DialogDescription>
-                            {topic} and its images will be deleted permanently.
-                            This action cannot be undone.
+                            {t('lectures.removeBody', { topic })}
                         </DialogDescription>
                     </DialogHeader>
                     {removeError ? (
                         <Alert variant="destructive">
                             <div className="flex flex-col gap-1">
-                                <AlertTitle>Lecture was not removed</AlertTitle>
+                                <AlertTitle>
+                                    {t('lectures.removeFailed')}
+                                </AlertTitle>
                                 <AlertDescription className="text-destructive">
                                     {removeError}
                                 </AlertDescription>
@@ -121,7 +124,7 @@ export const LectureActions = ({
                             disabled={isRemoving}
                             onClick={() => handleConfirmOpenChange(false)}
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                         <Button
                             variant="destructive"
@@ -131,10 +134,10 @@ export const LectureActions = ({
                             {isRemoving ? (
                                 <>
                                     <CircleNotchIcon className="animate-spin" />
-                                    Removing...
+                                    {t('common.removing')}
                                 </>
                             ) : (
-                                'Remove'
+                                t('common.remove')
                             )}
                         </Button>
                     </DialogFooter>

@@ -10,6 +10,9 @@ export interface RequestPayload {
 
 export interface ApiResponse<T> {
     message: string;
+    // Present on the responses whose message is shown to a user; see
+    // src/i18n/serverMessages.ts for the mapping.
+    code?: string;
     payload: T;
 }
 

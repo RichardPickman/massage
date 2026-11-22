@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { QuestionView } from '../../services/models';
 import { ButtonHandler, type QuestionViewState } from '../ButtonHandler';
 import { ImageLightbox } from '../ImageLightbox';
@@ -14,6 +15,7 @@ export const Question = ({
     currentQuestion,
     onSelect,
 }: QuestionProps) => {
+    const { t } = useTranslation();
     const { img } = currentQuestion;
 
     const imageSource = useMemo(() => {
@@ -42,7 +44,7 @@ export const Question = ({
             {imageSource ? (
                 <ImageLightbox
                     src={imageSource}
-                    alt={currentQuestion.question || 'Question image'}
+                    alt={currentQuestion.question || t('common.questionImage')}
                     className="max-h-[40dvh] w-auto max-w-full object-contain"
                 />
             ) : null}

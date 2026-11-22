@@ -1,0 +1,348 @@
+{
+    "common": {
+        "language": "Language",
+        "save": "Save",
+        "saving": "Saving...",
+        "saveChanges": "Save changes",
+        "clear": "Clear",
+        "reset": "Reset",
+        "cancel": "Cancel",
+        "previous": "Previous",
+        "next": "Next",
+        "pageOf": "Page {{page}} of {{pages}}",
+        "remove": "Remove",
+        "removing": "Removing...",
+        "previousPage": "Go to previous page",
+        "nextPage": "Go to next page",
+        "open": "Open",
+        "closeAlert": "Close alert",
+        "questionImage": "Question image"
+    },
+    "nav": {
+        "primary": "Primary navigation",
+        "main": "Main navigation",
+        "home": "Home",
+        "overview": "Overview",
+        "lectures": "Lectures",
+        "quizzes": "Quizzes"
+    },
+    "auth": {
+        "signUp": "Sign up",
+        "signIn": "Sign in",
+        "signUpTitle": "Sign Up",
+        "signInTitle": "Sign In",
+        "welcomeBack": "Welcome back. Your test record is waiting.",
+        "createWithInvite": "Create an account with the invite code you were sent.",
+        "couldNotSignIn": "Could not sign in",
+        "couldNotCreate": "Could not create the account",
+        "email": "Email",
+        "password": "Password",
+        "inviteCode": "Invite code",
+        "inviteHint": "Issued for this exact email address, so it will not work with another one.",
+        "submitting": "Submitting...",
+        "createAccount": "Create account",
+        "needAccount": "Need an account?",
+        "alreadyRegistered": "Already registered?"
+    },
+    "footer": {
+        "brand": "RP · Massage",
+        "tagline": "Lecture notes & tests"
+    },
+    "account": {
+        "signedInAs": "Signed in as",
+        "inviteCodes": "Invite codes",
+        "statsOverview": "Stats overview",
+        "logOut": "Log out",
+        "menu": "Account",
+        "openAccount": "Open account menu"
+    },
+    "lectures": {
+        "title": "Lectures",
+        "description": "Image slides, grouped by session.",
+        "add": "Add lecture",
+        "backAll": "All lectures",
+        "openLecture": "Open lecture",
+        "empty": "There are no lectures yet.",
+        "columns": {
+            "topic": "Topic",
+            "lesson": "Lesson",
+            "teacher": "Teacher",
+            "date": "Date",
+            "actions": "Actions"
+        },
+        "edit": "Edit {{topic}}",
+        "remove": "Remove {{topic}}",
+        "removeTitle": "Remove lecture?",
+        "removeBody": "{{topic}} and its images will be deleted permanently. This action cannot be undone.",
+        "removeFailed": "Lecture was not removed",
+        "viewer": {
+            "label": "Lecture images",
+            "empty": "This lecture has no images.",
+            "none": "No images",
+            "slideAlt": "Slide {{number}}",
+            "imageAlt": "Lecture image {{number}}",
+            "openTab": "Open image in a new tab",
+            "fullscreen": "View in fullscreen",
+            "exitFullscreen": "Exit fullscreen",
+            "close": "Close the slider",
+            "previous": "Previous image",
+            "next": "Next image",
+            "savedAlt": "Saved lecture image {{number}}",
+            "savedDialog": "Saved lecture image",
+            "savedImageAlt": "Saved lecture"
+        },
+        "form": {
+            "topic": "Topic",
+            "teacher": "Teacher",
+            "lesson": "Lesson",
+            "date": "Lecture day",
+            "optional": "Optional",
+            "pickDay": "Pick a lecture day",
+            "images": "Images",
+            "upload": "Upload images",
+            "uploadHint": "One or more, PNG or JPG",
+            "saved": "Saved",
+            "removeSaved": "Remove saved image {{number}}",
+            "removeImage": "Remove {{name}}",
+            "savedNote": "Removed saved images are deleted when you save.",
+            "topicRequired": "Topic cannot be empty",
+            "imagesRequired": "Attach at least one image",
+            "checkFields": "Check the highlighted fields before saving.",
+            "required": "Topic and at least one image are required."
+        }
+    },
+    "quizzes": {
+        "title": "Quizzes",
+        "description": "Scored tests. Every attempt lands on your record.",
+        "add": "Add quiz",
+        "empty": "There is no quiz yet.",
+        "backAll": "All tests",
+        "questions_one": "{{count}} question",
+        "remove": "Remove {{title}}",
+        "removeTitle": "Remove quiz?",
+        "removeBody": "{{title}} will be deleted permanently. This action cannot be undone.",
+        "removeFailed": "Quiz was not removed",
+        "failedToRemove": "Failed to remove quiz",
+        "emptyQuestions": "This quiz has no questions yet.",
+        "questions_other": "{{count}} questions"
+    },
+    "quiz": {
+        "questionOf": "Question {{current}} of {{total}}",
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish test"
+    },
+    "result": {
+        "checking": "Checking your answers...",
+        "tryAgain": "Try again",
+        "kicker": "Result",
+        "score": "You've got {{correct}} of {{total}} right ({{percent}}%)",
+        "noPassMark": "This quiz has no pass mark.",
+        "passed": "Passed",
+        "notPassed": "Not passed",
+        "passMark": "Pass mark {{threshold}}%",
+        "statsBehindSignIn": "Your stats are behind sign-in",
+        "statsBehindSignInBody": "Sign in to see how many attempts you have made and what your best score is.",
+        "signIn": "Sign in",
+        "statsLoading": "Loading your stats...",
+        "statsFailed": "Could not load your stats",
+        "attempt": "Attempt {{count}} · best {{best}}% · average {{average}}%",
+        "fold": "Fold",
+        "unfold": "Unfold",
+        "restart": "Restart",
+        "showWrong": "Show wrong answers",
+        "showUnanswered": "Show unanswered",
+        "nothingToShow": "Nothing to show here."
+    },
+    "stats": {
+        "kicker": "Overview",
+        "title": "Your test record",
+        "lastAttempt": "Last attempt {{date}}",
+        "staleTitle": "This record may be out of date",
+        "refresh": "Refresh",
+        "byTest": {
+            "title": "By test",
+            "description": "Best, average and latest score per test. Most recent activity first."
+        },
+        "columns": {
+            "test": "Test",
+            "attempts": "Attempts",
+            "best": "Best",
+            "average": "Average",
+            "last": "Last",
+            "trend": "Trend"
+        },
+        "removed": "Removed",
+        "attempt_one": "{{count}} attempt",
+        "attempt_other": "{{count}} attempts",
+        "openQuiz": "Open {{title}}",
+        "scoreTrend": "{{title}} score trend",
+        "summary": {
+            "title": "Average score",
+            "description": "Across every attempt on your record.",
+            "best": "Best",
+            "last": "Last",
+            "attempts": "Attempts",
+            "tests": "Tests"
+        },
+        "empty": {
+            "title": "No attempts on record",
+            "body": "Take a test and your score, best result and trend will show up here.",
+            "browseTests": "Browse tests",
+            "readLectures": "Read lectures"
+        },
+        "error": {
+            "title": "Stats unavailable",
+            "description": "Your record lives on the server, and the request did not come back.",
+            "alertTitle": "Could not load your stats",
+            "retry": "Try again"
+        },
+        "skeleton": {
+            "loading": "Loading your stats..."
+        },
+        "hero": {
+            "titleLead": "Learn the body.",
+            "titleAccent": "Prove you know it.",
+            "lead": "Lecture notes, image slides and scored tests in one place. Sign in to keep a running record of every attempt, your best score and where you are slipping.",
+            "signIn": "Sign in",
+            "takeTest": "Take a test",
+            "browseLectures": "Browse lectures",
+            "noAccount": "No account?",
+            "createOne": "Create one",
+            "takesMinute": "— it takes a minute.",
+            "cardTitle": "How the record works",
+            "cardDescription": "Three steps, repeated. The numbers do the rest.",
+            "steps": {
+                "read": {
+                    "title": "Read the lecture",
+                    "text": "Work through the image slides at your own pace."
+                },
+                "test": {
+                    "title": "Take the test",
+                    "text": "Every answer is scored by the server, not the browser."
+                },
+                "trend": {
+                    "title": "Watch the line",
+                    "text": "Best, average and every attempt stay on your record."
+                }
+            }
+        }
+    },
+    "admin": {
+        "title": "Invite codes",
+        "description": "Mint the code for one person's address, then send it to them. The code only works for that address.",
+        "email": "Their email",
+        "submit": "Get the code",
+        "minting": "Minting...",
+        "errorTitle": "Could not mint a code",
+        "codeFor": "Code for {{email}}",
+        "copy": "Copy the code",
+        "copied": "Copied",
+        "noAccess": {
+            "title": "Not your area",
+            "description": "Invite codes are minted by the site's admin. Your account can read lectures and take tests.",
+            "body": "If you were expecting access, ask whoever invited you."
+        }
+    },
+    "constructor": {
+        "kicker": "Editor",
+        "title": "Quiz constructor",
+        "description": "Write the questions, tick the correct answers and set the pass mark. Students only see the answers after they submit.",
+        "save": "Save quiz",
+        "openQuiz": "Open quiz",
+        "checkFields": "Check the highlighted fields before saving",
+        "addQuestionRequired": "Add at least one question",
+        "cleanupFailed_one": "{{count}} created question(s) could not be removed and may still exist on the server.",
+        "cleanupFailed_other": "{{count}} created question(s) could not be removed and may still exist on the server.",
+        "draft": {
+            "title": "Unsaved draft from {{date}}",
+            "questions_one": "{{count}} question(s)",
+            "questions_other": "{{count}} question(s)",
+            "titled": "title “{{title}}”",
+            "untitled": "no title yet",
+            "noImages": "Images are not kept in a draft.",
+            "restore": "Restore draft",
+            "fresh": "Start fresh"
+        },
+        "field": {
+            "title": "Quiz title",
+            "titlePlaceholder": "e.g. Anatomy — week 3",
+            "titleRequired": "Quiz title cannot be empty",
+            "threshold": "Pass threshold, %",
+            "thresholdHint": "Students need at least this score to pass."
+        },
+        "questions": {
+            "heading": "Questions",
+            "count_one": "{{count}} question in this quiz",
+            "count_other": "{{count}} questions in this quiz"
+        },
+        "addQuestion": "Add question",
+        "card": {
+            "question": "Question {{number}}",
+            "needsAttention": "Needs attention",
+            "edit": "Edit",
+            "preview": "Preview question {{number}}",
+            "delete": "Delete question {{number}}"
+        },
+        "form": {
+            "question": "Question",
+            "questionPlaceholder": "What should the student be asked?",
+            "answersHint": "Two to {{max}} answers, at least one marked correct.",
+            "answer": "Answer {{number}}",
+            "answerCorrect": "Answer {{number}} is correct",
+            "answerRemove": "Remove answer {{number}}",
+            "answerPlaceholder": "Answer text"
+        },
+        "limits": {
+            "correct_one": "At most {{count}} correct answer per question",
+            "correct_other": "At most {{count}} correct answers per question"
+        },
+        "problems": {
+            "text": "Add the question text",
+            "minAnswers_one": "Fill at least {{count}} answer",
+            "minAnswers_other": "Fill at least {{count}} answers",
+            "maxAnswers_one": "No more than {{count}} answer",
+            "maxAnswers_other": "No more than {{count}} answers",
+            "minCorrect": "Mark at least one correct answer",
+            "maxCorrect_one": "No more than {{count}} correct answer",
+            "maxCorrect_other": "No more than {{count}} correct answers"
+        },
+        "threshold": {
+            "number": "Threshold must be a number",
+            "whole": "Threshold must be a whole number",
+            "range": "Threshold must be between 0 and 100"
+        }
+    },
+    "upload": {
+        "dropHint": "Drop an image here, or choose a file",
+        "pick": "Upload image",
+        "remove": "Remove image",
+        "notImage": "Only image files can be attached to a question",
+        "tooLarge": "Image is larger than 10 MB",
+        "unnamedFile": "File unnamed"
+    },
+    "error": {
+        "title": "Something went wrong",
+        "description": "This page could not be rendered.",
+        "back": "Back to overview",
+        "reload": "Reload"
+    },
+    "server": {
+        "lecture.created": "Lecture saved",
+        "lecture.updated": "Lecture updated",
+        "lecture.notFound": "This lecture no longer exists",
+        "lecture.updateFailed": "The lecture was not saved",
+        "quiz.created": "Test saved",
+        "quiz.createFailed": "The test was not saved",
+        "quiz.notFound": "This test no longer exists",
+        "quiz.removed": "Test removed",
+        "quiz.invalidThreshold": "The pass mark must be a whole number from 0 to 100",
+        "attempt.saved": "Attempt saved",
+        "common.forbidden": "You cannot change this one",
+        "common.invalidInputs": "Check the fields and try again",
+        "common.imageUploadFailed": "The image was not uploaded",
+        "auth.notAuthorised": "Your session expired, sign in again",
+        "auth.invalidEmail": "Enter a valid email address",
+        "user.removed": "Account removed"
+    }
+}

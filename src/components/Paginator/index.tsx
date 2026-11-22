@@ -1,5 +1,6 @@
 import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react';
 import { cn } from 'cn';
+import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 import { pageSearch } from '../../utils/pagination';
 import {
@@ -21,6 +22,7 @@ const disabledControl = 'pointer-events-none opacity-50';
 // Shared by both listings: the row is useless on a single page, so it hides
 // itself, and the links carry every other query parameter through unchanged.
 export const Paginator = ({ page, pages }: PaginatorProps) => {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
 
     if (pages <= 1) {
@@ -36,7 +38,7 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                 <PaginationItem>
                     <PaginationLink
                         asChild
-                        aria-label="Go to previous page"
+                        aria-label={t('common.previousPage')}
                         aria-disabled={isFirst || undefined}
                         tabIndex={isFirst ? -1 : undefined}
                         size="sm"
@@ -51,7 +53,7 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                             }}
                         >
                             <CaretLeftIcon />
-                            Previous
+                            {t('common.previous')}
                         </Link>
                     </PaginationLink>
                 </PaginationItem>
@@ -61,13 +63,13 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                         data-slot="pagination-status"
                         className="px-3 text-xs font-semibold tracking-widest uppercase"
                     >
-                        Page {page} of {pages}
+                        {t('common.pageOf', { page, pages })}
                     </span>
                 </PaginationItem>
                 <PaginationItem>
                     <PaginationLink
                         asChild
-                        aria-label="Go to next page"
+                        aria-label={t('common.nextPage')}
                         aria-disabled={isLast || undefined}
                         tabIndex={isLast ? -1 : undefined}
                         size="sm"
@@ -81,7 +83,7 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                                 ),
                             }}
                         >
-                            Next
+                            {t('common.next')}
                             <CaretRightIcon />
                         </Link>
                     </PaginationLink>

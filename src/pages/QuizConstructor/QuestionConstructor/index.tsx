@@ -1,5 +1,6 @@
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnswerWithCheckbox } from '../../../components/AnswerWithCheckbox';
 import { FileUpload } from '../../../components/FileUpload';
 import { Input } from '../../../components/ui/input';
@@ -9,7 +10,9 @@ import {
     getObjectWithId,
     MAX_ANSWERS,
     MAX_CORRECT,
+    MIN_ANSWERS,
     type ConstructorQuestion,
+    type QuestionProblem,
 } from '../helpers';
 
 interface QuestionConstructorProps {
@@ -17,7 +20,7 @@ interface QuestionConstructorProps {
     questionData: ConstructorQuestion;
     // The card's own problem list, so each message can sit next to the field
     // that caused it instead of only in a banner at the top of the page.
-    problems?: string[];
+    problems?: QuestionProblem[];
     updateQuestion: (id: string, data: Partial<ConstructorQuestion>) => void;
 }
 
@@ -27,6 +30,7 @@ export const QuestionConstructor = ({
     problems,
     updateQuestion,
 }: QuestionConstructorProps) => {
+    const { t } = useTranslation();
     const [question, setQuestion] = useState(questionData.question);
     const [answers, setAnswers] = useState<Answer[]>(questionData.answers);
     const [image, setImage] = useState<File | null>(questionData.img);
@@ -34,19 +38,38 @@ export const QuestionConstructor = ({
         questionData.correctAnswers
     );
 
-    const [limitNotice, setLimitNotice] = useState<string | null>(null);
+    const [limitNotice, setLimitNotice] = useState(false);
 
-    const textProblem = problems?.includes('Add the question text')
-        ? 'Add the question text'
-        : null;
+    const textProblem = problems?.includes('text') ?? false;
     const answersProblem =
-        problems?.find((problem) => problem.startsWith('Fill at least')) ??
-        null;
-    const correctProblem = problems?.includes(
-        'Mark at least one correct answer'
-    )
-        ? 'Mark at least one correct answer'
-        : null;
+        problems?.find(
+            (problem) => problem === 'minAnswers' || problem === 'maxAnswers'
+        ) ?? null;
+    const correctProblem = problems?.includes('minCorrect') ?? false;
+
+    const problemMessage = (problem: QuestionProblem) => {
+        if (problem === 'text') {
+            return t('constructor.problems.text');
+        }
+
+        if (problem === 'minAnswers') {
+            return t('constructor.problems.minAnswers', {
+                count: MIN_ANSWERS,
+            });
+        }
+
+        if (problem === 'maxAnswers') {
+            return t('constructor.problems.maxAnswers', {
+                count: MAX_ANSWERS,
+            });
+        }
+
+        if (problem === 'minCorrect') {
+            return t('constructor.problems.minCorrect');
+        }
+
+        return t('constructor.problems.maxCorrect', { count: MAX_CORRECT });
+    };
 
     const [listRef] = useAutoAnimate();
 
@@ -85,13 +108,11 @@ export const QuestionConstructor = ({
         const alreadyCorrect = correctAnswers.includes(id);
 
         if (!alreadyCorrect && correctAnswers.length >= MAX_CORRECT) {
-            setLimitNotice(
-                `At most ${MAX_CORRECT} correct answers per question`
-            );
+            setLimitNotice(true);
             return;
         }
 
-        setLimitNotice(null);
+        setLimitNotice(false);
 
         const correctAnswersCopy = alreadyCorrect
             ? correctAnswers.filter((item) => item !== id)
@@ -134,12 +155,14 @@ export const QuestionConstructor = ({
     return (
         <div ref={listRef} className="flex flex-col gap-4 px-4 md:px-6">
             <div className="flex flex-col gap-1">
-                <Label htmlFor={`question-${questionId}`}>Question</Label>
+                <Label htmlFor={`question-${questionId}`}>
+                    {t('constructor.form.question')}
+                </Label>
                 <Input
                     id={`question-${questionId}`}
                     value={question}
                     onChange={handleQuestion}
-                    placeholder="What should the student be asked?"
+                    placeholder={t('constructor.form.questionPlaceholder')}
                     aria-invalid={textProblem ? true : undefined}
                     aria-describedby={
                         textProblem ? `question-${questionId}-error` : undefined
@@ -150,19 +173,19 @@ export const QuestionConstructor = ({
                         id={`question-${questionId}-error`}
                         className="text-xs text-destructive"
                     >
-                        {textProblem}
+                        {problemMessage('text')}
                     </p>
                 ) : null}
             </div>
             <FileUpload
                 image={imagePreview}
-                text={image ? image.name : 'File unnamed'}
+                text={image ? image.name : t('upload.unnamedFile')}
                 onSelectFile={handleImageFile}
                 removeImage={handleImageRemove}
             />
             {limitNotice ? (
                 <p role="alert" className="text-xs text-destructive">
-                    {limitNotice}
+                    {t('constructor.limits.correct', { count: MAX_CORRECT })}
                 </p>
             ) : null}
             <div className="flex flex-col gap-2">
@@ -181,7 +204,9 @@ export const QuestionConstructor = ({
                 ))}
             </div>
             {correctProblem ? (
-                <p className="text-xs text-destructive">{correctProblem}</p>
+                <p className="text-xs text-destructive">
+                    {problemMessage('minCorrect')}
+                </p>
             ) : null}
             <p
                 className={
@@ -190,8 +215,9 @@ export const QuestionConstructor = ({
                         : 'text-xs text-muted-foreground'
                 }
             >
-                {answersProblem ??
-                    `Two to ${MAX_ANSWERS} answers, at least one marked correct.`}
+                {answersProblem
+                    ? problemMessage(answersProblem)
+                    : t('constructor.form.answersHint', { max: MAX_ANSWERS })}
             </p>
         </div>
     );

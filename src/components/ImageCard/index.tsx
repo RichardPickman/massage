@@ -1,5 +1,6 @@
 import { TrashIcon } from '@phosphor-icons/react';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDrag, useDrop } from 'react-dnd';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -26,6 +27,7 @@ export const ImageCard = ({
     index,
     moveImage,
 }: ImageCardProps) => {
+    const { t } = useTranslation();
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const ref = useRef<HTMLDivElement | null>(null);
 
@@ -106,7 +108,9 @@ export const ImageCard = ({
                     <Button
                         size="icon-xs"
                         variant="ghost"
-                        aria-label={`Remove ${text}`}
+                        aria-label={t('lectures.form.removeImage', {
+                            name: text,
+                        })}
                         onClick={() => remove()}
                     >
                         <TrashIcon />
