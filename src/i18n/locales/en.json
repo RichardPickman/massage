@@ -136,7 +136,10 @@
         "questionOf": "Question {{current}} of {{total}}",
         "previous": "Previous",
         "next": "Next",
-        "finish": "Finish test"
+        "finish": "Finish test",
+        "correctAnswer": "Correct answer",
+        "wrongAnswer": "Wrong answer",
+        "answersGroup": "Answers"
     },
     "result": {
         "checking": "Checking your answers...",
