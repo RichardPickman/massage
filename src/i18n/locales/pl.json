@@ -45,7 +45,10 @@
         "alreadyRegistered": "Masz już konto?",
         "nickname": "Nickname",
         "nicknamePlaceholder": "Jak zobaczy Cię prowadzący",
-        "nicknameHint": "3–24 znaki. Litery, cyfry, spacje, kropki, myślniki lub podkreślenia. Widoczny przy wynikach."
+        "nicknameHint": "3–24 znaki. Litery, cyfry, spacje, kropki, myślniki lub podkreślenia. Widoczny przy wynikach.",
+        "loginIdentifier": "Nickname lub e-mail",
+        "loginIdentifierPlaceholder": "np. Ania lub ania@example.com",
+        "loginIdentifierHint": "Zaloguj się nickiem, którym się przedstawiasz — e-mail też zadziała."
     },
     "footer": {
         "brand": "RP · Massage",

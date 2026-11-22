@@ -16,7 +16,10 @@ const routes = (
 );
 
 const submitCredentials = async () => {
-    await userEvent.type(screen.getByLabelText('Email'), 'author@example.com');
+    await userEvent.type(
+        screen.getByLabelText('Nickname or email'),
+        'author@example.com'
+    );
     await userEvent.type(screen.getByLabelText('Password'), 'test-password');
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }));
 };
@@ -43,6 +46,34 @@ describe('SignIn', () => {
         await submitCredentials();
 
         expect(await screen.findByText('Constructor page')).toBeInTheDocument();
+    });
+
+    it('sends a nickname as the login identifier', async () => {
+        const login = vi
+            .spyOn(UserService, 'login')
+            .mockResolvedValue({ token: 'test-token' });
+
+        renderWithProviders(routes, {
+            store: makeStore(),
+            route: '/auth/login',
+        });
+
+        await userEvent.type(
+            screen.getByLabelText('Nickname or email'),
+            'Ania'
+        );
+        await userEvent.type(
+            screen.getByLabelText('Password'),
+            'test-password'
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+
+        // The address is invented by the owner when the invite is issued, so the
+        // field has to accept a nickname and hand it over as `login`.
+        expect(login).toHaveBeenCalledWith({
+            login: 'Ania',
+            password: 'test-password',
+        });
     });
 
     it('falls back to the home page when there is no return path', async () => {
