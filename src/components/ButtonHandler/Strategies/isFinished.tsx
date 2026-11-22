@@ -36,12 +36,21 @@ export const IsFinished = ({ state }: IsFinishedProps) => {
     if (isSelected) {
         return (
             <Button
-                variant="destructive"
-                className={cn(answerRowClass, 'cursor-default')}
+                variant="outline"
+                // Red text on a red wash lands at 4.39:1 — under AA and loud at the
+                // same time. The border and the cross carry the verdict; the words
+                // stay at full contrast.
+                className={cn(
+                    answerRowClass,
+                    'cursor-default border-destructive bg-destructive/10'
+                )}
                 tabIndex={-1}
             >
                 <span className="min-w-0 flex-1">{answer.text}</span>
-                <XIcon className="size-5 shrink-0" aria-hidden />
+                <XIcon
+                    className="size-5 shrink-0 text-destructive"
+                    aria-hidden
+                />
                 <span className="sr-only">{t('quiz.wrongAnswer')}</span>
             </Button>
         );
