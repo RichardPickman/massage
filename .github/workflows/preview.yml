@@ -1,0 +1,174 @@
+name: Preview
+
+# A throwaway stack per pull request, on its own port, behind basic auth.
+#
+# This runs *after* CI, never inside it: the CI job of a pull request must not see
+# the deploy key. `workflow_run` gives a job with secrets that is still tied to
+# the pull request that triggered it, and the run is accepted only when it came
+# from this repository's own branch - a fork never reaches the host.
+#
+# The `preview` label is the switch. Without it a pull request costs nothing.
+
+on:
+    workflow_run:
+        workflows: [CI]
+        types: [completed]
+    pull_request:
+        types: [closed]
+
+permissions:
+    actions: read
+    contents: read
+    pull-requests: read
+
+concurrency:
+    # One preview action per pull request at a time; a refresh waits for the
+    # previous one instead of racing it for the same port.
+    group: preview-${{ github.event.pull_request.number || github.event.workflow_run.head_branch }}
+    cancel-in-progress: false
+
+jobs:
+    up:
+        name: preview up
+        if: >-
+            github.event_name == 'workflow_run' &&
+            github.event.workflow_run.event == 'pull_request' &&
+            github.event.workflow_run.conclusion == 'success' &&
+            github.event.workflow_run.head_repository.full_name == github.repository
+        runs-on: ubuntu-latest
+        environment: staging
+        timeout-minutes: 20
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            SHA: ${{ github.event.workflow_run.head_sha }}
+            BRANCH: ${{ github.event.workflow_run.head_branch }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: master
+
+            - name: Find the pull request behind this run
+              id: pr
+              run: |
+                  set -euo pipefail
+                  # A branch may have several pull requests over its life; the open
+                  # one is the one a preview belongs to.
+                  number="$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA/pulls" \
+                      --jq '[.[] | select(.state == "open")][0].number // empty')"
+                  if [ -z "$number" ]; then
+                      echo "no open pull request for $SHA - nothing to preview"
+                      echo "skip=true" >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+
+                  labels="$(gh api "repos/$GITHUB_REPOSITORY/issues/$number/labels" --jq '.[].name')"
+                  if ! grep -qx preview <<<"$labels"; then
+                      echo "pr #$number is not labelled preview"
+                      echo "skip=true" >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+
+                  draft="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$number" --jq '.draft')"
+                  if [ "$draft" = "true" ]; then
+                      echo "pr #$number is a draft"
+                      echo "skip=true" >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+
+                  echo "number=$number" >> "$GITHUB_OUTPUT"
+                  echo "previewing pr #$number at $SHA"
+
+            - name: Unpack the key and pin the host
+              if: steps.pr.outputs.skip != 'true'
+              env:
+                  SSH_KEY: ${{ secrets.SSH_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+              run: |
+                  set -euo pipefail
+                  mkdir -p ~/.ssh
+                  printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
+                  chmod 600 ~/.ssh/deploy
+                  printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+                  port="${SSH_PORT:-49152}"
+                  if [ "$port" != "22" ]; then
+                      awk -v p="$port" '{ if ($1 !~ /^\[/) $1 = "[" $1 "]:" p; print }' \
+                          ~/.ssh/known_hosts > ~/.ssh/known_hosts.port
+                      cat ~/.ssh/known_hosts.port >> ~/.ssh/known_hosts
+                  fi
+
+            - name: Start or refresh the preview
+              if: steps.pr.outputs.skip != 'true'
+              env:
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  PR: ${{ steps.pr.outputs.number }}
+              run: |
+                  set -euo pipefail
+                  # The API keeps running whatever staging runs: a preview of the
+                  # web build is not a preview of an unmerged API.
+                  ssh -i ~/.ssh/deploy -p "${SSH_PORT:-49152}" "$SSH_USER@$SSH_HOST" \
+                      "bash -s -- up $PR $SHA" < scripts/preview.sh
+
+            - name: Tell the pull request where it is
+              if: steps.pr.outputs.skip != 'true'
+              env:
+                  PR: ${{ steps.pr.outputs.number }}
+              run: |
+                  set -euo pipefail
+                  # The port, not a password: the credential is generated on the
+                  # host and stays there. It is printed on the host by
+                  # `preview.sh list` for whoever needs to open the link.
+                  port="$(ssh -i ~/.ssh/deploy -p "${SSH_PORT:-49152}" "$SSH_USER@$SSH_HOST" \
+                      "bash -s -- list" < scripts/preview.sh | awk -v p="pr-$PR" '$1 == p { print $3 }')"
+                  [ -n "$port" ] || { echo "preview did not register"; exit 1; }
+
+                  body="Preview is up on https://asystastomatologiczna.site:$port
+
+                  The certificate is Caddy's internal one, so the browser warns once. Basic auth is required; the credentials live on the host (\`preview.sh list\`). The stack is torn down when this pull request closes, or after a day without a deploy."
+
+                  gh pr comment "$PR" --body "$body"
+
+    down:
+        name: preview down
+        if: >-
+            github.event_name == 'pull_request' &&
+            github.event.action == 'closed'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: master
+
+            - name: Unpack the key and pin the host
+              env:
+                  SSH_KEY: ${{ secrets.SSH_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+              run: |
+                  set -euo pipefail
+                  mkdir -p ~/.ssh
+                  printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
+                  chmod 600 ~/.ssh/deploy
+                  printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+                  port="${SSH_PORT:-49152}"
+                  if [ "$port" != "22" ]; then
+                      awk -v p="$port" '{ if ($1 !~ /^\[/) $1 = "[" $1 "]:" p; print }' \
+                          ~/.ssh/known_hosts > ~/.ssh/known_hosts.port
+                      cat ~/.ssh/known_hosts.port >> ~/.ssh/known_hosts
+                  fi
+
+            - name: Tear the preview down
+              env:
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  PR: ${{ github.event.pull_request.number }}
+              run: |
+                  set -euo pipefail
+                  # Idempotent: a pull request closed without a preview still
+                  # takes this path, and `down` on nothing is a no-op.
+                  ssh -i ~/.ssh/deploy -p "${SSH_PORT:-49152}" "$SSH_USER@$SSH_HOST" \
+                      "bash -s -- down $PR" < scripts/preview.sh
