@@ -6,11 +6,11 @@ import { Question } from '../../components/Question';
 import { Result } from '../../components/Result';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
-import { Progress } from '../../components/ui/progress';
 import QuizService from '../../services/Quiz';
 import type { Quiz as QuizModel } from '../../services/models';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { buildAnswers } from '../../store/reducers/helpers';
+import { QuizHeader } from './components/QuizHeader';
 import {
     nextQuestion,
     prevQuestion,
@@ -67,24 +67,12 @@ export const Quiz = () => {
     };
 
     return (
-        <div className="flex flex-1 flex-col gap-4">
-            <PageHeader
-                back={{ to: '/quiz', label: t('quizzes.backAll') }}
-                kicker={t('quiz.questionOf', {
-                    current: quiz.currentQuestionIndex + 1,
-                    total: quiz.questions.length,
-                })}
+        <div className="flex flex-1 flex-col gap-3">
+            <QuizHeader
                 title={quiz.title}
-            >
-                <Progress
-                    value={
-                        ((quiz.currentQuestionIndex + 1) /
-                            quiz.questions.length) *
-                        100
-                    }
-                    className="h-1"
-                />
-            </PageHeader>
+                current={quiz.currentQuestionIndex + 1}
+                total={quiz.questions.length}
+            />
 
             {/* The card is the question, not the page: the header and the controls
                 sit on the page itself, as on every other screen. */}
