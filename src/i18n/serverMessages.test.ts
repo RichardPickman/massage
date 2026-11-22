@@ -33,3 +33,20 @@ describe('describeServerMessage', () => {
         );
     });
 });
+
+describe('auth refusals', () => {
+    it.each([
+        ['auth.nicknameInvalid', 'od 3 do 24 znaków'],
+        ['auth.nicknameTaken', 'zajęty'],
+        ['auth.inviteRequired', 'kod zaproszenia'],
+        ['auth.badCredentials', 'Nieprawidłowy e-mail'],
+    ])(
+        'translates %s instead of showing the English sentence',
+        (code, expected) => {
+            const text = describeServerMessage(code, 'server text in English');
+
+            expect(text).not.toBe('server text in English');
+            expect(text.toLowerCase()).toContain(expected.toLowerCase());
+        }
+    );
+});

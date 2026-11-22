@@ -329,6 +329,10 @@
         "common.imageUploadFailed": "The image was not uploaded",
         "auth.notAuthorised": "Your session expired, sign in again",
         "auth.invalidEmail": "Enter a valid email address",
-        "user.removed": "Account removed"
+        "user.removed": "Account removed",
+        "auth.nicknameInvalid": "The nickname must be 3-24 characters: letters, digits, space, dot, dash or underscore",
+        "auth.nicknameTaken": "That nickname is already taken, choose another",
+        "auth.inviteRequired": "Registering needs a valid invite code",
+        "auth.badCredentials": "Wrong email or password"
     }
 }
