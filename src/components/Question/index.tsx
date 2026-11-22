@@ -49,11 +49,17 @@ export const Question = ({
                 />
             ) : null}
             {currentQuestion.question ? (
-                <p className="max-w-[65ch] text-center text-lg font-medium text-balance md:text-xl">
+                <p className="max-w-[65ch] text-center text-xl font-semibold text-balance">
                     {currentQuestion.question}
                 </p>
             ) : null}
-            <div className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
+            {/* One group of alternatives: the answers are announced as a set, and
+                each row says whether it is the chosen one. */}
+            <div
+                role="group"
+                aria-label={t('quiz.answersGroup')}
+                className="grid w-full gap-2 sm:grid-cols-2 sm:gap-3"
+            >
                 {currentQuestion.answers.map((answer) =>
                     answer.text ? (
                         <ButtonHandler

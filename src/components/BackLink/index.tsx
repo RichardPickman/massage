@@ -8,6 +8,9 @@ interface BackLinkProps {
     to: string;
     label: string;
     className?: string;
+    // On a phone the words cost a line of their own on a screen that is already
+    // tight; the arrow stays, the label moves to the accessible name.
+    labelHiddenBelowSm?: boolean;
 }
 
 // Leaving a screen must be a visible door, not a gesture the platform happens to
@@ -15,7 +18,12 @@ interface BackLinkProps {
 // lecture otherwise, and nothing on screen says so. The negative margin pulls the
 // label back to the text edge of the card, since the ghost button carries its own
 // padding.
-export const BackLink = ({ to, label, className }: BackLinkProps) => (
+export const BackLink = ({
+    to,
+    label,
+    className,
+    labelHiddenBelowSm = false,
+}: BackLinkProps) => (
     <Button
         asChild
         variant="ghost"
@@ -25,9 +33,13 @@ export const BackLink = ({ to, label, className }: BackLinkProps) => (
             className
         )}
     >
-        <Link to={to}>
+        <Link to={to} aria-label={labelHiddenBelowSm ? label : undefined}>
             <ArrowLeftIcon className="size-4" />
-            {label}
+            <span
+                className={labelHiddenBelowSm ? 'hidden sm:inline' : undefined}
+            >
+                {label}
+            </span>
         </Link>
     </Button>
 );

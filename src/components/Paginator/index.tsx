@@ -33,8 +33,11 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
     const isLast = page >= pages;
 
     return (
-        <Pagination className="justify-end">
-            <PaginationContent>
+        // On a phone three controls do not fit side by side with their labels, so
+        // the words give way and the arrows stay: the row keeps its shape instead
+        // of pushing the status text out of the line.
+        <Pagination className="justify-center sm:justify-end">
+            <PaginationContent className="flex-wrap justify-center gap-2 sm:flex-nowrap sm:gap-1">
                 <PaginationItem>
                     <PaginationLink
                         asChild
@@ -42,7 +45,10 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                         aria-disabled={isFirst || undefined}
                         tabIndex={isFirst ? -1 : undefined}
                         size="sm"
-                        className={cn('gap-1', isFirst && disabledControl)}
+                        className={cn(
+                            'shrink-0 gap-1 px-2.5 sm:px-4',
+                            isFirst && disabledControl
+                        )}
                     >
                         <Link
                             to={{
@@ -53,7 +59,9 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                             }}
                         >
                             <CaretLeftIcon />
-                            {t('common.previous')}
+                            <span className="hidden sm:inline">
+                                {t('common.previous')}
+                            </span>
                         </Link>
                     </PaginationLink>
                 </PaginationItem>
@@ -61,7 +69,9 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                     <span
                         aria-current="page"
                         data-slot="pagination-status"
-                        className="px-3 text-xs font-semibold tracking-widest uppercase"
+                        // No letter spacing and a smaller size on a phone: the
+                        // status is the widest single piece of the row.
+                        className="whitespace-nowrap px-1 text-[0.65rem] font-semibold tracking-normal uppercase tabular-nums sm:px-3 sm:text-xs sm:tracking-widest"
                     >
                         {t('common.pageOf', { page, pages })}
                     </span>
@@ -73,7 +83,10 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                         aria-disabled={isLast || undefined}
                         tabIndex={isLast ? -1 : undefined}
                         size="sm"
-                        className={cn('gap-1', isLast && disabledControl)}
+                        className={cn(
+                            'shrink-0 gap-1 px-2.5 sm:px-4',
+                            isLast && disabledControl
+                        )}
                     >
                         <Link
                             to={{
@@ -83,7 +96,9 @@ export const Paginator = ({ page, pages }: PaginatorProps) => {
                                 ),
                             }}
                         >
-                            {t('common.next')}
+                            <span className="hidden sm:inline">
+                                {t('common.next')}
+                            </span>
                             <CaretRightIcon />
                         </Link>
                     </PaginationLink>
