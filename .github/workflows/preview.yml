@@ -135,7 +135,7 @@ jobs:
 
                   body="Preview is up on https://asystastomatologiczna.site:$port
 
-                  The certificate is Caddy's internal one, so the browser warns once. Basic auth is required; the credentials live on the host (\`preview.sh list\`). The stack is torn down when this pull request closes, or after a day without a deploy."
+                  The certificate is Caddy's internal one, so the browser warns once. Basic auth is required; the credentials live on the host (\`preview.sh list\`). The stack is torn down when this pull request closes, or two hours after it was last refreshed. Push a commit to bring it back."
 
                   gh pr comment "$PR" --body "$body"
 

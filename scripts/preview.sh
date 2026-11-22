@@ -22,7 +22,7 @@ DOMAIN_DEFAULT="asystastomatologiczna.site"
 PORT_FIRST=9440
 PORT_LAST=9499
 MAX_STACKS=6
-MAX_AGE_HOURS=24
+MAX_AGE_HOURS=2
 
 die() {
     echo "$*" >&2
@@ -137,7 +137,11 @@ print(f"database dropped: {os.environ['PREVIEW_DB']}")
 PY
 }
 
-# A preview nobody has touched in a day is dead weight on a box with no swap.
+# A preview nobody has touched in two hours is dead weight on a box with no swap.
+# Two, not twenty-four: the point is to look at the change while it is fresh, and a
+# stack left running for a day on a 7.6 GB machine with no swap is where the next
+# container fails to start. A new commit on the pull request brings it back for
+# another two hours.
 reap() {
     local dir pr age
     [ -d "$STATE" ] || return 0
