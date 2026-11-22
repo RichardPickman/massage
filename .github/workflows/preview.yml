@@ -89,6 +89,15 @@ jobs:
                   mkdir -p ~/.ssh
                   printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
                   chmod 600 ~/.ssh/deploy
+                  # A mangled secret otherwise fails as "error in libcrypto" on the
+                  # first ssh call, which reads like a host problem. Node 24 strips
+                  # trailing newlines, so the quote guards the case where the
+                  # stored key already ends with one.
+                  ssh -y -i ~/.ssh/deploy true 2>/dev/null || {
+                      echo "SSH_KEY is not a usable key for this environment" >&2
+                      head -1 ~/.ssh/deploy >&2
+                      exit 1
+                  }
                   printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
                   port="${SSH_PORT:-49152}"
                   if [ "$port" != "22" ]; then
@@ -152,6 +161,15 @@ jobs:
                   mkdir -p ~/.ssh
                   printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
                   chmod 600 ~/.ssh/deploy
+                  # A mangled secret otherwise fails as "error in libcrypto" on the
+                  # first ssh call, which reads like a host problem. Node 24 strips
+                  # trailing newlines, so the quote guards the case where the
+                  # stored key already ends with one.
+                  ssh -y -i ~/.ssh/deploy true 2>/dev/null || {
+                      echo "SSH_KEY is not a usable key for this environment" >&2
+                      head -1 ~/.ssh/deploy >&2
+                      exit 1
+                  }
                   printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
                   port="${SSH_PORT:-49152}"
                   if [ "$port" != "22" ]; then
