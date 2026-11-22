@@ -1,5 +1,6 @@
 import type { Answer } from '../../services/models';
 import { Button } from '../ui/button';
+import { answerRowClass } from './answerRow';
 import { IsFinished } from './Strategies/isFinished';
 import { ShowAnswer } from './Strategies/showAnswer';
 
@@ -35,7 +36,7 @@ export const ButtonHandler = ({ state }: ButtonHandlerProps) => {
     return (
         <Button
             variant={isSelected ? 'default' : 'outline'}
-            className="h-auto min-h-14 w-full justify-start py-3 text-left text-base leading-snug whitespace-normal"
+            className={answerRowClass}
             onClick={() => onSelect(answer.id)}
         >
             {answer.text}

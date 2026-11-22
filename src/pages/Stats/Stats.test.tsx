@@ -40,13 +40,14 @@ describe('StatsPage', () => {
         localStorage.clear();
     });
 
-    it('promotes signing in to signed-out visitors', () => {
+    it('opens a portal for signed-out visitors instead of the record', () => {
         const getMine = vi.spyOn(StatsService, 'getMine');
 
         renderWithProviders(<StatsPage />, { store: makeStore() });
 
+        // The first screen says what the product is; it no longer pitches it.
         expect(
-            screen.getByRole('heading', { name: /learn the body/i })
+            screen.getByRole('heading', { name: 'Testing portal' })
         ).toBeInTheDocument();
         expect(
             screen.getByRole('link', { name: 'Sign in' })

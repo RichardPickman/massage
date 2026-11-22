@@ -1,17 +1,17 @@
 export const paths = [
     {
-        name: 'Overview',
+        labelKey: 'nav.overview',
         path: '/',
         authRequired: false,
     },
     {
-        name: 'Lectures',
+        labelKey: 'nav.lectures',
         path: '/lectures',
         authRequired: false,
     },
     {
-        name: 'Quizzes',
+        labelKey: 'nav.quizzes',
         path: '/quiz',
         authRequired: false,
     },
-];
+] as const;

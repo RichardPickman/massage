@@ -1,5 +1,6 @@
 import { cn } from 'cn';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation, useMatches } from 'react-router-dom';
 
 import { BottomNav } from '../components/BottomNav';
@@ -23,6 +24,7 @@ const claimsFullScreen = (handles: unknown[]) =>
 // document scroll is a promise the browser only keeps while nothing else claims
 // the viewport.
 export const Layout = () => {
+    const { t } = useTranslation();
     const fullBleed = claimsFullScreen(
         useMatches().map((match) => match.handle)
     );
@@ -54,8 +56,8 @@ export const Layout = () => {
             {fullBleed ? null : (
                 <footer className="hidden border-t md:block">
                     <div className="mx-auto flex w-full max-w-6xl flex-row items-center justify-between px-4 py-3 text-[0.625rem] tracking-[0.2em] text-muted-foreground uppercase sm:px-6 lg:px-8">
-                        <span>RP · Massage</span>
-                        <span>Lecture notes &amp; tests</span>
+                        <span>{t('footer.brand')}</span>
+                        <span>{t('footer.tagline')}</span>
                     </div>
                 </footer>
             )}

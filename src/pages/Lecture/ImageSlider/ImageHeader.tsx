@@ -5,6 +5,7 @@ import {
     XIcon,
 } from '@phosphor-icons/react';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -23,6 +24,7 @@ const barButton =
 
 export const ImageHeader = memo(
     ({ isFullscreen, onToggleFullscreen }: ImageHeaderProps) => {
+        const { t } = useTranslation();
         const images = useAppSelector((state) => state.images);
         const dispatch = useAppDispatch();
         const navigate = useNavigate();
@@ -42,7 +44,7 @@ export const ImageHeader = memo(
                 <p className="text-sm">
                     {images.slides.length > 0
                         ? `${images.currentIndex + 1} / ${images.slides.length}`
-                        : 'No images'}
+                        : t('lectures.viewer.none')}
                 </p>
                 <div className="flex items-center gap-1">
                     {images.currentImage ? (
@@ -51,7 +53,7 @@ export const ImageHeader = memo(
                                 href={images.currentImage}
                                 target="_blank"
                                 rel="noreferrer"
-                                aria-label="Open image in a new tab"
+                                aria-label={t('lectures.viewer.openTab')}
                                 className={barButton}
                             >
                                 <ArrowSquareOutIcon />
@@ -63,8 +65,8 @@ export const ImageHeader = memo(
                         size="icon-sm"
                         aria-label={
                             isFullscreen
-                                ? 'Exit fullscreen'
-                                : 'View in fullscreen'
+                                ? t('lectures.viewer.exitFullscreen')
+                                : t('lectures.viewer.fullscreen')
                         }
                         onClick={onToggleFullscreen}
                         className={barButton}
@@ -74,7 +76,7 @@ export const ImageHeader = memo(
                     <Button
                         variant="ghost"
                         size="icon-sm"
-                        aria-label="Close the slider"
+                        aria-label={t('lectures.viewer.close')}
                         onClick={handleClose}
                         className={barButton}
                     >

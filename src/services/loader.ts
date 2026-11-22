@@ -5,15 +5,25 @@ import { setHeaders } from './helpers/setHeaders';
 import { removeToken } from './helpers/token';
 import type { RequestPayload } from './types';
 
-const readErrorMessage = async (response: Response) => {
+interface ErrorBody {
+    message?: string;
+    code?: string;
+}
+
+const readError = async (response: Response) => {
     const fallback = `Request failed with status ${response.status}`;
 
     try {
-        const body = (await response.json()) as { message?: string };
+        const body = (await response.json()) as ErrorBody;
 
-        return body.message || fallback;
+        // Older endpoints send the HTTP status in `code`; only a string is one of
+        // the contract's reason codes.
+        return {
+            message: body.message || fallback,
+            code: typeof body.code === 'string' ? body.code : undefined,
+        };
     } catch {
-        return fallback;
+        return { message: fallback, code: undefined };
     }
 };
 
@@ -32,7 +42,7 @@ export const load = async <T>(request: RequestPayload) => {
     const response = await fetch(url, init);
 
     if (!response.ok) {
-        const message = await readErrorMessage(response);
+        const { message, code } = await readError(response);
 
         // Only a rejected authenticated request means the session is dead;
         // a 401 on a request without a token is just a failed sign-in.
@@ -41,7 +51,7 @@ export const load = async <T>(request: RequestPayload) => {
             notifySessionExpired();
         }
 
-        throw new ApiError(response.status, message);
+        throw new ApiError(response.status, message, code);
     }
 
     return (await response.json()) as T;

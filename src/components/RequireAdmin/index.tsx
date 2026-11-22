@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     Card,
@@ -17,20 +18,20 @@ interface RequireAdminProps {
 // one case left to answer here: someone who is signed in but is not an admin.
 // Refusing beats redirecting them to a page that says the same thing.
 export const RequireAdmin = ({ children }: RequireAdminProps) => {
+    const { t } = useTranslation();
     const { user } = useAppSelector((state) => state.auth);
 
     if (user?.role !== 'admin') {
         return (
             <Card className="mx-auto w-full max-w-md">
                 <CardHeader className="border-b">
-                    <CardTitle>Not your area</CardTitle>
+                    <CardTitle>{t('admin.noAccess.title')}</CardTitle>
                     <CardDescription>
-                        Invite codes are minted by the site&apos;s admin. Your
-                        account can read lectures and take tests.
+                        {t('admin.noAccess.description')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                    If you were expecting access, ask whoever invited you.
+                    {t('admin.noAccess.body')}
                 </CardContent>
             </Card>
         );

@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import {
     Navigate,
     useLoaderData,
     useLocation,
     useNavigate,
 } from 'react-router-dom';
+import { describeServerMessage } from '../../i18n/serverMessages';
 import LectureService from '../../services/Lecture';
 import type { LectureDetails } from '../../services/models';
 import { useAppSelector } from '../../store';
@@ -13,6 +15,7 @@ import { LectureForm } from '../LectureForm';
 import type { ExistingImage, LectureFormValues } from '../LectureForm/helpers';
 
 export const EditLecture = () => {
+    const { t } = useTranslation();
     const lecture = useLoaderData() as LectureDetails;
     const navigate = useNavigate();
     const { state } = useLocation();
@@ -49,18 +52,19 @@ export const EditLecture = () => {
 
     const handleSubmit = (form: FormData) =>
         LectureService.updateLecture(lecture._id, form).then((response) => ({
-            message: response.message,
+            message: describeServerMessage(response.code, response.message),
             lectureId: response.payload._id,
         }));
 
     return (
         <LectureForm
-            title={`Edit ${lecture.topic}`}
-            submitLabel="Save changes"
-            resetLabel="Reset"
+            title={t('lectures.edit', { topic: lecture.topic })}
+            submitLabel={t('common.saveChanges')}
+            resetLabel={t('common.reset')}
             initialValues={initialValues}
             initialImages={initialImages}
             backTo={listUrl}
+            backLabel={t('lectures.backAll')}
             onSubmit={handleSubmit}
             onSuccess={(lectureId) =>
                 navigate(`/lectures/${lectureId}`, { state: { listUrl } })

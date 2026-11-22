@@ -1,4 +1,5 @@
 import { XIcon } from '@phosphor-icons/react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
     Alert as AlertPrimitive,
@@ -22,6 +23,7 @@ export const AlertWithLink = ({
     path,
     title,
 }: AlertWithLinkProps) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const isSuccess = status === alertStatuses.SUCCESS;
 
@@ -39,13 +41,13 @@ export const AlertWithLink = ({
                     variant="outline"
                     onClick={() => navigate(path)}
                 >
-                    {title ? title : 'Open'}
+                    {title ? title : t('common.open')}
                 </Button>
             ) : null}
             <Button
                 size="icon-xs"
                 variant="ghost"
-                aria-label="Close alert"
+                aria-label={t('common.closeAlert')}
                 onClick={onClose}
             >
                 <XIcon />

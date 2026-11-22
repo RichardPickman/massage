@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
+import { LanguageSwitch } from '@/components/LanguageSwitch';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchLogout } from '../../store/reducers/auth/fetch';
 
@@ -14,6 +16,7 @@ interface AccountActionsProps {
 // popover and the mobile sheet. Two copies would drift the moment one of them
 // gains an entry.
 export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
+    const { t } = useTranslation();
     const { user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
@@ -32,7 +35,7 @@ export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
         <div className="flex flex-col gap-1">
             <div className="flex flex-col px-2 py-1.5">
                 <span className="text-[0.6875rem] tracking-[0.12em] text-muted-foreground uppercase">
-                    Signed in as
+                    {t('account.signedInAs')}
                 </span>
                 <span className="truncate">{user.email}</span>
             </div>
@@ -45,7 +48,7 @@ export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
                     className="min-h-11 justify-start"
                 >
                     <Link to="/admin" onClick={close}>
-                        Invite codes
+                        {t('account.inviteCodes')}
                     </Link>
                 </Button>
             ) : null}
@@ -56,7 +59,7 @@ export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
                 className="min-h-11 justify-start"
             >
                 <Link to="/" onClick={close}>
-                    Stats overview
+                    {t('account.statsOverview')}
                 </Link>
             </Button>
             <Button
@@ -65,8 +68,15 @@ export const AccountActions = ({ onNavigate }: AccountActionsProps) => {
                 className="min-h-11 justify-start"
                 onClick={handleLogout}
             >
-                Log out
+                {t('account.logOut')}
             </Button>
+            <div className="h-px bg-foreground/10" />
+            <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                <span className="text-[0.6875rem] tracking-[0.12em] text-muted-foreground uppercase">
+                    {t('common.language')}
+                </span>
+                <LanguageSwitch />
+            </div>
         </div>
     );
 };

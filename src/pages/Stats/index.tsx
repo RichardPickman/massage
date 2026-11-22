@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader } from '../../components/PageHeader';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -14,6 +15,7 @@ import { SummaryStats } from './components/SummaryStats';
 import { formatDate } from './helpers';
 
 export const StatsPage = () => {
+    const { t } = useTranslation();
     const { isAuth, isRestoringSession } = useAppSelector(
         (state) => state.auth
     );
@@ -59,12 +61,14 @@ export const StatsPage = () => {
     return (
         <div className="flex flex-col gap-6">
             <PageHeader
-                kicker="Overview"
-                title="Your test record"
+                kicker={t('stats.kicker')}
+                title={t('stats.title')}
                 meta={
                     latestAttempt ? (
                         <p className="text-sm text-muted-foreground">
-                            Last attempt {formatDate(latestAttempt)}
+                            {t('stats.lastAttempt', {
+                                date: formatDate(latestAttempt),
+                            })}
                         </p>
                     ) : undefined
                 }
@@ -72,13 +76,13 @@ export const StatsPage = () => {
             {error ? (
                 <Alert variant="destructive">
                     <div className="flex flex-1 flex-col gap-2">
-                        <AlertTitle>This record may be out of date</AlertTitle>
+                        <AlertTitle>{t('stats.staleTitle')}</AlertTitle>
                         <AlertDescription className="text-destructive">
                             {error}
                         </AlertDescription>
                     </div>
                     <Button size="sm" variant="outline" onClick={handleRetry}>
-                        Refresh
+                        {t('stats.refresh')}
                     </Button>
                 </Alert>
             ) : null}

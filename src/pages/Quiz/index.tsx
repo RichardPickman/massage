@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { Question } from '../../components/Question';
@@ -19,6 +20,7 @@ import {
 } from '../../store/reducers/quiz';
 
 export const Quiz = () => {
+    const { t } = useTranslation();
     const loaderData = useLoaderData() as QuizModel;
     const quiz = useAppSelector((state) => state.quiz);
     const dispatch = useAppDispatch();
@@ -33,9 +35,9 @@ export const Quiz = () => {
         return (
             <div className="flex flex-1 flex-col gap-6">
                 <PageHeader
-                    back={{ to: '/quiz', label: 'All tests' }}
+                    back={{ to: '/quiz', label: t('quizzes.backAll') }}
                     title={quiz.title}
-                    description="This quiz has no questions yet."
+                    description={t('quizzes.emptyQuestions')}
                 />
             </div>
         );
@@ -67,10 +69,11 @@ export const Quiz = () => {
     return (
         <div className="flex flex-1 flex-col gap-4">
             <PageHeader
-                back={{ to: '/quiz', label: 'All tests' }}
-                kicker={`Question ${quiz.currentQuestionIndex + 1} of ${
-                    quiz.questions.length
-                }`}
+                back={{ to: '/quiz', label: t('quizzes.backAll') }}
+                kicker={t('quiz.questionOf', {
+                    current: quiz.currentQuestionIndex + 1,
+                    total: quiz.questions.length,
+                })}
                 title={quiz.title}
             >
                 <Progress
@@ -103,10 +106,10 @@ export const Quiz = () => {
                     disabled={quiz.currentQuestionIndex === 0}
                     onClick={() => dispatch(prevQuestion())}
                 >
-                    Previous
+                    {t('quiz.previous')}
                 </Button>
                 <Button onClick={handleNext}>
-                    {isLastQuestion ? 'Finish test' : 'Next'}
+                    {isLastQuestion ? t('quiz.finish') : t('quiz.next')}
                 </Button>
             </div>
         </div>
