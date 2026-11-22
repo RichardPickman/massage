@@ -36,7 +36,12 @@ jobs:
             github.event.workflow_run.conclusion == 'success' &&
             github.event.workflow_run.head_repository.full_name == github.repository
         runs-on: ubuntu-latest
-        environment: staging
+        # Its own environment, not staging: an environment's branch policy admits
+        # named branches only, and a preview runs from a pull request's ref or from
+        # the default branch - never from `testing`. Pointing this job at `staging`
+        # meant the guard refused the job before its first step, so every preview
+        # died with no log to read.
+        environment: preview
         timeout-minutes: 20
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,6 +91,13 @@ jobs:
                   SSH_PORT: ${{ secrets.SSH_PORT }}
               run: |
                   set -euo pipefail
+                  # An environment that was never given the secret fails here, in a
+                  # sentence that says which one, instead of an empty key file whose
+                  # only symptom is "error in libcrypto" much later.
+                  [ -n "${SSH_KEY:-}" ] || {
+                      echo "::error::The 'preview' environment has no SSH_KEY. Settings -> Environments -> preview -> add SSH_KEY (the key behind github-actions-staging)."
+                      exit 1
+                  }
                   mkdir -p ~/.ssh
                   printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
                   chmod 600 ~/.ssh/deploy
@@ -115,6 +127,10 @@ jobs:
                   PR: ${{ steps.pr.outputs.number }}
               run: |
                   set -euo pipefail
+                  [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_USER:-}" ] || {
+                      echo "::error::The 'preview' environment needs SSH_HOST and SSH_USER."
+                      exit 1
+                  }
                   # The API keeps running whatever staging runs: a preview of the
                   # web build is not a preview of an unmerged API.
                   ssh -i ~/.ssh/deploy -p "${SSH_PORT:-49152}" "$SSH_USER@$SSH_HOST" \
@@ -135,7 +151,7 @@ jobs:
 
                   body="Preview is up on https://asystastomatologiczna.site:$port
 
-                  The certificate is Caddy's internal one, so the browser warns once. Basic auth is required; the credentials live on the host (\`preview.sh list\`). The stack is torn down when this pull request closes, or after a day without a deploy."
+                  The certificate is Caddy's internal one, so the browser warns once. Basic auth is required; the credentials live on the host (\`preview.sh list\`). The stack is torn down when this pull request closes, or two hours after it was last refreshed. Push a commit to bring it back."
 
                   gh pr comment "$PR" --body "$body"
 
@@ -145,6 +161,10 @@ jobs:
             github.event_name == 'pull_request' &&
             github.event.action == 'closed'
         runs-on: ubuntu-latest
+        # Same environment as `up`, for the same reason - and it needs the key:
+        # without one the teardown silently failed and stacks outlived their pull
+        # requests until the idle timer took them.
+        environment: preview
         timeout-minutes: 10
         steps:
             - uses: actions/checkout@v4
@@ -158,6 +178,13 @@ jobs:
                   SSH_PORT: ${{ secrets.SSH_PORT }}
               run: |
                   set -euo pipefail
+                  # An environment that was never given the secret fails here, in a
+                  # sentence that says which one, instead of an empty key file whose
+                  # only symptom is "error in libcrypto" much later.
+                  [ -n "${SSH_KEY:-}" ] || {
+                      echo "::error::The 'preview' environment has no SSH_KEY. Settings -> Environments -> preview -> add SSH_KEY (the key behind github-actions-staging)."
+                      exit 1
+                  }
                   mkdir -p ~/.ssh
                   printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
                   chmod 600 ~/.ssh/deploy
