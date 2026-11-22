@@ -1,0 +1,135 @@
+{
+    "common": {
+        "language": "Language",
+        "save": "Save",
+        "saving": "Saving...",
+        "saveChanges": "Save changes",
+        "clear": "Clear",
+        "reset": "Reset",
+        "cancel": "Cancel",
+        "previous": "Previous",
+        "next": "Next",
+        "pageOf": "Page {{page}} of {{pages}}",
+        "remove": "Remove",
+        "removing": "Removing...",
+        "previousPage": "Go to previous page",
+        "nextPage": "Go to next page"
+    },
+    "nav": {
+        "primary": "Primary navigation",
+        "main": "Main navigation",
+        "home": "Home",
+        "overview": "Overview",
+        "lectures": "Lectures",
+        "quizzes": "Quizzes"
+    },
+    "auth": {
+        "signUp": "Sign up",
+        "signIn": "Sign in"
+    },
+    "footer": {
+        "brand": "RP · Massage",
+        "tagline": "Lecture notes & tests"
+    },
+    "account": {
+        "signedInAs": "Signed in as",
+        "inviteCodes": "Invite codes",
+        "statsOverview": "Stats overview",
+        "logOut": "Log out",
+        "menu": "Account",
+        "openAccount": "Open account menu"
+    },
+    "lectures": {
+        "title": "Lectures",
+        "description": "Image slides, grouped by session.",
+        "add": "Add lecture",
+        "backAll": "All lectures",
+        "empty": "There are no lectures yet.",
+        "columns": {
+            "topic": "Topic",
+            "lesson": "Lesson",
+            "teacher": "Teacher",
+            "date": "Date",
+            "actions": "Actions"
+        },
+        "edit": "Edit {{topic}}",
+        "remove": "Remove {{topic}}",
+        "removeTitle": "Remove lecture?",
+        "removeBody": "{{topic}} and its images will be deleted permanently. This action cannot be undone.",
+        "removeFailed": "Lecture was not removed",
+        "viewer": {
+            "label": "Lecture images",
+            "empty": "This lecture has no images.",
+            "none": "No images",
+            "slideAlt": "Slide {{number}}",
+            "imageAlt": "Lecture image {{number}}",
+            "openTab": "Open image in a new tab",
+            "fullscreen": "View in fullscreen",
+            "exitFullscreen": "Exit fullscreen",
+            "close": "Close the slider",
+            "previous": "Previous image",
+            "next": "Next image"
+        },
+        "form": {
+            "topic": "Topic",
+            "teacher": "Teacher",
+            "lesson": "Lesson",
+            "date": "Lecture day",
+            "optional": "Optional",
+            "pickDay": "Pick a lecture day",
+            "images": "Images",
+            "upload": "Upload images",
+            "uploadHint": "One or more, PNG or JPG",
+            "saved": "Saved",
+            "removeSaved": "Remove saved image {{number}}",
+            "savedNote": "Removed saved images are deleted when you save.",
+            "topicRequired": "Topic cannot be empty",
+            "imagesRequired": "Attach at least one image",
+            "checkFields": "Check the highlighted fields before saving.",
+            "required": "Topic and at least one image are required."
+        }
+    },
+    "quizzes": {
+        "title": "Quizzes",
+        "description": "Scored tests. Every attempt lands on your record.",
+        "add": "Add quiz",
+        "empty": "There is no quiz yet.",
+        "backAll": "All tests",
+        "questions_one": "{{count}} question",
+        "remove": "Remove {{title}}",
+        "removeTitle": "Remove quiz?",
+        "removeBody": "{{title}} will be deleted permanently. This action cannot be undone.",
+        "removeFailed": "Quiz was not removed",
+        "failedToRemove": "Failed to remove quiz",
+        "emptyQuestions": "This quiz has no questions yet.",
+        "questions_other": "{{count}} questions"
+    },
+    "quiz": {
+        "questionOf": "Question {{current}} of {{total}}",
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish test"
+    },
+    "result": {
+        "checking": "Checking your answers...",
+        "tryAgain": "Try again",
+        "kicker": "Result",
+        "score": "You've got {{correct}} of {{total}} right ({{percent}}%)",
+        "noPassMark": "This quiz has no pass mark.",
+        "passed": "Passed",
+        "notPassed": "Not passed",
+        "passMark": "Pass mark {{threshold}}%",
+        "statsBehindSignIn": "Your stats are behind sign-in",
+        "statsBehindSignInBody": "Sign in to see how many attempts you have made and what your best score is.",
+        "signIn": "Sign in",
+        "statsLoading": "Loading your stats...",
+        "statsFailed": "Could not load your stats",
+        "attempt": "Attempt {{count}} · best {{best}}% · average {{average}}%",
+        "fold": "Fold",
+        "unfold": "Unfold",
+        "restart": "Restart",
+        "showWrong": "Show wrong answers",
+        "showUnanswered": "Show unanswered",
+        "nothingToShow": "Nothing to show here."
+    }
+}

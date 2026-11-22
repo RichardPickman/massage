@@ -1,5 +1,6 @@
 import { CircleNotchIcon, TrashIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
     Alert,
@@ -26,6 +27,7 @@ interface QuizCardProps {
 }
 
 export const QuizCard = ({ quiz }: QuizCardProps) => {
+    const { t } = useTranslation();
     const { isAuth, user } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
@@ -58,7 +60,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
         setIsConfirming(false);
 
         if (fetchRemove.rejected.match(result)) {
-            setRemoveError(result.payload ?? 'Failed to remove quiz');
+            setRemoveError(result.payload ?? t('quizzes.failedToRemove'));
         }
     };
 
@@ -76,8 +78,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                         {quiz.title}
                     </Link>
                     <p className="text-xs text-muted-foreground">
-                        {questionCount}{' '}
-                        {questionCount === 1 ? 'question' : 'questions'}
+                        {t('quizzes.questions', { count: questionCount })}
                     </p>
                 </div>
                 {canRemove ? (
@@ -91,17 +92,22 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                                 size="icon-sm"
                                 className="size-11 shrink-0 md:size-8"
                                 disabled={isRemoving}
-                                aria-label={`Remove ${quiz.title}`}
+                                aria-label={t('quizzes.remove', {
+                                    title: quiz.title,
+                                })}
                             >
                                 <TrashIcon />
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Remove quiz?</DialogTitle>
+                                <DialogTitle>
+                                    {t('quizzes.removeTitle')}
+                                </DialogTitle>
                                 <DialogDescription>
-                                    {quiz.title} will be deleted permanently.
-                                    This action cannot be undone.
+                                    {t('quizzes.removeBody', {
+                                        title: quiz.title,
+                                    })}
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>
@@ -112,7 +118,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                                         handleConfirmOpenChange(false)
                                     }
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     variant="destructive"
@@ -122,10 +128,10 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
                                     {isRemoving ? (
                                         <>
                                             <CircleNotchIcon className="animate-spin" />
-                                            Removing...
+                                            {t('common.removing')}
                                         </>
                                     ) : (
-                                        'Remove'
+                                        t('common.remove')
                                     )}
                                 </Button>
                             </DialogFooter>
@@ -136,7 +142,7 @@ export const QuizCard = ({ quiz }: QuizCardProps) => {
             {removeError ? (
                 <div className="px-(--card-spacing)">
                     <Alert variant="destructive">
-                        <AlertTitle>Quiz was not removed</AlertTitle>
+                        <AlertTitle>{t('quizzes.removeFailed')}</AlertTitle>
                         <AlertDescription className="text-destructive">
                             {removeError}
                         </AlertDescription>

@@ -2,8 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import dayjs from './dayjs';
-import en from './locales/en';
-import pl from './locales/pl';
+import en from './locales/en.json';
+import pl from './locales/pl.json';
 
 // The study group is Polish, so a visitor who has not chosen yet gets Polish;
 // English is an explicit choice that is remembered.

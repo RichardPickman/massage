@@ -1,0 +1,136 @@
+{
+    "common": {
+        "language": "Język",
+        "save": "Zapisz",
+        "saving": "Zapisywanie...",
+        "saveChanges": "Zapisz zmiany",
+        "clear": "Wyczyść",
+        "reset": "Przywróć",
+        "cancel": "Anuluj",
+        "previous": "Poprzednia",
+        "next": "Następna",
+        "pageOf": "Strona {{page}} z {{pages}}",
+        "remove": "Usuń",
+        "removing": "Usuwanie...",
+        "previousPage": "Przejdź do poprzedniej strony",
+        "nextPage": "Przejdź do następnej strony"
+    },
+    "nav": {
+        "primary": "Nawigacja główna",
+        "main": "Nawigacja główna",
+        "home": "Strona główna",
+        "overview": "Przegląd",
+        "lectures": "Wykłady",
+        "quizzes": "Testy"
+    },
+    "auth": {
+        "signUp": "Zarejestruj się",
+        "signIn": "Zaloguj się"
+    },
+    "footer": {
+        "brand": "RP · Massage",
+        "tagline": "Notatki z wykładów i testy"
+    },
+    "account": {
+        "signedInAs": "Zalogowany jako",
+        "inviteCodes": "Kody zaproszeń",
+        "statsOverview": "Przegląd statystyk",
+        "logOut": "Wyloguj",
+        "menu": "Konto",
+        "openAccount": "Otwórz menu konta"
+    },
+    "lectures": {
+        "title": "Wykłady",
+        "description": "Slajdy z wykładów, pogrupowane według zajęć.",
+        "add": "Dodaj wykład",
+        "backAll": "Wszystkie wykłady",
+        "empty": "Nie ma jeszcze żadnych wykładów.",
+        "columns": {
+            "topic": "Temat",
+            "lesson": "Zajęcia",
+            "teacher": "Prowadzący",
+            "date": "Data",
+            "actions": "Akcje"
+        },
+        "edit": "Edytuj {{topic}}",
+        "remove": "Usuń {{topic}}",
+        "removeTitle": "Usunąć wykład?",
+        "removeBody": "{{topic}} i jego zdjęcia zostaną trwale usunięte. Tej operacji nie można cofnąć.",
+        "removeFailed": "Nie udało się usunąć wykładu",
+        "viewer": {
+            "label": "Zdjęcia wykładu",
+            "empty": "Ten wykład nie ma zdjęć.",
+            "none": "Brak zdjęć",
+            "slideAlt": "Slajd {{number}}",
+            "imageAlt": "Zdjęcie wykładu {{number}}",
+            "openTab": "Otwórz zdjęcie w nowej karcie",
+            "fullscreen": "Pełny ekran",
+            "exitFullscreen": "Wyjdź z pełnego ekranu",
+            "close": "Zamknij przeglądarkę zdjęć",
+            "previous": "Poprzednie zdjęcie",
+            "next": "Następne zdjęcie"
+        },
+        "form": {
+            "topic": "Temat",
+            "teacher": "Prowadzący",
+            "lesson": "Zajęcia",
+            "date": "Dzień wykładu",
+            "optional": "Opcjonalnie",
+            "pickDay": "Wybierz dzień wykładu",
+            "images": "Zdjęcia",
+            "upload": "Dodaj zdjęcia",
+            "uploadHint": "Jedno lub więcej, PNG lub JPG",
+            "saved": "Zapisane",
+            "removeSaved": "Usuń zapisane zdjęcie {{number}}",
+            "savedNote": "Usunięte zapisane zdjęcia zostaną skasowane po zapisaniu.",
+            "topicRequired": "Temat nie może być pusty",
+            "imagesRequired": "Dodaj co najmniej jedno zdjęcie",
+            "checkFields": "Popraw zaznaczone pola przed zapisaniem.",
+            "required": "Temat i co najmniej jedno zdjęcie są wymagane."
+        }
+    },
+    "quizzes": {
+        "title": "Testy",
+        "description": "Testy punktowane. Każde podejście trafia do Twojego rejestru.",
+        "add": "Dodaj test",
+        "empty": "Nie ma jeszcze żadnego testu.",
+        "backAll": "Wszystkie testy",
+        "questions_one": "{{count}} pytanie",
+        "questions_few": "{{count}} pytania",
+        "questions_many": "{{count}} pytań",
+        "remove": "Usuń {{title}}",
+        "removeTitle": "Usunąć test?",
+        "removeBody": "{{title}} zostanie trwale usunięty. Tej operacji nie można cofnąć.",
+        "removeFailed": "Nie udało się usunąć testu",
+        "failedToRemove": "Nie udało się usunąć testu",
+        "emptyQuestions": "Ten test nie ma jeszcze pytań."
+    },
+    "quiz": {
+        "questionOf": "Pytanie {{current}} z {{total}}",
+        "previous": "Poprzednie",
+        "next": "Następne",
+        "finish": "Zakończ test"
+    },
+    "result": {
+        "checking": "Sprawdzamy odpowiedzi...",
+        "tryAgain": "Spróbuj ponownie",
+        "kicker": "Wynik",
+        "score": "Poprawnie {{correct}} z {{total}} ({{percent}}%)",
+        "noPassMark": "Ten test nie ma progu zaliczenia.",
+        "passed": "Zaliczony",
+        "notPassed": "Niezaliczony",
+        "passMark": "Próg zaliczenia {{threshold}}%",
+        "statsBehindSignIn": "Statystyki są dostępne po zalogowaniu",
+        "statsBehindSignInBody": "Zaloguj się, aby zobaczyć liczbę podejść i najlepszy wynik.",
+        "signIn": "Zaloguj się",
+        "statsLoading": "Ładowanie statystyk...",
+        "statsFailed": "Nie udało się wczytać statystyk",
+        "attempt": "Podejście {{count}} · najlepszy {{best}}% · średnia {{average}}%",
+        "fold": "Zwiń",
+        "unfold": "Rozwiń",
+        "restart": "Od nowa",
+        "showWrong": "Pokaż błędne odpowiedzi",
+        "showUnanswered": "Pokaż bez odpowiedzi",
+        "nothingToShow": "Nie ma tu nic do pokazania."
+    }
+}
