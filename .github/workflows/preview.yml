@@ -93,7 +93,7 @@ jobs:
                   # first ssh call, which reads like a host problem. Node 24 strips
                   # trailing newlines, so the quote guards the case where the
                   # stored key already ends with one.
-                  ssh -y -i ~/.ssh/deploy -o BatchMode=yes nowhere.invalid true 2>/dev/null || {
+                  ssh-keygen -y -f ~/.ssh/deploy > /dev/null 2>&1 || {
                       echo "SSH_KEY is not a usable key for this environment" >&2
                       head -1 ~/.ssh/deploy >&2
                       exit 1
@@ -165,7 +165,7 @@ jobs:
                   # first ssh call, which reads like a host problem. Node 24 strips
                   # trailing newlines, so the quote guards the case where the
                   # stored key already ends with one.
-                  ssh -y -i ~/.ssh/deploy -o BatchMode=yes nowhere.invalid true 2>/dev/null || {
+                  ssh-keygen -y -f ~/.ssh/deploy > /dev/null 2>&1 || {
                       echo "SSH_KEY is not a usable key for this environment" >&2
                       head -1 ~/.ssh/deploy >&2
                       exit 1
