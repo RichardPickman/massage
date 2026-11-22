@@ -49,7 +49,11 @@ jobs:
         name: publish
         needs: gate
         # A pull request must never move a tag that a running stack resolves.
-        if: github.event_name != 'pull_request'
+        # It may publish its own sha tag, and only when the preview label asks for
+        # it: that is what gives a preview a commit-specific image to pull.
+        if: >-
+            github.event_name != 'pull_request' ||
+            contains(github.event.pull_request.labels.*.name, 'preview')
         runs-on: ubuntu-latest
         timeout-minutes: 20
         permissions:
