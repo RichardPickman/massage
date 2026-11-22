@@ -18,12 +18,17 @@ export const SignedOutHero = () => {
                 description={t('stats.portal.description')}
             />
 
+            {/* No links to the content: a guest sees this page and nothing else.
+                Sending them to a screen that then redirects would only make the
+                portal look broken. */}
             <div className="flex flex-wrap gap-3">
                 <Button asChild size="lg">
-                    <Link to="/quiz">{t('stats.portal.tests')}</Link>
+                    <Link to="/auth/login">{t('stats.portal.signIn')}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                    <Link to="/lectures">{t('stats.portal.lectures')}</Link>
+                    <Link to="/auth/register">
+                        {t('stats.portal.createAccount')}
+                    </Link>
                 </Button>
             </div>
 

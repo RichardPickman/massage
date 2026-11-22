@@ -50,7 +50,7 @@ describe('StatsPage', () => {
             screen.getByRole('heading', { name: 'Testing portal' })
         ).toBeInTheDocument();
         expect(
-            screen.getByRole('link', { name: 'Sign in' })
+            screen.getAllByRole('link', { name: 'Sign in' })[0]
         ).toBeInTheDocument();
         expect(getMine).not.toHaveBeenCalled();
     });
