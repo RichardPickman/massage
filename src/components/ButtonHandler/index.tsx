@@ -37,6 +37,9 @@ export const ButtonHandler = ({ state }: ButtonHandlerProps) => {
         <Button
             variant={isSelected ? 'default' : 'outline'}
             className={answerRowClass}
+            // The choice is carried by colour alone; a screen reader needs the
+            // state as an attribute, or a selected answer reads like any other.
+            aria-pressed={isSelected}
             onClick={() => onSelect(answer.id)}
         >
             {answer.text}

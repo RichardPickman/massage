@@ -18,15 +18,40 @@ const makeState = (
     ...overrides,
 });
 
+// A review row also carries the sr-only verdict in its accessible name, so the
+// name starts with the answer text rather than equalling it.
+const rowFor = (text: string) =>
+    screen.getByRole('button', {
+        name: new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
+    });
+
 describe('ButtonHandler answer rows', () => {
     it('wraps the text while the quiz is being taken', () => {
         render(<ButtonHandler state={makeState()} />);
 
-        expect(screen.getByRole('button', { name: longText })).toHaveClass(
+        expect(rowFor(longText)).toHaveClass(
             'whitespace-normal',
             'h-auto',
             'min-w-0'
         );
+    });
+
+    it('sets an answer the way content is set, not like a label', () => {
+        render(<ButtonHandler state={makeState()} />);
+
+        // The button base is uppercase with wide letter spacing; at 16px a
+        // Polish sentence in capitals reads letter by letter.
+        expect(rowFor(longText)).toHaveClass(
+            'normal-case',
+            'tracking-normal',
+            'text-[0.9375rem]'
+        );
+    });
+
+    it('tells a screen reader which answer is chosen', () => {
+        render(<ButtonHandler state={makeState()} />);
+
+        expect(rowFor(longText)).toHaveAttribute('aria-pressed', 'true');
     });
 
     it('wraps the text in every review variant', () => {
@@ -48,7 +73,7 @@ describe('ButtonHandler answer rows', () => {
 
             // A nowrap row grew past the grid cell and dragged the whole page
             // wider than the phone screen - this is the backlog regression.
-            expect(screen.getByRole('button', { name: longText })).toHaveClass(
+            expect(rowFor(longText)).toHaveClass(
                 'whitespace-normal',
                 'h-auto',
                 'min-w-0'
@@ -61,10 +86,32 @@ describe('ButtonHandler answer rows', () => {
     it('wraps the text when the key is shown', () => {
         render(<ButtonHandler state={makeState({ showAnswers: true })} />);
 
-        expect(screen.getByRole('button', { name: longText })).toHaveClass(
+        expect(rowFor(longText)).toHaveClass(
             'whitespace-normal',
             'h-auto',
             'min-w-0'
         );
+    });
+
+    it('names the verdict instead of leaving it to colour', () => {
+        render(<ButtonHandler state={makeState({ isFinished: true })} />);
+
+        // Colour alone says nothing to a screen reader and not enough to a
+        // colour-blind student.
+        expect(rowFor(longText)).toHaveTextContent(/Correct answer/);
+        expect(rowFor(longText)).toHaveAttribute('tabindex', '-1');
+    });
+
+    it('marks a wrongly chosen answer as wrong in words', () => {
+        render(
+            <ButtonHandler
+                state={makeState({
+                    isFinished: true,
+                    correctAnswers: ['other'],
+                })}
+            />
+        );
+
+        expect(rowFor(longText)).toHaveTextContent(/Wrong answer/);
     });
 });

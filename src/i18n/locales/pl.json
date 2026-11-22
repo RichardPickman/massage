@@ -137,7 +137,10 @@
         "questionOf": "Pytanie {{current}} z {{total}}",
         "previous": "Poprzednie",
         "next": "Następne",
-        "finish": "Zakończ test"
+        "finish": "Zakończ test",
+        "correctAnswer": "Poprawna odpowiedź",
+        "wrongAnswer": "Błędna odpowiedź",
+        "answersGroup": "Odpowiedzi"
     },
     "result": {
         "checking": "Sprawdzamy odpowiedzi...",
