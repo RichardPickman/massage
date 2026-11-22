@@ -19,6 +19,10 @@ export type ServerMessageCode =
     | 'common.imageUploadFailed'
     | 'auth.notAuthorised'
     | 'auth.invalidEmail'
+    | 'auth.nicknameInvalid'
+    | 'auth.nicknameTaken'
+    | 'auth.inviteRequired'
+    | 'auth.badCredentials'
     | 'user.removed';
 
 export const describeServerMessage = (

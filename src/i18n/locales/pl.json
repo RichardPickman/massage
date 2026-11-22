@@ -338,6 +338,10 @@
         "common.imageUploadFailed": "Nie udało się wysłać zdjęcia",
         "auth.notAuthorised": "Sesja wygasła, zaloguj się ponownie",
         "auth.invalidEmail": "Podaj poprawny adres e-mail",
-        "user.removed": "Konto usunięte"
+        "user.removed": "Konto usunięte",
+        "auth.nicknameInvalid": "Nickname musi mieć od 3 do 24 znaków: litery, cyfry, spacja, kropka, myślnik lub podkreślnik",
+        "auth.nicknameTaken": "Ten nickname jest już zajęty, wybierz inny",
+        "auth.inviteRequired": "Do rejestracji potrzebny jest ważny kod zaproszenia",
+        "auth.badCredentials": "Nieprawidłowy e-mail lub hasło"
     }
 }
