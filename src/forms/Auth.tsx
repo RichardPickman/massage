@@ -15,14 +15,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export type AuthFormData = {
-    email: string;
-    password: string;
-    code?: string;
-    // The name the app shows; the address is what the code was issued for and
-    // what signing in uses.
-    user?: string;
-};
+export type AuthFormData =
+    // Signing in asks for one identifier: a nickname, or an address for the
+    // accounts that predate nicknames.
+    | { login: string; password: string }
+    | {
+          email: string;
+          password: string;
+          code: string;
+          // The name the app shows; the address is what the code was issued for.
+          user: string;
+      };
 
 export type AuthMode = 'signIn' | 'signUp';
 
@@ -50,8 +53,12 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
 
         // Signing in carries no code: the account already exists, and asking for
         // one would suggest the invite is still needed after registration.
+        // The identifier is sent as `login`: it may be a nickname or an address,
+        // and the server decides which it is by the presence of an @.
         onSubmit(
-            isSignIn ? { email, password } : { user, email, password, code }
+            isSignIn
+                ? { login: email, password }
+                : { user, email, password, code }
         );
     };
 
@@ -123,16 +130,37 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                         </div>
                     )}
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="auth-email">{t('auth.email')}</Label>
+                        <Label htmlFor="auth-email">
+                            {isSignIn
+                                ? t('auth.loginIdentifier')
+                                : t('auth.email')}
+                        </Label>
                         <Input
                             id="auth-email"
-                            type="email"
+                            // A nickname is not an address, so the field must not
+                            // enforce the address shape while signing in.
+                            type={isSignIn ? 'text' : 'email'}
                             required
-                            autoComplete="email"
-                            placeholder="you@example.com"
+                            autoComplete={isSignIn ? 'username' : 'email'}
+                            placeholder={
+                                isSignIn
+                                    ? t('auth.loginIdentifierPlaceholder')
+                                    : 'you@example.com'
+                            }
                             value={email}
                             onChange={(event) => setEmail(event.target.value)}
+                            aria-describedby={
+                                isSignIn ? 'auth-login-hint' : undefined
+                            }
                         />
+                        {isSignIn ? (
+                            <p
+                                id="auth-login-hint"
+                                className="text-xs text-muted-foreground"
+                            >
+                                {t('auth.loginIdentifierHint')}
+                            </p>
+                        ) : null}
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="auth-password">
