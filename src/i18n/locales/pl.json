@@ -202,32 +202,15 @@
         "skeleton": {
             "loading": "Ładowanie statystyk..."
         },
-        "hero": {
-            "titleLead": "Poznaj ciało.",
-            "titleAccent": "Udowodnij, że to umiesz.",
-            "lead": "Notatki z wykładów, slajdy i punktowane testy w jednym miejscu. Zaloguj się, aby prowadzić rejestr każdego podejścia, najlepszego wyniku i tego, co Ci umyka.",
+        "portal": {
+            "title": "Portal testowy",
+            "description": "Wykłady i testy dla asystentów stomatologicznych.",
+            "tests": "Testy",
+            "lectures": "Wykłady",
+            "signInNote": "Wyniki zapisują się na koncie po zalogowaniu.",
             "signIn": "Zaloguj się",
-            "takeTest": "Rozwiąż test",
-            "browseLectures": "Przeglądaj wykłady",
-            "noAccount": "Nie masz konta?",
-            "createOne": "Załóż je",
-            "takesMinute": "— zajmie to minutę.",
-            "cardTitle": "Jak działa rejestr",
-            "cardDescription": "Trzy kroki, w kółko. Resztę robią liczby.",
-            "steps": {
-                "read": {
-                    "title": "Przeczytaj wykład",
-                    "text": "Przejrzyj slajdy we własnym tempie."
-                },
-                "test": {
-                    "title": "Rozwiąż test",
-                    "text": "Każdą odpowiedź ocenia serwer, nie przeglądarka."
-                },
-                "trend": {
-                    "title": "Obserwuj linię",
-                    "text": "Najlepszy wynik, średnia i każde podejście zostają w Twoim rejestrze."
-                }
-            }
+            "or": "lub",
+            "createAccount": "załóż konto"
         }
     },
     "admin": {
