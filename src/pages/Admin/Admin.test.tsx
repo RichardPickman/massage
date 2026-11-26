@@ -2,12 +2,12 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { Admin } from '.';
 import AdminService from '../../services/Admin';
 import { ApiError } from '../../services/errors';
 import { makeStore, renderWithProviders } from '../../test/helpers';
-import { Admin } from '.';
 
-const code = 'PRZEMYSLAW-2026-KOD';
+const code = 'o84vo4';
 
 const stubClipboard = () => {
     const writeText = vi.fn().mockResolvedValue(undefined);

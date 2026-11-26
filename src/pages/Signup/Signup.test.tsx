@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import SignUp from '.';
 import { ApiError } from '../../services/errors';
 import UserService from '../../services/User';
 import { makeStore, renderWithProviders } from '../../test/helpers';
-import SignUp from '.';
 
 const routes = (
     <Routes>
@@ -44,12 +44,12 @@ describe('SignUp', () => {
 
         expect(screen.queryByLabelText('Email')).not.toBeInTheDocument();
 
-        await submitRegistration('PRZEMYSLAW-2026-KOD');
+        await submitRegistration('o84vo4');
 
         expect(registration).toHaveBeenCalledWith({
             user: 'Ania',
             password: 'a-long-password',
-            code: 'PRZEMYSLAW-2026-KOD',
+            code: 'o84vo4',
         });
         expect(await screen.findByText('Sign-in page')).toBeInTheDocument();
     });
