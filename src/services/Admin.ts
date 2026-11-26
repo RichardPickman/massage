@@ -34,8 +34,9 @@ class AdminService {
         return load<AdminUser>({
             url: `admin/users/${encodeURIComponent(id)}`,
             method: 'PATCH',
-            // The loader sends the body as it is, so a plain object has to be
-            // serialised here; `setHeaders` already puts the JSON type on it.
+            // Serialised and typed here: every service that sends JSON says so,
+            // and a PATCH without the header is a request Express parses as empty.
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(changes),
         });
     }
