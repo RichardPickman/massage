@@ -32,6 +32,19 @@ export const load = async <T>(request: RequestPayload) => {
     const headers = setHeaders(request.headers);
     const carriedToken = Boolean(headers.Authorization);
 
+    // A string body is JSON unless the caller said otherwise. Forgetting the
+    // header is silent: Express' json() parser then ignores the body, the request
+    // answers 200 and changes nothing — which is how "promote to admin" looked
+    // broken while the server was fine. FormData must keep its own boundary, so
+    // only a string body is touched.
+    const declaresType = Object.keys(headers).some(
+        (name) => name.toLowerCase() === 'content-type'
+    );
+
+    if (typeof request.body === 'string' && !declaresType) {
+        headers['Content-Type'] = 'application/json';
+    }
+
     const init: RequestInit = {
         method: request.method,
         headers,
