@@ -1,103 +1,50 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import AdminService from '../../services/Admin';
-import { getErrorMessage } from '../../services/errors';
+import { RegistrationCodePanel } from './RegistrationCodePanel';
+import { UsersPanel } from './UsersPanel';
+
+type Tab = 'code' | 'users';
 
 export const Admin = () => {
     const { t } = useTranslation();
-    const [code, setCode] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [copied, setCopied] = useState(false);
+    const [tab, setTab] = useState<Tab>('code');
 
-    // There is nothing to fill in any more: the code is one value for the whole
-    // group, so the panel loads it instead of asking who it is for.
-    const load = async () => {
-        setIsLoading(true);
-        setError(null);
-        setCopied(false);
-
-        try {
-            setCode((await AdminService.registrationCode()).code);
-        } catch (failure) {
-            setCode(null);
-            setError(getErrorMessage(failure));
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Once, on mount: the panel has exactly one thing to show.
-    useEffect(() => {
-        load();
-    }, []);
-
-    const handleCopy = () => {
-        // Clipboard access needs a secure context, and a browser that refuses it
-        // is no reason to lose the code: it stays on screen and selectable.
-        if (!navigator.clipboard || !code) {
-            return;
-        }
-
-        navigator.clipboard
-            .writeText(code)
-            .then(() => setCopied(true))
-            .catch(() => setCopied(false));
-    };
+    const tabs: { id: Tab; label: string }[] = [
+        { id: 'code', label: t('admin.tabs.code') },
+        { id: 'users', label: t('admin.tabs.users') },
+    ];
 
     return (
-        <Card className="mx-auto w-full max-w-xl">
-            <CardHeader className="border-b">
-                <CardTitle>{t('admin.title')}</CardTitle>
-                <CardDescription>{t('admin.description')}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                {error ? (
-                    <Alert variant="destructive">
-                        <div className="flex flex-col gap-1">
-                            <AlertTitle>{t('admin.errorTitle')}</AlertTitle>
-                            <AlertDescription className="text-destructive">
-                                {error}
-                            </AlertDescription>
-                        </div>
-                    </Alert>
-                ) : null}
-                {code ? (
-                    <code className="rounded-md border bg-muted px-3 py-2 font-mono text-lg tracking-wider break-all">
-                        {code}
-                    </code>
-                ) : isLoading ? (
-                    <p className="text-sm text-muted-foreground">
-                        {t('admin.loading')}
-                    </p>
-                ) : (
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
+            {/* Two tabs rather than two pages: an admin switches between reading the
+                code and looking after people in the same sitting. Buttons, not raw
+                elements, so the shape and the focus ring come from one place. */}
+            <div
+                className="flex gap-1 rounded-lg border p-1"
+                role="tablist"
+                aria-label={t('admin.title')}
+            >
+                {tabs.map(({ id, label }) => (
                     <Button
-                        variant="secondary"
-                        className="self-start"
-                        onClick={load}
+                        key={id}
+                        type="button"
+                        role="tab"
+                        aria-selected={tab === id}
+                        size="sm"
+                        variant={tab === id ? 'default' : 'ghost'}
+                        className="flex-1"
+                        onClick={() => setTab(id)}
                     >
-                        {t('admin.submit')}
+                        {label}
                     </Button>
-                )}
-            </CardContent>
-            {code ? (
-                <CardFooter className="border-t">
-                    <Button variant="secondary" onClick={handleCopy}>
-                        {copied ? t('admin.copied') : t('admin.copy')}
-                    </Button>
-                </CardFooter>
-            ) : null}
-        </Card>
+                ))}
+            </div>
+
+            <div role="tabpanel">
+                {tab === 'code' ? <RegistrationCodePanel /> : <UsersPanel />}
+            </div>
+        </div>
     );
 };
