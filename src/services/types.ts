@@ -32,6 +32,23 @@ export interface RegistrationCode {
     code: string;
 }
 
+// One row of the admin user list. The password hash never leaves the database,
+// so there is nothing here that a browser should not see.
+export interface AdminUser {
+    id: string;
+    user: string;
+    email: string;
+    role: 'user' | 'admin';
+}
+
+export interface AdminUserPage {
+    items: AdminUser[];
+    total: number;
+    page: number;
+    pages: number;
+    limit: number;
+}
+
 export interface SubmittedAnswer {
     questionId: string;
     selected: string[];

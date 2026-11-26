@@ -226,9 +226,41 @@
         "errorTitle": "Could not load the code",
         "copy": "Copy the code",
         "copied": "Copied",
+        "tabs": {
+            "code": "Code",
+            "users": "Users"
+        },
+        "usersTitle": "Users",
+        "usersDescription": "Roles, nicknames and passwords. Removing an account takes effect immediately.",
+        "search": "Search by nickname",
+        "searchSubmit": "Search",
+        "empty": "Nobody found",
+        "columns": {
+            "user": "Nickname",
+            "role": "Role",
+            "actions": "Actions"
+        },
+        "roles": {
+            "user": "Student",
+            "admin": "Admin"
+        },
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "nickname": "Nickname",
+        "newPassword": "New password (optional)",
+        "editTitle": "Editing {{user}}",
+        "editDescription": "An empty password field keeps the current password.",
+        "couldNotSave": "Could not save",
+        "couldNotDelete": "Could not delete",
+        "deleteTitle": "Remove this account?",
+        "deleteBody": "{{user}} disappears immediately. Test results stay in the database without an owner.",
+        "deleteConfirm": "Remove the account",
         "noAccess": {
             "title": "Not your area",
-            "description": "The registration code is shown to the site's admin. Your account can read lectures and take tests.",
+            "description": "The registration code and the user list are shown to the site's admin. Your account can read lectures and take tests.",
             "body": "If you were expecting access, ask whoever invited you."
         }
     },
