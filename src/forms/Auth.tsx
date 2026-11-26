@@ -180,7 +180,7 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                                 required
                                 autoComplete="off"
                                 spellCheck={false}
-                                placeholder="np. PRZEMYSLAW-2026"
+                                placeholder="o84vo4"
                                 value={code}
                                 onChange={(event) =>
                                     setCode(event.target.value)
