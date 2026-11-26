@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -11,46 +11,47 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AdminService from '../../services/Admin';
 import { getErrorMessage } from '../../services/errors';
-import type { Invite } from '../../services/types';
 
 export const Admin = () => {
     const { t } = useTranslation();
-    const [email, setEmail] = useState('');
-    const [invite, setInvite] = useState<Invite | null>(null);
+    const [code, setCode] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [isMinting, setIsMinting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        setIsMinting(true);
+    // There is nothing to fill in any more: the code is one value for the whole
+    // group, so the panel loads it instead of asking who it is for.
+    const load = async () => {
+        setIsLoading(true);
         setError(null);
         setCopied(false);
 
         try {
-            setInvite(await AdminService.invite(email));
+            setCode((await AdminService.registrationCode()).code);
         } catch (failure) {
-            setInvite(null);
+            setCode(null);
             setError(getErrorMessage(failure));
         } finally {
-            setIsMinting(false);
+            setIsLoading(false);
         }
     };
+
+    // Once, on mount: the panel has exactly one thing to show.
+    useEffect(() => {
+        load();
+    }, []);
 
     const handleCopy = () => {
         // Clipboard access needs a secure context, and a browser that refuses it
         // is no reason to lose the code: it stays on screen and selectable.
-        if (!navigator.clipboard || !invite) {
+        if (!navigator.clipboard || !code) {
             return;
         }
 
         navigator.clipboard
-            .writeText(invite.code)
+            .writeText(code)
             .then(() => setCopied(true))
             .catch(() => setCopied(false));
     };
@@ -62,22 +63,6 @@ export const Admin = () => {
                 <CardDescription>{t('admin.description')}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="invite-email">{t('admin.email')}</Label>
-                        <Input
-                            id="invite-email"
-                            type="email"
-                            required
-                            placeholder="friend@example.com"
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                        />
-                    </div>
-                    <Button type="submit" disabled={isMinting}>
-                        {isMinting ? t('admin.minting') : t('admin.submit')}
-                    </Button>
-                </form>
                 {error ? (
                     <Alert variant="destructive">
                         <div className="flex flex-col gap-1">
@@ -88,18 +73,25 @@ export const Admin = () => {
                         </div>
                     </Alert>
                 ) : null}
-                {invite ? (
-                    <div className="flex flex-col gap-2">
-                        <p className="text-sm font-medium">
-                            {t('admin.codeFor', { email: invite.email })}
-                        </p>
-                        <code className="rounded-md border bg-muted px-3 py-2 font-mono text-lg tracking-wider">
-                            {invite.code}
-                        </code>
-                    </div>
-                ) : null}
+                {code ? (
+                    <code className="rounded-md border bg-muted px-3 py-2 font-mono text-lg tracking-wider break-all">
+                        {code}
+                    </code>
+                ) : isLoading ? (
+                    <p className="text-sm text-muted-foreground">
+                        {t('admin.loading')}
+                    </p>
+                ) : (
+                    <Button
+                        variant="secondary"
+                        className="self-start"
+                        onClick={load}
+                    >
+                        {t('admin.submit')}
+                    </Button>
+                )}
             </CardContent>
-            {invite ? (
+            {code ? (
                 <CardFooter className="border-t">
                     <Button variant="secondary" onClick={handleCopy}>
                         {copied ? t('admin.copied') : t('admin.copy')}

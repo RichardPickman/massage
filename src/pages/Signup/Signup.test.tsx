@@ -16,12 +16,11 @@ const routes = (
 );
 
 const submitRegistration = async (code: string) => {
-    // Registration carries a nickname: the address is never verified, so it is
-    // not what the app shows next to a result.
+    // Registration asks for a nickname, a password and the shared code: an
+    // address is never verified, and the server derives one from the nickname.
     await userEvent.type(screen.getByLabelText('Nickname'), 'Ania');
-    await userEvent.type(screen.getByLabelText('Email'), 'friend@example.com');
     await userEvent.type(screen.getByLabelText('Password'), 'a-long-password');
-    await userEvent.type(screen.getByLabelText('Invite code'), code);
+    await userEvent.type(screen.getByLabelText('Registration code'), code);
     await userEvent.click(
         screen.getByRole('button', { name: 'Create account' })
     );
@@ -33,7 +32,7 @@ describe('SignUp', () => {
         localStorage.clear();
     });
 
-    it('sends the invite code with the address and returns to sign in', async () => {
+    it('sends the registration code and never asks for an address', async () => {
         const registration = vi
             .spyOn(UserService, 'registration')
             .mockResolvedValue({ token: '' });
@@ -43,23 +42,21 @@ describe('SignUp', () => {
             route: '/auth/register',
         });
 
-        await submitRegistration('ABCD-1234-EF56-7890');
+        expect(screen.queryByLabelText('Email')).not.toBeInTheDocument();
+
+        await submitRegistration('PRZEMYSLAW-2026-KOD');
 
         expect(registration).toHaveBeenCalledWith({
             user: 'Ania',
-            email: 'friend@example.com',
             password: 'a-long-password',
-            code: 'ABCD-1234-EF56-7890',
+            code: 'PRZEMYSLAW-2026-KOD',
         });
         expect(await screen.findByText('Sign-in page')).toBeInTheDocument();
     });
 
     it('shows the refusal without discarding what was typed', async () => {
         vi.spyOn(UserService, 'registration').mockRejectedValue(
-            new ApiError(
-                403,
-                'This address needs a valid invite code to register'
-            )
+            new ApiError(403, 'A valid registration code is required')
         );
 
         renderWithProviders(routes, {
@@ -70,16 +67,14 @@ describe('SignUp', () => {
         await submitRegistration('wrong-code');
 
         expect(
-            await screen.findByText(
-                'This address needs a valid invite code to register'
-            )
+            await screen.findByText('A valid registration code is required')
         ).toBeInTheDocument();
-        // Re-typing the address after a refusal would be the form's own fault,
+        // Re-typing the nickname after a refusal would be the form's own fault,
         // and the code is the thing that most likely needs correcting.
-        expect(screen.getByLabelText('Email')).toHaveValue(
-            'friend@example.com'
+        expect(screen.getByLabelText('Nickname')).toHaveValue('Ania');
+        expect(screen.getByLabelText('Registration code')).toHaveValue(
+            'wrong-code'
         );
-        expect(screen.getByLabelText('Invite code')).toHaveValue('wrong-code');
         expect(screen.queryByText('Sign-in page')).not.toBeInTheDocument();
     });
 });

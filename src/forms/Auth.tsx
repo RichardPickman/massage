@@ -19,13 +19,9 @@ export type AuthFormData =
     // Signing in asks for one identifier: a nickname, or an address for the
     // accounts that predate nicknames.
     | { login: string; password: string }
-    | {
-          email: string;
-          password: string;
-          code: string;
-          // The name the app shows; the address is what the code was issued for.
-          user: string;
-      };
+    // Signing up asks for no address at all: the server derives one from the
+    // nickname, and the code is the same for the whole group.
+    | { user: string; password: string; code: string };
 
 export type AuthMode = 'signIn' | 'signUp';
 
@@ -56,9 +52,7 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
         // The identifier is sent as `login`: it may be a nickname or an address,
         // and the server decides which it is by the presence of an @.
         onSubmit(
-            isSignIn
-                ? { login: email, password }
-                : { user, email, password, code }
+            isSignIn ? { login: email, password } : { user, password, code }
         );
     };
 
@@ -129,39 +123,35 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                             </p>
                         </div>
                     )}
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="auth-email">
-                            {isSignIn
-                                ? t('auth.loginIdentifier')
-                                : t('auth.email')}
-                        </Label>
-                        <Input
-                            id="auth-email"
-                            // A nickname is not an address, so the field must not
-                            // enforce the address shape while signing in.
-                            type={isSignIn ? 'text' : 'email'}
-                            required
-                            autoComplete={isSignIn ? 'username' : 'email'}
-                            placeholder={
-                                isSignIn
-                                    ? t('auth.loginIdentifierPlaceholder')
-                                    : 'you@example.com'
-                            }
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                            aria-describedby={
-                                isSignIn ? 'auth-login-hint' : undefined
-                            }
-                        />
-                        {isSignIn ? (
+                    {isSignIn ? (
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="auth-email">
+                                {t('auth.loginIdentifier')}
+                            </Label>
+                            <Input
+                                id="auth-email"
+                                // A nickname is not an address, so the field must
+                                // not enforce the address shape.
+                                type="text"
+                                required
+                                autoComplete="username"
+                                placeholder={t(
+                                    'auth.loginIdentifierPlaceholder'
+                                )}
+                                value={email}
+                                onChange={(event) =>
+                                    setEmail(event.target.value)
+                                }
+                                aria-describedby="auth-login-hint"
+                            />
                             <p
                                 id="auth-login-hint"
                                 className="text-xs text-muted-foreground"
                             >
                                 {t('auth.loginIdentifierHint')}
                             </p>
-                        ) : null}
-                    </div>
+                        </div>
+                    ) : null}
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="auth-password">
                             {t('auth.password')}
@@ -190,7 +180,7 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                                 required
                                 autoComplete="off"
                                 spellCheck={false}
-                                placeholder="XXXX-XXXX-XXXX-XXXX"
+                                placeholder="np. PRZEMYSLAW-2026"
                                 value={code}
                                 onChange={(event) =>
                                     setCode(event.target.value)

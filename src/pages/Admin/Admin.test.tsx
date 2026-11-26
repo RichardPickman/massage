@@ -7,7 +7,7 @@ import { ApiError } from '../../services/errors';
 import { makeStore, renderWithProviders } from '../../test/helpers';
 import { Admin } from '.';
 
-const code = 'ABCD-1234-EF56-7890';
+const code = 'PRZEMYSLAW-2026-KOD';
 
 const stubClipboard = () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
@@ -20,12 +20,7 @@ const stubClipboard = () => {
     return writeText;
 };
 
-const mintCode = async (email: string) => {
-    await userEvent.type(screen.getByLabelText('Their email'), email);
-    await userEvent.click(screen.getByRole('button', { name: 'Get the code' }));
-};
-
-describe('Admin invite panel', () => {
+describe('Admin registration code panel', () => {
     beforeEach(() => {
         stubClipboard();
     });
@@ -34,20 +29,17 @@ describe('Admin invite panel', () => {
         vi.restoreAllMocks();
     });
 
-    it('mints the code for the address and copies it on one click', async () => {
+    it('shows the one code for the group and copies it on one click', async () => {
         const writeText = stubClipboard();
 
-        vi.spyOn(AdminService, 'invite').mockResolvedValue({
-            email: 'friend@example.com',
-            code,
-        });
+        vi.spyOn(AdminService, 'registrationCode').mockResolvedValue({ code });
 
         renderWithProviders(<Admin />, { store: makeStore() });
 
-        await mintCode('friend@example.com');
-
+        // Nobody is asked whom the code is for: it admits the whole group.
         expect(await screen.findByText(code)).toBeInTheDocument();
-        expect(AdminService.invite).toHaveBeenCalledWith('friend@example.com');
+        expect(AdminService.registrationCode).toHaveBeenCalledTimes(1);
+        expect(screen.queryByLabelText('Their email')).not.toBeInTheDocument();
 
         await userEvent.click(
             screen.getByRole('button', { name: 'Copy the code' })
@@ -61,15 +53,20 @@ describe('Admin invite panel', () => {
     });
 
     it('shows the refusal instead of a code when the server says no', async () => {
-        vi.spyOn(AdminService, 'invite').mockRejectedValue(
-            new ApiError(403, 'Not authorized')
+        vi.spyOn(AdminService, 'registrationCode').mockRejectedValue(
+            new ApiError(
+                500,
+                'REGISTRATION_CODE is not set, so nobody can register'
+            )
         );
 
         renderWithProviders(<Admin />, { store: makeStore() });
 
-        await mintCode('friend@example.com');
-
-        expect(await screen.findByText('Not authorized')).toBeInTheDocument();
+        expect(
+            await screen.findByText(
+                'REGISTRATION_CODE is not set, so nobody can register'
+            )
+        ).toBeInTheDocument();
         expect(
             screen.queryByRole('button', { name: 'Copy the code' })
         ).not.toBeInTheDocument();

@@ -1,12 +1,12 @@
 import { load } from './loader';
-import type { Invite } from './types';
+import type { RegistrationCode } from './types';
 
 class AdminService {
-    // Minting is a read: the server stores nothing, so pressing the button twice
-    // is harmless and the same address always gets the same code.
-    static async invite(email: string) {
-        return load<Invite>({
-            url: `admin/invites?email=${encodeURIComponent(email)}`,
+    // A read: the code lives in the server's environment, so pressing the button
+    // twice is harmless, and there is nothing to mint or revoke per person.
+    static async registrationCode() {
+        return load<RegistrationCode>({
+            url: 'admin/registration-code',
             method: 'GET',
         });
     }
