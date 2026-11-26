@@ -37,7 +37,6 @@
         "couldNotCreate": "Could not create the account",
         "password": "Password",
         "inviteCode": "Registration code",
-        "inviteHint": "One code for the whole group. You sign up with your nickname — no email needed.",
         "submitting": "Submitting...",
         "createAccount": "Create account",
         "needAccount": "Need an account?",

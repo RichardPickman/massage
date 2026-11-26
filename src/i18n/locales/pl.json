@@ -37,7 +37,6 @@
         "couldNotCreate": "Nie udało się utworzyć konta",
         "password": "Hasło",
         "inviteCode": "Kod rejestracyjny",
-        "inviteHint": "Jeden kod dla całej grupy. Rejestrujesz się swoim nickiem — e-mail nie jest potrzebny.",
         "submitting": "Wysyłanie...",
         "createAccount": "Utwórz konto",
         "needAccount": "Nie masz konta?",

@@ -186,9 +186,6 @@ export const Auth = ({ submitting, errorData, onSubmit, mode }: AuthProps) => {
                                     setCode(event.target.value)
                                 }
                             />
-                            <p className="text-sm text-muted-foreground">
-                                {t('auth.inviteHint')}
-                            </p>
                         </div>
                     )}
                     <Button type="submit" disabled={submitting}>
