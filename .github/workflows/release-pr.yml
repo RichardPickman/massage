@@ -6,6 +6,11 @@ name: Release pull request
 #
 # One open pull request at a time: if testing already has one, its branch moves and
 # the pull request follows on its own.
+#
+# The file must exist on `testing` itself, not only on `master`: GitHub reads a
+# push-triggered workflow from the ref that was pushed, so a copy that lives on the
+# default branch alone fires for nothing and reports nothing. The same copy on both
+# branches is intentional - do not delete it from `testing` as a duplicate.
 
 on:
     push:

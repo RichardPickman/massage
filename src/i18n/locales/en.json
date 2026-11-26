@@ -31,24 +31,16 @@
         "signIn": "Sign in",
         "signUpTitle": "Sign Up",
         "signInTitle": "Sign In",
-        "welcomeBack": "Welcome back. Your test record is waiting.",
-        "createWithInvite": "Create an account with the invite code you were sent.",
         "couldNotSignIn": "Could not sign in",
         "couldNotCreate": "Could not create the account",
-        "email": "Email",
         "password": "Password",
-        "inviteCode": "Invite code",
-        "inviteHint": "Issued for this exact email address, so it will not work with another one.",
+        "inviteCode": "Registration code",
         "submitting": "Submitting...",
         "createAccount": "Create account",
         "needAccount": "Need an account?",
         "alreadyRegistered": "Already registered?",
         "nickname": "Nickname",
-        "nicknamePlaceholder": "How your teacher sees you",
-        "nicknameHint": "3–24 characters. Letters, digits, spaces, dots, dashes or underscores. Shown next to your results.",
-        "loginIdentifier": "Nickname or email",
-        "loginIdentifierPlaceholder": "e.g. Ania or ania@example.com",
-        "loginIdentifierHint": "Sign in with the nickname you show to others — an email works too."
+        "loginIdentifier": "Nickname or email"
     },
     "footer": {
         "brand": "RP · Massage",
@@ -221,18 +213,48 @@
         }
     },
     "admin": {
-        "title": "Invite codes",
-        "description": "Mint the code for one person's address, then send it to them. The code only works for that address.",
-        "email": "Their email",
+        "title": "Registration code",
+        "description": "One code for everyone. Send it to the group — each person signs up with their nickname, no email needed.",
         "submit": "Get the code",
-        "minting": "Minting...",
-        "errorTitle": "Could not mint a code",
-        "codeFor": "Code for {{email}}",
+        "loading": "Loading...",
+        "errorTitle": "Could not load the code",
         "copy": "Copy the code",
         "copied": "Copied",
+        "tabs": {
+            "code": "Code",
+            "users": "Users"
+        },
+        "usersTitle": "Users",
+        "usersDescription": "Roles, nicknames and passwords. Removing an account takes effect immediately.",
+        "search": "Search by nickname",
+        "searchSubmit": "Search",
+        "empty": "Nobody found",
+        "columns": {
+            "user": "Nickname",
+            "role": "Role",
+            "actions": "Actions"
+        },
+        "roles": {
+            "user": "Student",
+            "admin": "Admin"
+        },
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "saving": "Saving...",
+        "cancel": "Cancel",
+        "nickname": "Nickname",
+        "newPassword": "New password (optional)",
+        "editTitle": "Editing {{user}}",
+        "editDescription": "An empty password field keeps the current password.",
+        "couldNotSave": "Could not save",
+        "couldNotDelete": "Could not delete",
+        "deleteTitle": "Remove this account?",
+        "deleteBody": "{{user}} disappears immediately. Test results stay in the database without an owner.",
+        "deleteConfirm": "Remove the account",
         "noAccess": {
             "title": "Not your area",
-            "description": "Invite codes are minted by the site's admin. Your account can read lectures and take tests.",
+            "description": "The registration code and the user list are shown to the site's admin. Your account can read lectures and take tests.",
             "body": "If you were expecting access, ask whoever invited you."
         }
     },

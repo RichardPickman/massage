@@ -29,14 +29,14 @@ const SignIn = () => {
     }, [dispatch]);
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="my-auto flex w-full flex-col gap-6">
             <Auth
                 submitting={status === fetchStatuses.PENDING}
                 errorData={status === fetchStatuses.FAILED ? error : null}
                 onSubmit={onSubmit}
                 mode="signIn"
             />
-            <LanguageSwitch className="mx-auto" />
+            <LanguageSwitch className="mx-auto w-full max-w-sm justify-end" />
         </div>
     );
 };

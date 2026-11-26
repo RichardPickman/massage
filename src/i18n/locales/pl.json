@@ -31,24 +31,16 @@
         "signIn": "Zaloguj się",
         "signUpTitle": "Utwórz konto",
         "signInTitle": "Zaloguj się",
-        "welcomeBack": "Witaj ponownie. Twój rejestr testów czeka.",
-        "createWithInvite": "Utwórz konto, używając kodu zaproszenia, który otrzymałeś.",
         "couldNotSignIn": "Nie udało się zalogować",
         "couldNotCreate": "Nie udało się utworzyć konta",
-        "email": "E-mail",
         "password": "Hasło",
-        "inviteCode": "Kod zaproszenia",
-        "inviteHint": "Wydany na dokładnie ten adres e-mail, więc nie zadziała z innym.",
+        "inviteCode": "Kod rejestracyjny",
         "submitting": "Wysyłanie...",
         "createAccount": "Utwórz konto",
         "needAccount": "Nie masz konta?",
         "alreadyRegistered": "Masz już konto?",
         "nickname": "Nickname",
-        "nicknamePlaceholder": "Jak zobaczy Cię prowadzący",
-        "nicknameHint": "3–24 znaki. Litery, cyfry, spacje, kropki, myślniki lub podkreślenia. Widoczny przy wynikach.",
-        "loginIdentifier": "Nickname lub e-mail",
-        "loginIdentifierPlaceholder": "np. Ania lub ania@example.com",
-        "loginIdentifierHint": "Zaloguj się nickiem, którym się przedstawiasz — e-mail też zadziała."
+        "loginIdentifier": "Nickname lub e-mail"
     },
     "footer": {
         "brand": "RP · Massage",
@@ -223,18 +215,48 @@
         }
     },
     "admin": {
-        "title": "Kody zaproszeń",
-        "description": "Wygeneruj kod dla adresu jednej osoby i wyślij go jej. Kod działa tylko z tym adresem.",
-        "email": "E-mail osoby zapraszanej",
+        "title": "Kod rejestracyjny",
+        "description": "Jeden kod dla wszystkich. Wyślij go grupie — każdy zakłada konto swoim nickiem, bez adresu e-mail.",
         "submit": "Pobierz kod",
-        "minting": "Generowanie...",
-        "errorTitle": "Nie udało się wygenerować kodu",
-        "codeFor": "Kod dla {{email}}",
+        "loading": "Pobieranie...",
+        "errorTitle": "Nie udało się pobrać kodu",
         "copy": "Kopiuj kod",
         "copied": "Skopiowano",
+        "tabs": {
+            "code": "Kod",
+            "users": "Użytkownicy"
+        },
+        "usersTitle": "Użytkownicy",
+        "usersDescription": "Role, nicki i hasła. Usunięcie konta działa od razu.",
+        "search": "Szukaj po nicku",
+        "searchSubmit": "Szukaj",
+        "empty": "Nikogo nie znaleziono",
+        "columns": {
+            "user": "Nick",
+            "role": "Rola",
+            "actions": "Akcje"
+        },
+        "roles": {
+            "user": "Uczeń",
+            "admin": "Administrator"
+        },
+        "edit": "Zmień",
+        "delete": "Usuń",
+        "save": "Zapisz",
+        "saving": "Zapisywanie...",
+        "cancel": "Anuluj",
+        "nickname": "Nick",
+        "newPassword": "Nowe hasło (opcjonalnie)",
+        "editTitle": "Zmiana konta {{user}}",
+        "editDescription": "Puste pole hasła zostawia obecne hasło bez zmian.",
+        "couldNotSave": "Nie udało się zapisać",
+        "couldNotDelete": "Nie udało się usunąć",
+        "deleteTitle": "Usunąć konto?",
+        "deleteBody": "Konto {{user}} zniknie od razu. Wyniki testów zostaną w bazie bez właściciela.",
+        "deleteConfirm": "Usuń konto",
         "noAccess": {
             "title": "To nie Twoja część",
-            "description": "Kody zaproszeń generuje administrator strony. Twoje konto może czytać wykłady i rozwiązywać testy.",
+            "description": "Kod rejestracyjny i listę użytkowników widzi administrator strony. Twoje konto może czytać wykłady i rozwiązywać testy.",
             "body": "Jeśli spodziewałeś się dostępu, zapytaj osobę, która Cię zaprosiła."
         }
     },

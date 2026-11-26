@@ -26,10 +26,27 @@ export interface Page<T> {
     pages: number;
 }
 
-// What the admin panel mints: an address and the code that only works for it.
-export interface Invite {
-    email: string;
+// What the admin panel reads: one code that admits everybody, not a pair of
+// address+code. The server owns the value; the panel only displays it.
+export interface RegistrationCode {
     code: string;
+}
+
+// One row of the admin user list. The password hash never leaves the database,
+// so there is nothing here that a browser should not see.
+export interface AdminUser {
+    id: string;
+    user: string;
+    email: string;
+    role: 'user' | 'admin';
+}
+
+export interface AdminUserPage {
+    items: AdminUser[];
+    total: number;
+    page: number;
+    pages: number;
+    limit: number;
 }
 
 export interface SubmittedAnswer {
