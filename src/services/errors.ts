@@ -14,6 +14,9 @@ export class ApiError extends Error {
     }
 }
 
+export const isUnauthorised = (error: unknown) =>
+    error instanceof ApiError && error.status === 401;
+
 export const getErrorMessage = (error: unknown) => {
     if (error instanceof ApiError) {
         return describeServerMessage(error.code, error.message);

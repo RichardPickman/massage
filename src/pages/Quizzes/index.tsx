@@ -7,6 +7,7 @@ import {
     type LoaderFunctionArgs,
 } from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
+import { isUnauthorised } from '../../services/errors';
 import { useTranslation } from 'react-i18next';
 import { Paginator } from '../../components/Paginator';
 import { Button } from '../../components/ui/button';
@@ -82,7 +83,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url);
     const requested = readPage(url.searchParams);
 
-    const { payload } = await QuizService.getQuizzesPage(requested, pageSize);
+    let payload;
+
+    try {
+        ({ payload } = await QuizService.getQuizzesPage(requested, pageSize));
+    } catch (error) {
+        if (isUnauthorised(error)) {
+            return redirect('/auth/login');
+        }
+
+        throw error;
+    }
 
     // A stale link, or a page whose last card was just removed, comes back
     // clamped to the last page. Moving the address bar there is what keeps cards

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import LectureService from '../../services/Lecture';
 import type { Lecture } from '../../services/models';
 import type { Page } from '../../services/types';
+import { ApiError } from '../../services/errors';
 import { loader } from '.';
 
 const lecture = (id: string): Lecture => ({
@@ -104,6 +105,27 @@ describe('lectures loader', () => {
         const response = (await callLoader('?page=4')) as Response;
 
         expect(response.headers.get('Location')).toBe('/lectures');
+    });
+
+    it('sends a guest to sign-in instead of the error page', async () => {
+        // The loader runs before any component can decide about the session, so a
+        // 401 here used to render "Something went wrong" for a visitor who simply
+        // followed a link.
+        vi.spyOn(LectureService, 'getLecturesPage').mockRejectedValue(
+            new ApiError(401, 'Not authorised', 'auth.notAuthorised')
+        );
+
+        const response = (await callLoader()) as Response;
+
+        expect(response.headers.get('Location')).toBe('/auth/login');
+    });
+
+    it('keeps a server failure as a failure', async () => {
+        vi.spyOn(LectureService, 'getLecturesPage').mockRejectedValue(
+            new ApiError(500, 'Boom')
+        );
+
+        await expect(callLoader()).rejects.toThrow('Boom');
     });
 
     it('keeps the other query parameters when it redirects', async () => {

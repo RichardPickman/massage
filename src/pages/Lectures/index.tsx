@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Paginator } from '../../components/Paginator';
+import { isUnauthorised } from '../../services/errors';
 import { Button } from '../../components/ui/button';
 import { PageHeader } from '../../components/PageHeader';
 import LectureService from '../../services/Lecture';
@@ -74,10 +75,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url);
     const requested = readPage(url.searchParams);
 
-    const { payload } = await LectureService.getLecturesPage(
-        requested,
-        pageSize
-    );
+    let payload;
+
+    try {
+        ({ payload } = await LectureService.getLecturesPage(
+            requested,
+            pageSize
+        ));
+    } catch (error) {
+        // The content sits behind a session, so a guest — or a tab whose token
+        // expired — used to get the error boundary instead of the sign-in form.
+        if (isUnauthorised(error)) {
+            return redirect('/auth/login');
+        }
+
+        throw error;
+    }
 
     // A stale link, or a page whose last row was just removed, comes back
     // clamped to the last page. Moving the address bar there is what keeps the
