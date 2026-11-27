@@ -61,14 +61,17 @@ export const fetchLogin = createAsyncThunk(
 export const fetchLogout = createAsyncThunk(
     'user/logout',
     async (_, { rejectWithValue }) => {
+        // The token goes first. Clearing the store dispatches `pending`, and the app
+        // refreshes any session whose token is still in storage — so removing it
+        // afterwards let the refresh restore the account that was signing out.
+        removeToken();
+
         try {
             await UserService.logout();
         } catch (error) {
+            // The server call is best effort: a failure must never keep the session
+            // alive on this device.
             return rejectWithValue(toRejectionPayload(error));
-        } finally {
-            // The server call is best effort: a failure must never keep the
-            // session alive on this device, so the token always goes.
-            removeToken();
         }
 
         return null;

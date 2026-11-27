@@ -39,7 +39,9 @@ jobs:
             - run: pnpm prettier:check
             - run: pnpm eslint
             - run: pnpm typecheck
-            - run: pnpm test
+            # Coverage is the gate, not a report: below 70% lines or 60% branches the
+            # run fails. Thresholds live in vite.config.ts.
+            - run: pnpm test:coverage
             - run: pnpm build
 
     # The artefact a deploy pulls. Every tag names a commit, so the TAG in a

@@ -15,7 +15,9 @@
         "eject": "vite eject",
         "prettier": "prettier --write .",
         "prettier:check": "prettier --check .",
-        "eslint": "eslint ."
+        "eslint": "eslint .",
+        "test:coverage": "vitest run --coverage",
+        "test:e2e": "playwright test"
     },
     "browserslist": {
         "production": [
@@ -58,6 +60,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.5",
+        "@playwright/test": "^1.65.1",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/jest-dom": "^7.0.1",
         "@testing-library/react": "^16.3.3",
@@ -66,6 +69,7 @@
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "@vitejs/plugin-react": "^6.1.1",
+        "@vitest/coverage-v8": "^5.1.2",
         "eslint": "^9.39.5",
         "eslint-plugin-react": "^7.31.10",
         "globals": "^17.12.0",

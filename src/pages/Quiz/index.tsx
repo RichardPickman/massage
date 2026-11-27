@@ -1,12 +1,17 @@
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
+import {
+    redirect,
+    useLoaderData,
+    type LoaderFunctionArgs,
+} from 'react-router-dom';
 import { PageHeader } from '../../components/PageHeader';
 import { Question } from '../../components/Question';
 import { Result } from '../../components/Result';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
 import QuizService from '../../services/Quiz';
+import { isUnauthorised } from '../../services/errors';
 import type { Quiz as QuizModel } from '../../services/models';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { buildAnswers } from '../../store/reducers/helpers';
@@ -111,7 +116,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
         throw new Error('Quiz id is missing');
     }
 
-    const { payload } = await QuizService.getQuiz(quizId);
+    try {
+        const { payload } = await QuizService.getQuiz(quizId);
 
-    return payload;
+        return payload;
+    } catch (error) {
+        if (isUnauthorised(error)) {
+            return redirect('/auth/login');
+        }
+
+        throw error;
+    }
 };

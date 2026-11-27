@@ -1,6 +1,11 @@
 import { useLayoutEffect } from 'react';
-import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
+import {
+    redirect,
+    useLoaderData,
+    type LoaderFunctionArgs,
+} from 'react-router-dom';
 import LectureService from '../../services/Lecture';
+import { isUnauthorised } from '../../services/errors';
 import { useAppDispatch } from '../../store';
 import { setImages } from '../../store/reducers/images';
 import { ImageSlider } from './ImageSlider';
@@ -27,7 +32,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
         throw new Error('Lecture id is missing');
     }
 
-    const { payload } = await LectureService.getLecture(lectureId);
+    try {
+        const { payload } = await LectureService.getLecture(lectureId);
 
-    return payload;
+        return payload;
+    } catch (error) {
+        // A guest following a shared link gets the sign-in form, not "Something
+        // went wrong".
+        if (isUnauthorised(error)) {
+            return redirect('/auth/login');
+        }
+
+        throw error;
+    }
 };
